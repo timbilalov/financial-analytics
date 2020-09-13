@@ -1,4 +1,6 @@
 <script>
+	import Fetch from './components/data/Fetch.svelte';
+
 	export let name;
 
 	name = 'world';
@@ -30,3 +32,5 @@
 		}
 	}
 </style>
+
+<Fetch/>
