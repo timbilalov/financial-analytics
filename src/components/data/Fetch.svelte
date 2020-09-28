@@ -6,20 +6,37 @@
     import Chart from 'chart.js';
 
     let query = 'AAPL';
-    let data = [];
+    // let data = [];
     let fetched = false;
     let chart;
+    let datasets = [];
 
     const handleInput = debounce(event => {
         query = event.target.value;
     }, 1500);
 
     $: {
-        getData(query);
+        parseQuery(query);
+    }
+
+    async function parseQuery(query) {
+        const symbols = query.split(',').map(item => item.trim());
+        const items = [];
+        for (const symbol of symbols) {
+            const data = await getData(symbol);
+            console.log('symbol', symbol, data)
+            items.push(data);
+        }
+
+        datasets = prepareDatasets(items);
+
+        setTimeout(() => {
+            buildChart(datasets);
+        }, 200);
     }
 
     async function getData(symbol) {
-        data = [];
+        const data = [];
         fetched = false;
         const dateFrom = moment('2019.09.01', DEFAULT_DATE_FORMAT).unix();
         const dateTo = moment('2020.09.01', DEFAULT_DATE_FORMAT).unix();
@@ -72,23 +89,23 @@
                 }
             }
 
-            data = data; // TODO
-
-            const datasets = prepareDatasets([dataRelative]); // TODO
-
-            setTimeout(function () {
-                buildChart(datasets);
-            }, 200);
+            return {
+                title: symbol,
+                data: dataRelative,
+            };
         } else {
             console.log("Ошибка HTTP: " + response.status);
         }
     }
 
-    function prepareSingleDataset(data) {
+    function prepareSingleDataset(title, data) {
+        const getRandomNumber = () => Math.round(Math.random() * 255);
+        const randomColor = [getRandomNumber(), getRandomNumber(), getRandomNumber()];
+
         const dataset = {
-            label: query,
-            backgroundColor: 'rgba(54, 162, 235, 0.2)', // TODO
-            borderColor: 'rgba(54, 162, 235, 1)', // TODO
+            label: title.toUpperCase(),
+            backgroundColor: `rgba(${randomColor.join(', ')}, 0.2)`,
+            borderColor: `rgba(${randomColor.join(', ')}, 1)`,
             data: data.map(item => item.value),
             dates: data.map(item => item.date),
             type: 'line',
@@ -104,8 +121,8 @@
     function prepareDatasets(items) {
         const datasets = [];
 
-        for (const data of items) {
-            datasets.push(prepareSingleDataset(data));
+        for (const {title, data} of items) {
+            datasets.push(prepareSingleDataset(title, data));
         }
 
         return datasets;
@@ -158,20 +175,37 @@
         height: 100vh;
         overflow: hidden;
     }
+
+    .controls {
+        position: fixed;
+        left: 10px;
+        top: 10px;
+        background-color: #fff;
+        padding: 10px;
+        z-index: 2;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .controls input {
+        text-transform: uppercase;
+    }
 </style>
 
-<input type="search" value={query} on:input={handleInput}>
+<div class="controls">
+    <input type="search" value={query} on:input={handleInput}>
 
-{#if query !== ''}
-    {#if data.length > 0}
-        <div>Data count: {data.length}</div>
+    {#if query !== ''}
+        {#if datasets.length > 0}
+            <div>Data count: {datasets[0].data.length}</div>
 
-        <div class="chart-container">
-            <canvas id="myChart" width="400" height="400"></canvas>
-        </div>
-    {:else if !fetched}
-        <div>Searching for {query}...</div>
-    {:else if fetched && data.length === 0}
-        <div>nothing was found</div>
+        {:else if !fetched}
+            <div>Searching for {query}...</div>
+        {:else if fetched && datasets.length === 0}
+            <div>nothing was found</div>
+        {/if}
     {/if}
-{/if}
+</div>
+
+<div class="chart-container">
+    <canvas id="myChart" width="400" height="400"></canvas>
+</div>
