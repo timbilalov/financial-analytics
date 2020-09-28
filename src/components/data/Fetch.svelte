@@ -8,12 +8,12 @@
     let query = 'AAPL';
     let data = [];
     let fetched = false;
+    let chart;
 
     const handleInput = debounce(event => {
         query = event.target.value;
     }, 1500);
 
-    $: console.log('query', query)
     $: {
         getData(query);
     }
@@ -36,9 +36,8 @@
             let prevDataObject;
             let initialValue;
 
-            // console.log('json', json, JSON.parse(json))
             const parsed = JSON.parse(json);
-            // data = parsed.o;
+
             for (let i = 0; i < parsed.t.length; i++) {
                 let dateUTC = parsed.t[i];
                 let date = dateFormat(dateUTC);
@@ -63,90 +62,69 @@
                 }
             }
 
-            const data2 = data.slice(0).map(item => Object.assign({}, item));
+            const dataRelative = data.slice(0).map(item => Object.assign({}, item));
 
             for (let i = 0; i < data.length; i++) {
                 if (i === 0) {
-                    data2[i].value = 0;
+                    dataRelative[i].value = 0;
                 } else {
-                    data2[i].value = (data2[i].value - initialValue) / initialValue * 100;
+                    dataRelative[i].value = (dataRelative[i].value - initialValue) / initialValue * 100;
                 }
             }
 
             data = data; // TODO
 
+            const datasets = prepareDatasets([dataRelative]); // TODO
+
             setTimeout(function () {
-                buildChart(data, data2);
+                buildChart(datasets);
             }, 200);
-            // buildChart();
-            console.log('data', data, data2)
         } else {
             console.log("Ошибка HTTP: " + response.status);
         }
     }
 
-    function buildChart(data, data2) {
-        var ctx = document.getElementById('myChart');
-        console.log('buildChart', ctx)
-        var myChart = new Chart(ctx, {
+    function prepareSingleDataset(data) {
+        const dataset = {
+            label: query,
+            backgroundColor: 'rgba(54, 162, 235, 0.2)', // TODO
+            borderColor: 'rgba(54, 162, 235, 1)', // TODO
+            data: data.map(item => item.value),
+            dates: data.map(item => item.date),
+            type: 'line',
+            pointRadius: 0,
+            fill: false,
+            lineTension: 0,
+            borderWidth: 1
+        };
+
+        return dataset;
+    }
+
+    function prepareDatasets(items) {
+        const datasets = [];
+
+        for (const data of items) {
+            datasets.push(prepareSingleDataset(data));
+        }
+
+        return datasets;
+    }
+
+    function buildChart(datasets) {
+        console.log('buildChart', datasets);
+
+        const ctx = document.getElementById('myChart');
+        const labels = datasets[0].dates;
+
+        chart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: data.map(item => item.date),
-                datasets: [
-                    // {
-                    //     label: 'Absolute',
-                    //     backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                    //     borderColor: 'rgba(255, 99, 132, 1)',
-                    //     data: data.map(item => item.value),
-                    //     type: 'line',
-                    //     pointRadius: 0,
-                    //     fill: false,
-                    //     lineTension: 0,
-                    //     borderWidth: 1
-                    // },
-                    {
-                        label: 'Relative',
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        data: data2.map(item => item.value),
-                        type: 'line',
-                        pointRadius: 0,
-                        fill: false,
-                        lineTension: 0,
-                        borderWidth: 1
-                    },
-                ],
-                // datasets: [{
-                //     label: '# of Votes',
-                //     data: [12, 19, 3, 5, 2, 3],
-                //     backgroundColor: [
-                //         'rgba(255, 99, 132, 0.2)',
-                //         'rgba(54, 162, 235, 0.2)',
-                //         'rgba(255, 206, 86, 0.2)',
-                //         'rgba(75, 192, 192, 0.2)',
-                //         'rgba(153, 102, 255, 0.2)',
-                //         'rgba(255, 159, 64, 0.2)'
-                //     ],
-                //     borderColor: [
-                //         'rgba(255, 99, 132, 1)',
-                //         'rgba(54, 162, 235, 1)',
-                //         'rgba(255, 206, 86, 1)',
-                //         'rgba(75, 192, 192, 1)',
-                //         'rgba(153, 102, 255, 1)',
-                //         'rgba(255, 159, 64, 1)'
-                //     ],
-                //     borderWidth: 1
-                // }]
+                labels,
+                datasets,
             },
             options: {
                 maintainAspectRatio: false,
-                // scales: {
-                //     yAxes: [{
-                //         ticks: {
-                //             beginAtZero: true
-                //         }
-                //     }]
-                // },
                 tooltips: {
                     intersect: false,
                     mode: 'index',
@@ -161,12 +139,15 @@
                                 label += ': ';
                             }
                             label += parseFloat(tooltipItem.value).toFixed(2);
+
                             return label;
                         }
                     }
                 },
             }
         });
+
+        return chart;
     }
 </script>
 
