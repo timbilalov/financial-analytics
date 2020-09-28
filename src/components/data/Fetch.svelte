@@ -6,7 +6,6 @@
     import Chart from 'chart.js';
 
     let query = 'AAPL';
-    // let data = [];
     let fetched = false;
     let chart;
     let datasets = [];
@@ -100,22 +99,56 @@
 
     function prepareSingleDataset(title, data) {
         const getRandomNumber = () => Math.round(Math.random() * 255);
-        const randomColor = [getRandomNumber(), getRandomNumber(), getRandomNumber()];
+        let colorRGB = [getRandomNumber(), getRandomNumber(), getRandomNumber()];
+        let opacity = 0.6;
+        let borderWidth = 1;
+
+        if (title.toLowerCase() === 'total') {
+            colorRGB = [0, 0, 0];
+            opacity = 1;
+            borderWidth = 2;
+        }
 
         const dataset = {
             label: title.toUpperCase(),
-            backgroundColor: `rgba(${randomColor.join(', ')}, 0.2)`,
-            borderColor: `rgba(${randomColor.join(', ')}, 1)`,
+            backgroundColor: `rgba(${colorRGB.join(', ')}, 0.2)`,
+            borderColor: `rgba(${colorRGB.join(', ')}, ${opacity})`,
             data: data.map(item => item.value),
             dates: data.map(item => item.date),
             type: 'line',
             pointRadius: 0,
             fill: false,
             lineTension: 0,
-            borderWidth: 1
+            borderWidth,
         };
 
         return dataset;
+    }
+
+    function calcTotal(items) {
+        const total = [];
+
+        for (let i = 0; i < items[0].data.length; i++) {
+            let totalValue = 0;
+            let nonZeroCount = 0;
+            for (const item of items) {
+                const value = item.data[i].value;
+                if (value !== 0) {
+                    totalValue += value;
+                    nonZeroCount += 1;
+                }
+            }
+
+            if (nonZeroCount !== 0) {
+                totalValue = totalValue / nonZeroCount;
+            }
+
+            total.push({
+                value: totalValue,
+            });
+        }
+
+        return total;
     }
 
     function prepareDatasets(items) {
@@ -123,6 +156,10 @@
 
         for (const {title, data} of items) {
             datasets.push(prepareSingleDataset(title, data));
+        }
+
+        if (items.length > 1) {
+            datasets.push(prepareSingleDataset('Total', calcTotal(items)))
         }
 
         return datasets;
