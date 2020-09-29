@@ -4,21 +4,42 @@
     import { dateFormat } from '../../utils/helpers';
     import {DEFAULT_DATE_FORMAT} from "../../utils/constants";
     import Chart from 'chart.js';
+    import Storage from '../../utils/storage';
 
-    let query = 'AAPL';
+    const STORAGE_KEYS = {
+        query: 'query',
+        datasets: 'datasets',
+    };
+
+    let currentQuery = Storage.get(STORAGE_KEYS.query) || '';
+    let parsedQuery = currentQuery;
     let fetched = false;
     let chart;
-    let datasets = [];
+    let datasets = Storage.get(STORAGE_KEYS.datasets) || [];
 
     const handleInput = debounce(event => {
-        query = event.target.value;
+        currentQuery = event.target.value;
     }, 1500);
 
     $: {
-        parseQuery(query);
+        Storage.set(STORAGE_KEYS.query, currentQuery);
+        update();
+    }
+
+    async function update() {
+        await parseQuery(currentQuery);
+        setTimeout(() => {
+            buildChart(datasets);
+        }, 200);
     }
 
     async function parseQuery(query) {
+        if (query === parsedQuery) {
+            return;
+        }
+
+        parsedQuery = query;
+
         const symbols = query.split(',').map(item => item.trim());
         const items = [];
         for (const symbol of symbols) {
@@ -28,10 +49,7 @@
         }
 
         datasets = prepareDatasets(items);
-
-        setTimeout(() => {
-            buildChart(datasets);
-        }, 200);
+        Storage.set(STORAGE_KEYS.datasets, datasets);
     }
 
     async function getData(symbol) {
@@ -229,14 +247,14 @@
 </style>
 
 <div class="controls">
-    <input type="search" value={query} on:input={handleInput}>
+    <input type="search" value={currentQuery} on:input={handleInput}>
 
-    {#if query !== ''}
+    {#if currentQuery !== ''}
         {#if datasets.length > 0}
             <div>Data count: {datasets[0].data.length}</div>
 
         {:else if !fetched}
-            <div>Searching for {query}...</div>
+            <div>Searching for {currentQuery}...</div>
         {:else if fetched && datasets.length === 0}
             <div>nothing was found</div>
         {/if}
