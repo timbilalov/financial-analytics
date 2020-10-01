@@ -26,15 +26,15 @@
         update();
     }
 
-    async function update() {
-        await parseQuery(currentQuery);
+    async function update(force = false) {
+        await parseQuery(currentQuery, force);
         setTimeout(() => {
             buildChart(datasets);
         }, 200);
     }
 
-    async function parseQuery(query) {
-        if (query === parsedQuery) {
+    async function parseQuery(query, force = false) {
+        if (query === parsedQuery && force !== true) {
             return;
         }
 
@@ -55,7 +55,7 @@
     async function getData(symbol) {
         const data = [];
         fetched = false;
-        const dateFrom = moment('2019.09.01', DEFAULT_DATE_FORMAT).unix();
+        const dateFrom = moment(`2019.09.01`, DEFAULT_DATE_FORMAT).unix();
         const dateTo = moment('2020.09.01', DEFAULT_DATE_FORMAT).unix();
         const resolution = 60;
         const url = `https://investcab.ru/api/chistory?symbol=${symbol}&resolution=${resolution}&from=${dateFrom}&to=${dateTo}`;
@@ -150,6 +150,10 @@
             let totalValue = 0;
             let nonZeroCount = 0;
             for (const item of items) {
+                if (item.data[i] === undefined) {
+                    continue;
+                }
+
                 const value = item.data[i].value;
                 if (value !== 0) {
                     totalValue += value;
@@ -188,6 +192,10 @@
 
         const ctx = document.getElementById('myChart');
         const labels = datasets[0].dates;
+
+        if (chart !== undefined && typeof chart.destroy === 'function') {
+            chart.destroy();
+        }
 
         chart = new Chart(ctx, {
             type: 'bar',
@@ -259,6 +267,10 @@
             <div>nothing was found</div>
         {/if}
     {/if}
+
+    <div>
+        <button on:click={() => update(true)}>refresh</button>
+    </div>
 </div>
 
 <div class="chart-container">
