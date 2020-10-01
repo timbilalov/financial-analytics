@@ -55,8 +55,8 @@
     async function getData(symbol) {
         const data = [];
         fetched = false;
-        const dateFrom = moment(`2019.09.01`, DEFAULT_DATE_FORMAT).unix();
-        const dateTo = moment('2020.09.01', DEFAULT_DATE_FORMAT).unix();
+        const dateFrom = moment(`2019.0${Math.round(Math.random() * 8) + 1}.01`, DEFAULT_DATE_FORMAT).unix();
+        const dateTo = moment(`2020.0${Math.round(Math.random() * 8) + 1}.01`, DEFAULT_DATE_FORMAT).unix();
         const resolution = 60;
         const url = `https://investcab.ru/api/chistory?symbol=${symbol}&resolution=${resolution}&from=${dateFrom}&to=${dateTo}`;
         let response = await fetch(url);
@@ -115,7 +115,7 @@
         }
     }
 
-    function prepareSingleDataset(title, data) {
+    function prepareSingleDataset(title, data, datesFullArray = []) {
         const getRandomNumber = () => Math.round(Math.random() * 255);
         let colorRGB = [getRandomNumber(), getRandomNumber(), getRandomNumber()];
         let opacity = 0.6;
@@ -127,12 +127,33 @@
             borderWidth = 2;
         }
 
+        let values;
+        let dates;
+
+        if (datesFullArray.length !== 0) {
+            dates = datesFullArray.slice(0);
+            values = [];
+            for (const date of dates) {
+                let valueByDate;
+                const itemFilteredByDate = data.filter(item => item.date === date)[0];
+                if (itemFilteredByDate !== undefined) {
+                    valueByDate = itemFilteredByDate.value;
+                } else {
+                    valueByDate = NaN;
+                }
+                values.push(valueByDate);
+            }
+        } else {
+            dates = data.map(item => item.date);
+            values = data.map(item => item.value);
+        }
+
         const dataset = {
             label: title.toUpperCase(),
             backgroundColor: `rgba(${colorRGB.join(', ')}, 0.2)`,
             borderColor: `rgba(${colorRGB.join(', ')}, ${opacity})`,
-            data: data.map(item => item.value),
-            dates: data.map(item => item.date),
+            data: values,
+            dates: dates,
             type: 'line',
             pointRadius: 0,
             fill: false,
@@ -143,31 +164,73 @@
         return dataset;
     }
 
-    function calcTotal(items) {
+    function calcTotal(datasets) {
         const total = [];
 
-        for (let i = 0; i < items[0].data.length; i++) {
+        const dates = datasets[0].dates;
+
+        let prevTotal = 0;
+        let prevSavedTotal = 0;
+        let currentNonZeroCount = 0;
+        let prevSavedValues = [];
+
+        for (const i in dates) {
             let totalValue = 0;
             let nonZeroCount = 0;
-            for (const item of items) {
-                if (item.data[i] === undefined) {
-                    continue;
-                }
 
-                const value = item.data[i].value;
-                if (value !== 0) {
-                    totalValue += value;
+            for (const dataset of datasets) {
+                const value = dataset.data[i];
+
+                if (!isNaN(value)) {
                     nonZeroCount += 1;
                 }
             }
 
+            for (const j in datasets) {
+                const dataset = datasets[j];
+                const value = dataset.data[i];
+
+                if (isNaN(value)) {
+                    continue;
+                }
+
+                let prevSavedValue = prevSavedValues[j];
+                if (prevSavedValue === undefined || isNaN(prevSavedValue)) {
+                    prevSavedValue = 0;
+                }
+
+                // totalValue += value - prevSavedTotal;
+                totalValue += value - prevSavedValue;
+                // nonZeroCount += 1;
+            }
+
             if (nonZeroCount !== 0) {
-                totalValue = totalValue / nonZeroCount;
+                totalValue = prevSavedTotal + totalValue / nonZeroCount;
             }
 
             total.push({
                 value: totalValue,
+                date: dates[i],
             });
+
+            if (nonZeroCount !== currentNonZeroCount) {
+                currentNonZeroCount = nonZeroCount;
+                prevSavedTotal = prevTotal;
+                if (i > 0) {
+                    prevSavedTotal = total[i - 1].value;
+                    prevSavedValues[i]
+                    for (const j in datasets) {
+                        const dataset = datasets[j];
+                        const value = dataset.data[i - 1];
+
+                        if (!isNaN(value)) {
+                            prevSavedValues[j] = value;
+                        }
+                    }
+                }
+            }
+
+            prevTotal = totalValue;
         }
 
         return total;
@@ -175,13 +238,26 @@
 
     function prepareDatasets(items) {
         const datasets = [];
+        const datesFullArray = [];
+
+        for (const {data} of items) {
+            const dates = data.map(item => item.date);
+
+            for (const date of dates) {
+                if (!datesFullArray.includes(date)) {
+                    datesFullArray.push(date);
+                }
+            }
+        }
+
+        datesFullArray.sort();
 
         for (const {title, data} of items) {
-            datasets.push(prepareSingleDataset(title, data));
+            datasets.push(prepareSingleDataset(title, data, datesFullArray));
         }
 
         if (items.length > 1) {
-            datasets.push(prepareSingleDataset('Total', calcTotal(items)))
+            datasets.push(prepareSingleDataset('Total', calcTotal(datasets.slice(0)), datesFullArray))
         }
 
         return datasets;
