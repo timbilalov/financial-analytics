@@ -16,6 +16,7 @@
     let fetched = false;
     let chart;
     let datasets = Storage.get(STORAGE_KEYS.datasets) || [];
+    let datesFullArray = [];
 
     const handleInput = debounce(event => {
         currentQuery = event.target.value;
@@ -115,7 +116,7 @@
         }
     }
 
-    function prepareSingleDataset(title, data, datesFullArray = []) {
+    function prepareSingleDataset(title, data) {
         const getRandomNumber = () => Math.round(Math.random() * 255);
         let colorRGB = [getRandomNumber(), getRandomNumber(), getRandomNumber()];
         let opacity = 0.6;
@@ -164,10 +165,12 @@
         return dataset;
     }
 
+    // TODO: Как минимум, отрефакторить. Как максимум, ещё раз проанализировать верность расчётов.
     function calcTotal(datasets) {
-        const total = [];
+        datasets = datasets.filter(dataset => dataset.isHidden !== true);
 
-        const dates = datasets[0].dates;
+        const total = [];
+        const dates = datesFullArray;
 
         let prevTotal = 0;
         let prevSavedTotal = 0;
@@ -176,13 +179,35 @@
 
         for (const i in dates) {
             let totalValue = 0;
+            let totalValue2 = 0;
             let nonZeroCount = 0;
+            let nonZeroCount2 = 0;
 
-            for (const dataset of datasets) {
+            for (const j in datasets) {
+                const dataset = datasets[j];
                 const value = dataset.data[i];
 
                 if (!isNaN(value)) {
                     nonZeroCount += 1;
+                    if (value !== 0 || (value === 0 && !!prevSavedValues[j])) {
+                        nonZeroCount2 += 1;
+                    }
+                }
+            }
+
+            if (nonZeroCount !== currentNonZeroCount) {
+                currentNonZeroCount = nonZeroCount;
+                prevSavedTotal = prevTotal;
+                if (i > 0) {
+                    prevSavedTotal = total[i - 1].value;
+                    for (const j in datasets) {
+                        const dataset = datasets[j];
+                        const value = dataset.data[i - 1];
+
+                        if (!isNaN(value)) {
+                            prevSavedValues[j] = value;
+                        }
+                    }
                 }
             }
 
@@ -199,36 +224,19 @@
                     prevSavedValue = 0;
                 }
 
-                // totalValue += value - prevSavedTotal;
                 totalValue += value - prevSavedValue;
-                // nonZeroCount += 1;
             }
 
             if (nonZeroCount !== 0) {
-                totalValue = prevSavedTotal + totalValue / nonZeroCount;
+                totalValue2 = prevSavedTotal + totalValue / nonZeroCount;
+            } else {
+                totalValue2 = prevSavedTotal;
             }
 
             total.push({
-                value: totalValue,
+                value: totalValue2,
                 date: dates[i],
             });
-
-            if (nonZeroCount !== currentNonZeroCount) {
-                currentNonZeroCount = nonZeroCount;
-                prevSavedTotal = prevTotal;
-                if (i > 0) {
-                    prevSavedTotal = total[i - 1].value;
-                    prevSavedValues[i]
-                    for (const j in datasets) {
-                        const dataset = datasets[j];
-                        const value = dataset.data[i - 1];
-
-                        if (!isNaN(value)) {
-                            prevSavedValues[j] = value;
-                        }
-                    }
-                }
-            }
 
             prevTotal = totalValue;
         }
@@ -238,7 +246,7 @@
 
     function prepareDatasets(items) {
         const datasets = [];
-        const datesFullArray = [];
+        datesFullArray = [];
 
         for (const {data} of items) {
             const dates = data.map(item => item.date);
@@ -253,11 +261,11 @@
         datesFullArray.sort();
 
         for (const {title, data} of items) {
-            datasets.push(prepareSingleDataset(title, data, datesFullArray));
+            datasets.push(prepareSingleDataset(title, data));
         }
 
         if (items.length > 1) {
-            datasets.push(prepareSingleDataset('Total', calcTotal(datasets.slice(0)), datesFullArray))
+            datasets.push(prepareSingleDataset('Total', calcTotal(datasets.slice(0))))
         }
 
         return datasets;
@@ -281,15 +289,19 @@
             },
             options: {
                 maintainAspectRatio: false,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            min: -50,
+                            max: 100
+                        }
+                    }]
+                },
                 tooltips: {
                     intersect: false,
                     mode: 'index',
                     callbacks: {
                         label: function(tooltipItem, myData) {
-                            if (tooltipItem.value === '0') {
-                                return false;
-                            }
-
                             var label = myData.datasets[tooltipItem.datasetIndex].label || '';
                             if (label) {
                                 label += ': ';
@@ -300,10 +312,30 @@
                         }
                     }
                 },
+                legend: {
+                    onClick: function(e, legendItem) {
+                        Chart.defaults.global.legend.onClick.call(this, e, legendItem);
+                        onLegendClick.call(this, legendItem)
+                    }
+                },
             }
         });
 
         return chart;
+    }
+
+    function onLegendClick(legendItem) {
+        const isHidden = !legendItem.hidden;
+        datasets[legendItem.datasetIndex].isHidden = isHidden;
+
+        const newTotal = calcTotal(datasets.slice(0, datasets.length - 1));
+        const chartDatasets = chart.config.data.datasets;
+        const currentTotalDataset = chartDatasets[chartDatasets.length - 1];
+
+        currentTotalDataset.data = newTotal.map(item => item.value);
+        currentTotalDataset.dates = newTotal.map(item => item.date);
+
+        chart.update();
     }
 </script>
 
