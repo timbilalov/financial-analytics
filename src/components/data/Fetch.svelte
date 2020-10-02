@@ -289,14 +289,6 @@
             },
             options: {
                 maintainAspectRatio: false,
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            min: -50,
-                            max: 100
-                        }
-                    }]
-                },
                 tooltips: {
                     intersect: false,
                     mode: 'index',
@@ -320,6 +312,16 @@
                 },
             }
         });
+
+        const optionsYAxes = chart.config.options.scales.yAxes[0];
+        const optionsYAxesID = optionsYAxes.id;
+        const currentYAxes = chart.scales[optionsYAxesID];
+        const currentYMin = currentYAxes.min;
+        const currentYMax = currentYAxes.max;
+
+        optionsYAxes.ticks.min = currentYMin;
+        optionsYAxes.ticks.max = currentYMax;
+        chart.update();
 
         return chart;
     }
@@ -377,7 +379,8 @@
     {/if}
 
     <div>
-        <button on:click={() => update(true)}>refresh</button>
+        <br>
+        <button on:click={() => update(true)}>force refresh</button>
     </div>
 </div>
 
