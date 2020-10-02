@@ -9,6 +9,7 @@
     const STORAGE_KEYS = {
         query: 'query',
         datasets: 'datasets',
+        datesFullArray: 'datesFullArray',
     };
 
     let currentQuery = Storage.get(STORAGE_KEYS.query) || '';
@@ -16,7 +17,7 @@
     let fetched = false;
     let chart;
     let datasets = Storage.get(STORAGE_KEYS.datasets) || [];
-    let datesFullArray = [];
+    let datesFullArray = Storage.get(STORAGE_KEYS.datesFullArray) || [];
 
     const handleInput = debounce(event => {
         currentQuery = event.target.value;
@@ -187,7 +188,7 @@
                 const dataset = datasets[j];
                 const value = dataset.data[i];
 
-                if (!isNaN(value)) {
+                if (!isNaN(value) && value !== null) {
                     nonZeroCount += 1;
                     if (value !== 0 || (value === 0 && !!prevSavedValues[j])) {
                         nonZeroCount2 += 1;
@@ -204,7 +205,7 @@
                         const dataset = datasets[j];
                         const value = dataset.data[i - 1];
 
-                        if (!isNaN(value)) {
+                        if (!isNaN(value) && value !== null) {
                             prevSavedValues[j] = value;
                         }
                     }
@@ -215,7 +216,7 @@
                 const dataset = datasets[j];
                 const value = dataset.data[i];
 
-                if (isNaN(value)) {
+                if (isNaN(value) || value === null) {
                     continue;
                 }
 
@@ -259,6 +260,7 @@
         }
 
         datesFullArray.sort();
+        Storage.set(STORAGE_KEYS.datesFullArray, datesFullArray);
 
         for (const {title, data} of items) {
             datasets.push(prepareSingleDataset(title, data));
