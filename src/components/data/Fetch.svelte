@@ -5,11 +5,13 @@
     import {DEFAULT_DATE_FORMAT} from "../../utils/constants";
     import Chart from 'chart.js';
     import Storage from '../../utils/storage';
+    import Personal from './Personal.svelte';
 
     const STORAGE_KEYS = {
         query: 'query',
         datasets: 'datasets',
         datesFullArray: 'datesFullArray',
+        assets: 'assets', // TODO
     };
 
     let currentQuery = Storage.get(STORAGE_KEYS.query) || '';
@@ -18,6 +20,7 @@
     let chart;
     let datasets = Storage.get(STORAGE_KEYS.datasets) || [];
     let datesFullArray = Storage.get(STORAGE_KEYS.datesFullArray) || [];
+    let currentAssets = Storage.get(STORAGE_KEYS.assets) || [];
 
     const handleInput = debounce(event => {
         currentQuery = event.target.value;
@@ -25,7 +28,7 @@
 
     $: {
         Storage.set(STORAGE_KEYS.query, currentQuery);
-        update();
+        // update();
     }
 
     async function update(force = false) {
@@ -54,11 +57,19 @@
         Storage.set(STORAGE_KEYS.datasets, datasets);
     }
 
-    async function getData(symbol) {
+    async function getData(symbol, manualDateFrom) {
         const data = [];
         fetched = false;
-        const dateFrom = moment(`2019.0${Math.round(Math.random() * 8) + 1}.01`, DEFAULT_DATE_FORMAT).unix();
-        const dateTo = moment(`2020.0${Math.round(Math.random() * 8) + 1}.01`, DEFAULT_DATE_FORMAT).unix();
+        let dateFrom;
+        let dateTo;
+
+        if (manualDateFrom !== undefined) {
+            dateFrom = moment(manualDateFrom, DEFAULT_DATE_FORMAT).unix();
+            dateTo = moment().unix();
+        } else {
+            dateFrom = moment(`2019.0${Math.round(Math.random() * 8) + 1}.01`, DEFAULT_DATE_FORMAT).unix();
+            dateTo = moment(`2020.0${Math.round(Math.random() * 8) + 1}.01`, DEFAULT_DATE_FORMAT).unix();
+        }
         const resolution = 60;
         const url = `https://investcab.ru/api/chistory?symbol=${symbol}&resolution=${resolution}&from=${dateFrom}&to=${dateTo}`;
         let response = await fetch(url);
@@ -276,6 +287,10 @@
     function buildChart(datasets) {
         console.log('buildChart', datasets);
 
+        if (!datasets || !datasets.length) {
+            return;
+        }
+
         const ctx = document.getElementById('myChart');
         const labels = datasets[0].dates;
 
@@ -341,6 +356,41 @@
 
         chart.update();
     }
+
+    function handleUpdateAssets(event) {
+        const { assets } = event.detail;
+        update2(assets);
+    }
+
+    async function getAssetsData(assets = currentAssets, force = false) {
+        if (!force && (JSON.stringify(assets) === JSON.stringify(currentAssets))) { // TODO
+            return;
+        }
+
+        const items = [];
+        currentAssets = Array.from(assets);
+
+        for (const { ticker, buyDate } of assets) {
+            const data = await getData(ticker, buyDate);
+            console.log('ticker', ticker, buyDate, data)
+            if (data) {
+                items.push(data);
+            }
+        }
+
+        datasets = prepareDatasets(items);
+        Storage.set(STORAGE_KEYS.datasets, datasets);
+    }
+
+    async function update2(assets = currentAssets, force = false) {
+        await getAssetsData(assets, force);
+
+        setTimeout(() => {
+            buildChart(datasets);
+        }, 200);
+    }
+
+    update2();
 </script>
 
 <style>
@@ -359,6 +409,11 @@
         padding: 10px;
         z-index: 2;
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        opacity: 0.5;
+    }
+
+    .controls:hover {
+        opacity: 1;
     }
 
     .controls input {
@@ -382,8 +437,12 @@
 
     <div>
         <br>
-        <button on:click={() => update(true)}>force refresh</button>
+        <button on:click={() => update2(currentAssets, true)}>force refresh</button>
     </div>
+
+    <hr>
+
+    <Personal on:updateAssets={handleUpdateAssets} />
 </div>
 
 <div class="chart-container">
