@@ -57,6 +57,10 @@
         newAssetValues.amount = event.target.value;
     }
 
+    function handleMoexInput(event) {
+        newAssetValues.isMoex = event.target.value === '1';
+    }
+
     function save() {
         assets.push(Object.assign({}, newAssetValues));
         assets = assets;
@@ -92,6 +96,9 @@
         </div>
         <div>
             Amount: <input type="text" value={newAssetValues.amount || ''} on:input={handleAmountInput}>
+        </div>
+        <div>
+            MOEX: <input type="text" value={newAssetValues.moex || ''} on:input={handleMoexInput}>
         </div>
         <div>
             <button disabled={!isReadyToSave} on:click={save}>Save</button>

@@ -1,1 +1,4 @@
-export const DEFAULT_DATE_FORMAT = 'YYYY.MM.DD';
+export const DATE_FORMATS = {
+    'default': 'YYYY.MM.DD',
+    'moex': 'YYYY-MM-DD',
+};

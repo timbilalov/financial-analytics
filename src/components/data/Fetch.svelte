@@ -2,7 +2,7 @@
     import debounce from 'lodash/debounce';
     import moment from 'moment';
     import { dateFormat } from '../../utils/helpers';
-    import {DEFAULT_DATE_FORMAT} from "../../utils/constants";
+    import {DATE_FORMATS} from "../../utils/constants";
     import Chart from 'chart.js';
     import Storage from '../../utils/storage';
     import Personal from './Personal.svelte';
@@ -57,65 +57,41 @@
         Storage.set(STORAGE_KEYS.datasets, datasets);
     }
 
-    async function getData(symbol, manualDateFrom) {
-        const data = [];
+    async function getData(symbol, manualDateFrom, useMoex = false) {
         fetched = false;
         let dateFrom;
         let dateTo;
 
         if (manualDateFrom !== undefined) {
-            dateFrom = moment(manualDateFrom, DEFAULT_DATE_FORMAT).unix();
-            dateTo = moment().unix();
+            dateFrom = moment(manualDateFrom, DATE_FORMATS.default);
+            dateTo = moment();
         } else {
-            dateFrom = moment(`2019.0${Math.round(Math.random() * 8) + 1}.01`, DEFAULT_DATE_FORMAT).unix();
-            dateTo = moment(`2020.0${Math.round(Math.random() * 8) + 1}.01`, DEFAULT_DATE_FORMAT).unix();
+            dateFrom = moment(`2019.0${Math.round(Math.random() * 8) + 1}.01`, DATE_FORMATS.default);
+            dateTo = moment(`2020.0${Math.round(Math.random() * 8) + 1}.01`, DATE_FORMATS.default);
         }
         const resolution = 60;
-        const url = `https://investcab.ru/api/chistory?symbol=${symbol}&resolution=${resolution}&from=${dateFrom}&to=${dateTo}`;
-        let response = await fetch(url);
-        fetched = true;
+        const url = `https://investcab.ru/api/chistory?symbol=${symbol}&resolution=${resolution}&from=${dateFrom.unix()}&to=${dateTo.unix()}`;
+        const url2 = `http://iss.moex.com/iss/history/engines/stock/markets/shares/securities/${symbol}/securities.json?from=${dateFrom.format(DATE_FORMATS.moex)}&to=${dateTo.format(DATE_FORMATS.moex)}`;
+        const urlToFetch = useMoex ? url2 : url;
+        let response = await fetch(urlToFetch);
 
-        console.log('response', response)
+        fetched = true;
 
         if (response.ok) {
             let json = await response.json();
-            let prevDate;
-            let prevDataObject;
-            let initialValue;
 
-            const parsed = JSON.parse(json);
-
-            for (let i = 0; i < parsed.t.length; i++) {
-                let dateUTC = parsed.t[i];
-                let date = dateFormat(dateUTC);
-                let value = (parsed.c[i] + parsed.o[i]) / 2;
-                if (i === 0) {
-                    initialValue = value;
-                }
-
-                if (date === prevDate) {
-                    prevDataObject.value = (prevDataObject.value + value) / 2;
-                } else {
-                    const dataObject = {
-                        dateUTC,
-                        date,
-                        value,
-                    };
-
-                    data.push(dataObject);
-
-                    prevDate = date;
-                    prevDataObject = dataObject;
-                }
-            }
-
+            const data = parseResponseData(json, useMoex);
             const dataRelative = data.slice(0).map(item => Object.assign({}, item));
 
-            for (let i = 0; i < data.length; i++) {
-                if (i === 0) {
-                    dataRelative[i].value = 0;
-                } else {
-                    dataRelative[i].value = (dataRelative[i].value - initialValue) / initialValue * 100;
+            if (data.length !== 0) {
+                const initialValue = data[0].value;
+
+                for (let i = 0; i < data.length; i++) {
+                    if (i === 0) {
+                        dataRelative[i].value = 0;
+                    } else {
+                        dataRelative[i].value = (dataRelative[i].value - initialValue) / initialValue * 100;
+                    }
                 }
             }
 
@@ -126,6 +102,79 @@
         } else {
             console.log("Ошибка HTTP: " + response.status);
         }
+    }
+
+    function parseResponseData(responseData, useMoex = false) {
+        if (useMoex === true) {
+            return parseResponseDataMoex(responseData);
+        } else {
+            return parseResponseDataInvestcab(responseData);
+        }
+    }
+
+    function parseResponseDataInvestcab(responseData) {
+        const parsed = JSON.parse(responseData);
+        const data = [];
+
+        let prevDate;
+        let prevDataObject;
+
+        for (let i = 0; i < parsed.t.length; i++) {
+            let dateUTC = parsed.t[i];
+            let date = dateFormat(dateUTC);
+            let value = (parsed.c[i] + parsed.o[i]) / 2;
+
+            if (date === prevDate) {
+                prevDataObject.value = (prevDataObject.value + value) / 2;
+            } else {
+                const dataObject = {
+                    dateUTC,
+                    date,
+                    value,
+                };
+
+                data.push(dataObject);
+
+                prevDate = date;
+                prevDataObject = dataObject;
+            }
+        }
+
+        return data;
+    }
+
+    function parseResponseDataMoex(responseData) {
+        const data = [];
+
+        const historyData = responseData.history.data;
+
+        let prevDate;
+        let prevDataObject;
+
+        for (let i = 0; i < historyData.length; i++) {
+            const item = historyData[i];
+
+            let date = moment(item[1], DATE_FORMATS.moex).format(DATE_FORMATS.default);
+            let dateUTC = moment(date, DATE_FORMATS.default).unix();
+            let value = (item[6] + item[11]) / 2;
+
+            if (date === prevDate) {
+                prevDataObject.value = (prevDataObject.value + value) / 2;
+            } else {
+                const dataObject = {
+                    dateUTC,
+                    date,
+                    value,
+                };
+
+                data.push(dataObject);
+
+                prevDate = date;
+                prevDataObject = dataObject;
+            }
+        }
+
+        return data;
     }
 
     function prepareSingleDataset(title, data) {
@@ -370,8 +419,8 @@
         const items = [];
         currentAssets = Array.from(assets);
 
-        for (const { ticker, buyDate } of assets) {
-            const data = await getData(ticker, buyDate);
+        for (const { ticker, buyDate, isMoex } of assets) {
+            const data = await getData(ticker, buyDate, isMoex);
             console.log('ticker', ticker, buyDate, data)
             if (data) {
                 items.push(data);
