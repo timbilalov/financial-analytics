@@ -191,17 +191,26 @@
 
         let values;
         let dates;
+        let hasBegun = false;
+        let prevValue;
 
         if (datesFullArray.length !== 0) {
             dates = datesFullArray.slice(0);
             values = [];
-            for (const date of dates) {
+
+            for (const [index, date] of dates.entries()) {
                 let valueByDate;
                 const itemFilteredByDate = data.filter(item => item.date === date)[0];
                 if (itemFilteredByDate !== undefined) {
                     valueByDate = itemFilteredByDate.value;
+                    hasBegun = true;
+                    prevValue = valueByDate;
                 } else {
-                    valueByDate = NaN;
+                    if (!hasBegun) {
+                        valueByDate = NaN;
+                    } else {
+                        valueByDate = prevValue;
+                    }
                 }
                 values.push(valueByDate);
             }
