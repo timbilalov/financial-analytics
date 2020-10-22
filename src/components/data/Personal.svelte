@@ -10,6 +10,7 @@
 
     let assets = Storage.get(STORAGE_KEYS.assets) || [];
     let isAddDialogOpened = false;
+    let isManageDialogOpened = false;
     let newAssetValues = {};
     let isReadyToSave;
 
@@ -32,6 +33,14 @@
         }
     }
 
+    function onManageButtonClick() {
+        if (isManageDialogOpened) {
+            closeManageDialog();
+        } else {
+            openManageDialog();
+        }
+    }
+
     function onClearButtonClick() {
         assets = [];
         update();
@@ -43,6 +52,14 @@
 
     function closeAddDialog() {
         isAddDialogOpened = false;
+    }
+
+    function openManageDialog() {
+        isManageDialogOpened = true;
+    }
+
+    function closeManageDialog() {
+        isManageDialogOpened = false;
     }
 
     function handleTickerInput(event) {
@@ -78,12 +95,36 @@
     function clearNewAssetData() {
         newAssetValues = {};
     }
+
+    function removeAsset(asset) {
+        console.log('removeAsset', asset)
+
+        assets.splice(assets.indexOf(asset), 1);
+        assets = assets;
+        update();
+    }
 </script>
+
+<style>
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .table td {
+        border: 1px solid #cccccc;
+    }
+
+    .remove {
+        font-weight: bold;
+        cursor: pointer;
+    }
+</style>
 
 <div>
     Assets: {assets.length}
     <button on:click={onAddButtonClick}>add</button>
-    <button disabled>manage</button>
+    <button on:click={onManageButtonClick}>manage</button>
     <button on:click={onClearButtonClick}>clear</button>
 
     {#if isAddDialogOpened}
@@ -103,6 +144,25 @@
         <div>
             <button disabled={!isReadyToSave} on:click={save}>Save</button>
             <button on:click={cancel}>Cancel</button>
+        </div>
+    {/if}
+
+    {#if isManageDialogOpened}
+        <hr>
+        <div>
+            <table class="table" cellpadding="0" cellspacing="0">
+                <tbody>
+                    {#each assets as asset}
+                        <tr>
+                            <td contenteditable="true">{asset.ticker}</td>
+                            <td contenteditable="true">{asset.buyDate}</td>
+                            <td contenteditable="true">{asset.amount}</td>
+                            <td contenteditable="true">{asset.isMoex ? '1' : '0'}</td>
+                            <td><span class="remove" on:click={removeAsset(asset)}>delete</span></td>
+                        </tr>
+                    {/each}
+                </tbody>
+            </table>
         </div>
     {/if}
 </div>
