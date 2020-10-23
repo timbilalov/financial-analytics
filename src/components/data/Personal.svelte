@@ -75,7 +75,7 @@
     }
 
     function handleMoexInput(event) {
-        newAssetValues.isMoex = event.target.value === '1';
+        newAssetValues.moex = event.target.value;
     }
 
     function save() {
@@ -97,11 +97,13 @@
     }
 
     function removeAsset(asset) {
-        console.log('removeAsset', asset)
-
         assets.splice(assets.indexOf(asset), 1);
         assets = assets;
+    }
+
+    function updateAssets() {
         update();
+        isManageDialogOpened = false;
     }
 </script>
 
@@ -113,6 +115,7 @@
 
     .table td {
         border: 1px solid #cccccc;
+        min-width: 20px;
     }
 
     .remove {
@@ -154,15 +157,16 @@
                 <tbody>
                     {#each assets as asset}
                         <tr>
-                            <td contenteditable="true">{asset.ticker}</td>
-                            <td contenteditable="true">{asset.buyDate}</td>
-                            <td contenteditable="true">{asset.amount}</td>
-                            <td contenteditable="true">{asset.isMoex ? '1' : '0'}</td>
+                            <td contenteditable="true" bind:innerHTML={asset.ticker}></td>
+                            <td contenteditable="true" bind:innerHTML={asset.buyDate}></td>
+                            <td contenteditable="true" bind:innerHTML={asset.amount}></td>
+                            <td contenteditable="true" bind:innerHTML={asset.moex}></td>
                             <td><span class="remove" on:click={removeAsset(asset)}>delete</span></td>
                         </tr>
                     {/each}
                 </tbody>
             </table>
+            <button on:click={updateAssets}>save</button>
         </div>
     {/if}
 </div>

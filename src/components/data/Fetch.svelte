@@ -428,7 +428,8 @@
         const items = [];
         currentAssets = Array.from(assets);
 
-        for (const { ticker, buyDate, isMoex } of assets) {
+        for (const { ticker, buyDate, moex } of assets) {
+            const isMoex = moex === true || moex === '1';
             const data = await getData(ticker, buyDate, isMoex);
             console.log('ticker', ticker, buyDate, data)
             if (data) {
