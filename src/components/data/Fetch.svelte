@@ -80,6 +80,34 @@
         if (response.ok) {
             let json = await response.json();
 
+            if (useMoex) {
+                let fetchedAll = false;
+                let k = 0;
+                let json2 = json;
+                let allData = json.history.data || [];
+
+                // TEMP: Потом убрать k
+                while (!fetchedAll && k < 20) {
+                    k++;
+
+                    const cursorData = json2['history.cursor'].data[0];
+                    const [ index, total, pageSize ] = cursorData;
+
+                    if (index + pageSize < total) {
+                        const url2more = `${url2}&start=${index + pageSize}`;
+                        let response2 = await fetch(url2more);
+                        if (response2.ok) {
+                            json2 = await response2.json();
+                            allData = allData.concat(json2.history.data);
+                        }
+                    } else {
+                        fetchedAll = true;
+                    }
+                }
+
+                json.history.data = allData;
+            }
+
             const data = parseResponseData(json, useMoex);
             const dataRelative = data.slice(0).map(item => Object.assign({}, item));
 
@@ -153,6 +181,9 @@
 
         for (let i = 0; i < historyData.length; i++) {
             const item = historyData[i];
+            if (item[0] !== 'TQBR') {
+                continue;
+            }
 
             let date = moment(item[1], DATE_FORMATS.moex).format(DATE_FORMATS.default);
             let dateUTC = moment(date, DATE_FORMATS.default).unix();
