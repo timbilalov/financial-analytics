@@ -12,6 +12,7 @@
         datasets: 'datasets',
         datesFullArray: 'datesFullArray',
         assets: 'assets', // TODO
+        calcMethod: 'calcMethod',
     };
 
     let currentQuery = Storage.get(STORAGE_KEYS.query) || '';
@@ -21,12 +22,24 @@
     let datasets = Storage.get(STORAGE_KEYS.datasets) || [];
     let datesFullArray = Storage.get(STORAGE_KEYS.datesFullArray) || [];
     let currentAssets = Storage.get(STORAGE_KEYS.assets) || [];
+    let calcMethod = Storage.get(STORAGE_KEYS.calcMethod) || 'relative';
+    let calcMethodInitialized = false;
 
     const handleInput = debounce(event => {
         currentQuery = event.target.value;
     }, 1500);
 
     $: {
+        // TODO: Хз как добиться внятного поведения без такого хака. Поизучать...
+        if (calcMethod) {
+            if (!calcMethodInitialized) {
+                calcMethodInitialized = true;
+            } else {
+                Storage.set(STORAGE_KEYS.calcMethod, calcMethod);
+                update2(currentAssets, true);
+            }
+        }
+
         Storage.set(STORAGE_KEYS.query, currentQuery);
         // update();
     }
@@ -118,7 +131,12 @@
                     if (i === 0) {
                         dataRelative[i].value = 0;
                     } else {
-                        dataRelative[i].value = (dataRelative[i].value - initialValue) / initialValue * 100;
+                        // TODO: Здесь только расчёты, а данные ведь те же самые. В дальнейшем, отрефакторить, чтобы не делать лишних запросов.
+                        if (calcMethod === 'relative') {
+                            dataRelative[i].value = (dataRelative[i].value - initialValue) / initialValue * 100;
+                        } else if (calcMethod === 'absolute') {
+                            dataRelative[i].value = dataRelative[i].value - initialValue;
+                        }
                     }
                 }
             }
@@ -329,7 +347,11 @@
             }
 
             if (nonZeroCount !== 0) {
-                totalValue2 = prevSavedTotal + totalValue / nonZeroCount;
+                if (calcMethod === 'relative') {
+                    totalValue2 = prevSavedTotal + totalValue / nonZeroCount;
+                } else if (calcMethod === 'absolute') {
+                    totalValue2 = prevSavedTotal + totalValue;
+                }
             } else {
                 totalValue2 = prevSavedTotal;
             }
@@ -529,6 +551,16 @@
         <br>
         <button on:click={() => update2(currentAssets, true)}>force refresh</button>
     </div>
+
+    <hr>
+    <label>
+        <input type="radio" bind:group={calcMethod} value="relative">
+        <span>relative</span>
+    </label>
+    <label>
+        <input type="radio" bind:group={calcMethod} value="absolute">
+        <span>absolute</span>
+    </label>
 
     <hr>
 
