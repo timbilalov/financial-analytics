@@ -78,6 +78,10 @@
         newAssetValues.moex = event.target.value;
     }
 
+    function handleUsdInput(event) {
+        newAssetValues.usd = event.target.value;
+    }
+
     function save() {
         assets.push(Object.assign({}, newAssetValues));
         assets = assets;
@@ -145,6 +149,9 @@
             MOEX: <input type="text" value={newAssetValues.moex || ''} on:input={handleMoexInput}>
         </div>
         <div>
+            USD: <input type="text" value={newAssetValues.usd || ''} on:input={handleUsdInput}>
+        </div>
+        <div>
             <button disabled={!isReadyToSave} on:click={save}>Save</button>
             <button on:click={cancel}>Cancel</button>
         </div>
@@ -161,6 +168,7 @@
                             <td contenteditable="true" bind:innerHTML={asset.buyDate}></td>
                             <td contenteditable="true" bind:innerHTML={asset.amount}></td>
                             <td contenteditable="true" bind:innerHTML={asset.moex}></td>
+                            <td contenteditable="true" bind:innerHTML={asset.usd}></td>
                             <td><span class="remove" on:click={removeAsset(asset)}>delete</span></td>
                         </tr>
                     {/each}

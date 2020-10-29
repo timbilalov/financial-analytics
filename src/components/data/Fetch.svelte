@@ -8,70 +8,87 @@
     import Personal from './Personal.svelte';
 
     const STORAGE_KEYS = {
-        query: 'query',
         datasets: 'datasets',
         datesFullArray: 'datesFullArray',
         assets: 'assets', // TODO
         calcMethod: 'calcMethod',
+        usdData: 'usdData',
     };
 
-    let currentQuery = Storage.get(STORAGE_KEYS.query) || '';
-    let parsedQuery = currentQuery;
-    let fetched = false;
     let chart;
     let datasets = Storage.get(STORAGE_KEYS.datasets) || [];
     let datesFullArray = Storage.get(STORAGE_KEYS.datesFullArray) || [];
     let currentAssets = Storage.get(STORAGE_KEYS.assets) || [];
     let calcMethod = Storage.get(STORAGE_KEYS.calcMethod) || 'relative';
-    let calcMethodInitialized = false;
-
-    const handleInput = debounce(event => {
-        currentQuery = event.target.value;
-    }, 1500);
+    let calcMethodSaved = calcMethod;
+    let usdData = Storage.get(STORAGE_KEYS.usdData) || [];
 
     $: {
         // TODO: Хз как добиться внятного поведения без такого хака. Поизучать...
-        if (calcMethod) {
-            if (!calcMethodInitialized) {
-                calcMethodInitialized = true;
-            } else {
-                Storage.set(STORAGE_KEYS.calcMethod, calcMethod);
-                update2(currentAssets, true);
+        if (calcMethod && calcMethod !== calcMethodSaved) {
+            calcMethodSaved = calcMethod;
+            Storage.set(STORAGE_KEYS.calcMethod, calcMethod);
+            update2(currentAssets, true);
+        }
+    }
+
+    async function getUsdData(enteredDateFrom, enteredDateTo) {
+        let dateFrom;
+        let dateTo;
+
+        dateFrom = moment(enteredDateFrom, DATE_FORMATS.default);
+        if (enteredDateTo !== undefined) {
+            dateTo = moment(enteredDateTo, DATE_FORMATS.default);
+        } else {
+            dateTo = moment();
+        }
+
+        const url = `http://iss.moex.com/iss/history/engines/currency/markets/selt/securities/USD000UTSTOM/securities.json?from=${dateFrom.format(DATE_FORMATS.moex)}&to=${dateTo.format(DATE_FORMATS.moex)}`;
+        let response = await fetch(url);
+
+        if (response.ok) {
+            let json = await response.json();
+
+            let fetchedAll = false;
+            let k = 0;
+            let json2 = json;
+            let allData = json.history.data || [];
+
+            // TEMP: Потом убрать k
+            while (!fetchedAll && k < 20) {
+                k++;
+
+                const cursorData = json2['history.cursor'].data[0];
+                const [ index, total, pageSize ] = cursorData;
+
+                if (index + pageSize < total) {
+                    const url2more = `${url}&start=${index + pageSize}`;
+                    let response2 = await fetch(url2more);
+                    if (response2.ok) {
+                        json2 = await response2.json();
+                        allData = allData.concat(json2.history.data);
+                    }
+                } else {
+                    fetchedAll = true;
+                }
             }
-        }
 
-        Storage.set(STORAGE_KEYS.query, currentQuery);
-        // update();
+            json.history.data = allData;
+
+            const data = parseResponseDataUsd(json);
+
+            Storage.set(STORAGE_KEYS.usdData, data);
+            usdData = data;
+
+            return {
+                data,
+            };
+        } else {
+            console.log("Ошибка HTTP: " + response.status);
+        }
     }
 
-    async function update(force = false) {
-        await parseQuery(currentQuery, force);
-        setTimeout(() => {
-            buildChart(datasets);
-        }, 200);
-    }
-
-    async function parseQuery(query, force = false) {
-        if (query === parsedQuery && force !== true) {
-            return;
-        }
-
-        parsedQuery = query;
-
-        const symbols = query.split(',').map(item => item.trim());
-        const items = [];
-        for (const symbol of symbols) {
-            const data = await getData(symbol);
-            console.log('symbol', symbol, data)
-            items.push(data);
-        }
-
-        datasets = prepareDatasets(items);
-        Storage.set(STORAGE_KEYS.datasets, datasets);
-    }
-
-    async function getData(symbol, manualDateFrom, useMoex = false) {
-        fetched = false;
+    async function getData(symbol, manualDateFrom, useMoex = false, isUsd = false) {
         let dateFrom;
         let dateTo;
 
@@ -87,8 +104,6 @@
         const url2 = `http://iss.moex.com/iss/history/engines/stock/markets/shares/securities/${symbol}/securities.json?from=${dateFrom.format(DATE_FORMATS.moex)}&to=${dateTo.format(DATE_FORMATS.moex)}`;
         const urlToFetch = useMoex ? url2 : url;
         let response = await fetch(urlToFetch);
-
-        fetched = true;
 
         if (response.ok) {
             let json = await response.json();
@@ -122,28 +137,11 @@
             }
 
             const data = parseResponseData(json, useMoex);
-            const dataRelative = data.slice(0).map(item => Object.assign({}, item));
-
-            if (data.length !== 0) {
-                const initialValue = data[0].value;
-
-                for (let i = 0; i < data.length; i++) {
-                    if (i === 0) {
-                        dataRelative[i].value = 0;
-                    } else {
-                        // TODO: Здесь только расчёты, а данные ведь те же самые. В дальнейшем, отрефакторить, чтобы не делать лишних запросов.
-                        if (calcMethod === 'relative') {
-                            dataRelative[i].value = (dataRelative[i].value - initialValue) / initialValue * 100;
-                        } else if (calcMethod === 'absolute') {
-                            dataRelative[i].value = dataRelative[i].value - initialValue;
-                        }
-                    }
-                }
-            }
 
             return {
                 title: symbol,
-                data: dataRelative,
+                data: data,
+                isUsd: isUsd,
             };
         } else {
             console.log("Ошибка HTTP: " + response.status);
@@ -226,7 +224,80 @@
         return data;
     }
 
-    function prepareSingleDataset(title, data) {
+    function parseResponseDataUsd(responseData) {
+        const data = [];
+
+        const historyData = responseData.history.data;
+
+        let prevDate;
+        let prevDataObject;
+
+        for (let i = 0; i < historyData.length; i++) {
+            const item = historyData[i];
+            if (item[0] !== 'CETS') {
+                continue;
+            }
+
+            let date = moment(item[1], DATE_FORMATS.moex).format(DATE_FORMATS.default);
+            let dateUTC = moment(date, DATE_FORMATS.default).unix();
+            let value = (item[4] + item[7]) / 2;
+
+            if (date === prevDate) {
+                prevDataObject.value = (prevDataObject.value + value) / 2;
+            } else {
+                const dataObject = {
+                    dateUTC,
+                    date,
+                    value,
+                };
+
+                data.push(dataObject);
+
+                prevDate = date;
+                prevDataObject = dataObject;
+            }
+        }
+
+        return data;
+    }
+
+    function calcData(title, data, isUsd) {
+        const calculated = data.slice(0).map(item => Object.assign({}, item));
+
+        let prevUsdValue;
+        let usdValue;
+
+        if (calculated.length !== 0) {
+            let koef = isUsd && calcMethod === 'absolute' ? usdData.filter(item => item.date === calculated[0].date)[0].value : 1;
+            const initialValue = calculated[0].value * koef;
+
+            for (let i = 0; i < calculated.length; i++) {
+                if (i === 0) {
+                    calculated[i].value = 0;
+                } else {
+                    // TODO: Здесь только расчёты, а данные ведь те же самые. В дальнейшем, отрефакторить, чтобы не делать лишних запросов.
+                    if (calcMethod === 'relative') {
+                        calculated[i].value = (calculated[i].value - initialValue) / initialValue * 100;
+                    } else if (calcMethod === 'absolute') {
+                        usdValue = usdData.filter(item => item.date === calculated[i].date);
+                        if (usdValue.length !== 0) {
+                            usdValue = usdValue[0].value;
+                            prevUsdValue = usdValue;
+                        } else {
+                            usdValue = prevUsdValue;
+                        }
+
+                        koef = isUsd ? usdValue : 1;
+                        calculated[i].value = calculated[i].value * koef - initialValue;
+                    }
+                }
+            }
+        }
+
+        return calculated;
+    }
+
+    function prepareSingleDataset(title, data, isUsd) {
         const getRandomNumber = () => Math.round(Math.random() * 255);
         let colorRGB = [getRandomNumber(), getRandomNumber(), getRandomNumber()];
         let opacity = 0.6;
@@ -242,6 +313,13 @@
         let dates;
         let hasBegun = false;
         let prevValue;
+        let calculatedData;
+
+        if (title.toLowerCase() === 'total') {
+            calculatedData = data;
+        } else {
+            calculatedData = calcData(title, data, isUsd);
+        }
 
         if (datesFullArray.length !== 0) {
             dates = datesFullArray.slice(0);
@@ -249,7 +327,7 @@
 
             for (const [index, date] of dates.entries()) {
                 let valueByDate;
-                const itemFilteredByDate = data.filter(item => item.date === date)[0];
+                const itemFilteredByDate = calculatedData.filter(item => item.date === date)[0];
                 if (itemFilteredByDate !== undefined) {
                     valueByDate = itemFilteredByDate.value;
                     hasBegun = true;
@@ -264,8 +342,8 @@
                 values.push(valueByDate);
             }
         } else {
-            dates = data.map(item => item.date);
-            values = data.map(item => item.value);
+            dates = calculatedData.map(item => item.date);
+            values = calculatedData.map(item => item.value);
         }
 
         const dataset = {
@@ -367,7 +445,7 @@
         return total;
     }
 
-    function prepareDatasets(items) {
+    async function prepareDatasets(items) {
         const datasets = [];
         datesFullArray = [];
 
@@ -384,8 +462,10 @@
         datesFullArray.sort();
         Storage.set(STORAGE_KEYS.datesFullArray, datesFullArray);
 
-        for (const {title, data} of items) {
-            datasets.push(prepareSingleDataset(title, data));
+        await getUsdData(datesFullArray[0]);
+
+        for (const {title, data, isUsd} of items) {
+            datasets.push(prepareSingleDataset(title, data, isUsd));
         }
 
         if (items.length > 1) {
@@ -481,16 +561,17 @@
         const items = [];
         currentAssets = Array.from(assets);
 
-        for (const { ticker, buyDate, moex } of assets) {
+        for (const { ticker, buyDate, moex, usd } of assets) {
             const isMoex = moex === true || moex === '1';
-            const data = await getData(ticker, buyDate, isMoex);
-            console.log('ticker', ticker, buyDate, data)
+            const isUsd = usd === true || usd === '1';
+            const data = await getData(ticker, buyDate, isMoex, isUsd);
+            console.log('ticker', ticker, isUsd, buyDate, data)
             if (data) {
                 items.push(data);
             }
         }
 
-        datasets = prepareDatasets(items);
+        datasets = await prepareDatasets(items);
         Storage.set(STORAGE_KEYS.datasets, datasets);
     }
 
@@ -534,18 +615,7 @@
 </style>
 
 <div class="controls">
-    <input type="search" value={currentQuery} on:input={handleInput}>
-
-    {#if currentQuery !== ''}
-        {#if datasets.length > 0}
-            <div>Data count: {datasets[0].data.length}</div>
-
-        {:else if !fetched}
-            <div>Searching for {currentQuery}...</div>
-        {:else if fetched && datasets.length === 0}
-            <div>nothing was found</div>
-        {/if}
-    {/if}
+    <div>Data count: {datasets[0]?.data?.length || 0}</div>
 
     <div>
         <br>
