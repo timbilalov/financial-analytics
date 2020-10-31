@@ -88,7 +88,7 @@
         }
     }
 
-    async function getData(symbol, manualDateFrom, useMoex = false, isUsd = false) {
+    async function getData(symbol, manualDateFrom, amount, useMoex = false, isUsd = false) {
         let dateFrom;
         let dateTo;
 
@@ -141,6 +141,7 @@
             return {
                 title: symbol,
                 data: data,
+                amount: amount,
                 isUsd: isUsd,
             };
         } else {
@@ -261,7 +262,7 @@
         return data;
     }
 
-    function calcData(title, data, isUsd) {
+    function calcData(title, data, amount, isUsd) {
         const calculated = data.slice(0).map(item => Object.assign({}, item));
 
         let prevUsdValue;
@@ -269,7 +270,11 @@
 
         if (calculated.length !== 0) {
             let koef = isUsd && calcMethod === 'absolute' ? usdData.filter(item => item.date === calculated[0].date)[0].value : 1;
-            const initialValue = calculated[0].value * koef;
+            let initialValue = calculated[0].value * koef;
+
+            if (calcMethod === 'absolute') {
+                initialValue *= amount;
+            }
 
             for (let i = 0; i < calculated.length; i++) {
                 if (i === 0) {
@@ -288,7 +293,7 @@
                         }
 
                         koef = isUsd ? usdValue : 1;
-                        calculated[i].value = calculated[i].value * koef - initialValue;
+                        calculated[i].value = calculated[i].value * koef * amount - initialValue;
                     }
                 }
             }
@@ -297,7 +302,7 @@
         return calculated;
     }
 
-    function prepareSingleDataset(title, data, isUsd) {
+    function prepareSingleDataset(title, data, amount, isUsd) {
         const getRandomNumber = () => Math.round(Math.random() * 255);
         let colorRGB = [getRandomNumber(), getRandomNumber(), getRandomNumber()];
         let opacity = 0.6;
@@ -318,7 +323,7 @@
         if (title.toLowerCase() === 'total') {
             calculatedData = data;
         } else {
-            calculatedData = calcData(title, data, isUsd);
+            calculatedData = calcData(title, data, amount, isUsd);
         }
 
         if (datesFullArray.length !== 0) {
@@ -464,8 +469,8 @@
 
         await getUsdData(datesFullArray[0]);
 
-        for (const {title, data, isUsd} of items) {
-            datasets.push(prepareSingleDataset(title, data, isUsd));
+        for (const {title, data, amount, isUsd} of items) {
+            datasets.push(prepareSingleDataset(title, data, amount, isUsd));
         }
 
         if (items.length > 1) {
@@ -561,7 +566,7 @@
         const items = [];
         currentAssets = Array.from(assets);
 
-        for (const { ticker, buyDate, moex, usd, hide } of assets) {
+        for (const { ticker, buyDate, amount, moex, usd, hide } of assets) {
             const isMoex = moex === true || moex === '1';
             const isUsd = usd === true || usd === '1';
             const shouldHide = hide === true || hide === '1';
@@ -570,8 +575,8 @@
                 continue;
             }
 
-            const data = await getData(ticker, buyDate, isMoex, isUsd);
-            console.log('ticker', ticker, isUsd, buyDate, data)
+            const data = await getData(ticker, buyDate, amount, isMoex, isUsd);
+            console.log('ticker', ticker, isUsd, buyDate, amount, data)
             if (data) {
                 items.push(data);
             }
@@ -606,6 +611,9 @@
         top: 10px;
         background-color: #fff;
         padding: 10px;
+        overflow: auto;
+        max-height: 100%;
+        box-sizing: border-box;
         z-index: 2;
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
         opacity: 0.5;
