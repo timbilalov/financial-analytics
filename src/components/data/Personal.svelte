@@ -82,6 +82,10 @@
         newAssetValues.usd = event.target.value;
     }
 
+    function handleHideInput(event) {
+        newAssetValues.hide = event.target.value;
+    }
+
     function save() {
         assets.push(Object.assign({}, newAssetValues));
         assets = assets;
@@ -152,6 +156,9 @@
             USD: <input type="text" value={newAssetValues.usd || ''} on:input={handleUsdInput}>
         </div>
         <div>
+            hide: <input type="text" value={newAssetValues.hide || ''} on:input={handleHideInput}>
+        </div>
+        <div>
             <button disabled={!isReadyToSave} on:click={save}>Save</button>
             <button on:click={cancel}>Cancel</button>
         </div>
@@ -169,6 +176,7 @@
                             <td contenteditable="true" bind:innerHTML={asset.amount}></td>
                             <td contenteditable="true" bind:innerHTML={asset.moex}></td>
                             <td contenteditable="true" bind:innerHTML={asset.usd}></td>
+                            <td contenteditable="true" bind:innerHTML={asset.hide}></td>
                             <td><span class="remove" on:click={removeAsset(asset)}>delete</span></td>
                         </tr>
                     {/each}
