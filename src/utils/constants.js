@@ -8,3 +8,5 @@ export const CALC_METHODS = {
     ABSOLUTE: 'absolute',
     ABSOLUTE_TOTAL: 'absolute-total',
 };
+
+export const BANK_DEPOSIT = 0.05;

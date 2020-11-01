@@ -2,7 +2,7 @@
     import debounce from 'lodash/debounce';
     import moment from 'moment';
     import { dateFormat } from '../../utils/helpers';
-    import {CALC_METHODS, DATE_FORMATS} from "../../utils/constants";
+    import {BANK_DEPOSIT, CALC_METHODS, DATE_FORMATS} from "../../utils/constants";
     import Chart from 'chart.js';
     import Storage from '../../utils/storage';
     import Personal from './Personal.svelte';
@@ -325,11 +325,19 @@
         }
         let opacity = 0.6;
         let borderWidth = 1;
+        let borderDash;
 
         if (title.toLowerCase() === 'total') {
             colorRGB = [0, 0, 0];
             opacity = 1;
             borderWidth = 2;
+        }
+
+        if (title.toLowerCase() === 'bank depo') {
+            colorRGB = [160, 160, 160];
+            opacity = 0.7;
+            borderWidth = 2;
+            borderDash = [20, 20];
         }
 
         let values;
@@ -338,7 +346,7 @@
         let prevValue;
         let calculatedData;
 
-        if (title.toLowerCase() === 'total') {
+        if (title.toLowerCase() === 'total' || title.toLowerCase() === 'bank depo') {
             calculatedData = data;
         } else {
             calculatedData = calcData(title, data, amount, isUsd);
@@ -381,6 +389,10 @@
             lineTension: 0,
             borderWidth,
         };
+
+        if (borderDash !== undefined) {
+            dataset.borderDash = borderDash;
+        }
 
         return dataset;
     }
@@ -468,6 +480,26 @@
         return total;
     }
 
+    function calcBankDeposit() {
+        const values = [];
+        const dates = datesFullArray;
+        const date1 = moment(dates[0], DATE_FORMATS.default);
+
+        for (const date of dates) {
+            const date2 = moment(date, DATE_FORMATS.default);
+            const daysBetween = date2.diff(date1, 'days');
+            const yearsKoef = daysBetween / 360;
+            let value = BANK_DEPOSIT * yearsKoef * 100;
+
+            values.push({
+                value: value,
+                date: date,
+            });
+        }
+
+        return values;
+    }
+
     async function prepareDatasets(items) {
         const datasets = [];
         datesFullArray = [];
@@ -493,6 +525,10 @@
 
         if (items.length > 1) {
             datasets.push(prepareSingleDataset('Total', calcTotal(datasets.slice(0))))
+        }
+
+        if (calcMethod === CALC_METHODS.RELATIVE) {
+            datasets.push(prepareSingleDataset('Bank depo', calcBankDeposit()))
         }
 
         return datasets;
@@ -608,9 +644,14 @@
 
         datasets.filter(item => item.label === label).forEach(dataset => dataset.hidden = hidden);
 
-        const newTotal = calcTotal(datasets.slice(0, datasets.length - 1));
+        let fromEndCount = 1;
+        if (calcMethod === CALC_METHODS.RELATIVE) {
+            fromEndCount = 2;
+        }
+
+        const newTotal = calcTotal(datasets.slice(0, datasets.length - fromEndCount));
         const chartDatasets = chart.config.data.datasets;
-        const currentTotalDataset = chartDatasets[chartDatasets.length - 1];
+        const currentTotalDataset = chartDatasets[chartDatasets.length - fromEndCount];
 
         currentTotalDataset.data = newTotal.map(item => item.value);
         currentTotalDataset.dates = newTotal.map(item => item.date);
