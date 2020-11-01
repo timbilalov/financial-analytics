@@ -342,6 +342,12 @@
             borderDash = [20, 20];
         }
 
+        if (title.toLowerCase() === 'own money') {
+            colorRGB = [20, 160, 20];
+            opacity = 0.15;
+            borderWidth = 0;
+        }
+
         let values;
         let valuesAbsTotal;
         let dates;
@@ -352,7 +358,7 @@
         let calculatedDataAbsTotal;
         let shouldStoreAbsTotal = false;
 
-        if (title.toLowerCase() === 'total' || title.toLowerCase() === 'bank depo') {
+        if (title.toLowerCase() === 'total' || title.toLowerCase() === 'bank depo' || title.toLowerCase() === 'own money') {
             calculatedData = data;
         } else {
             calculatedData = calcData(title, data, amount, isUsd);
@@ -413,6 +419,10 @@
 
         if (borderDash !== undefined) {
             dataset.borderDash = borderDash;
+        }
+
+        if (title.toLowerCase() === 'own money') {
+            dataset.type = 'bar';
         }
 
         return dataset;
@@ -569,6 +579,48 @@
         return values;
     }
 
+    function calcMyOwnMoney(datasets) {
+        const values = [];
+        const dates = datesFullArray;
+
+        datasets = datasets.filter(dataset => dataset.hidden !== true);
+
+        let initialValues = [];
+
+        for (const i in dates) {
+            const date = dates[i];
+            let total = 0;
+
+            for (const j in datasets) {
+                const dataset = datasets[j];
+                const value = dataset.data[i];
+                const valueAbsTotal = dataset?.dataAbsTotal[i];
+
+                if (!isNaN(value) && value !== null) {
+                    if (initialValues[j] === undefined && valueAbsTotal !== undefined) {
+                        initialValues[j] = {
+                            date: date,
+                            value: valueAbsTotal,
+                        };
+                    }
+                }
+            }
+
+            for (const n in datasets) {
+                if (initialValues[n] !== undefined) {
+                    total += initialValues[n].value;
+                }
+            }
+
+            values.push({
+                value: total,
+                date: date,
+            });
+        }
+
+        return values;
+    }
+
     async function prepareDatasets(items) {
         const datasets = [];
         datesFullArray = [];
@@ -592,11 +644,17 @@
             datasets.push(prepareSingleDataset(title, data, amount, isUsd));
         }
 
+        const innerDatasets = datasets.slice(0);
+
         if (items.length > 1) {
-            datasets.push(prepareSingleDataset('Total', calcTotal(datasets.slice(0))))
+            datasets.push(prepareSingleDataset('Total', calcTotal(innerDatasets)))
         }
 
-        datasets.push(prepareSingleDataset('Bank depo', calcBankDeposit(datasets.slice(0, datasets.length - 1))))
+        datasets.push(prepareSingleDataset('Bank depo', calcBankDeposit(innerDatasets)))
+
+        if (calcMethod === CALC_METHODS.ABSOLUTE_TOTAL) {
+            datasets.push(prepareSingleDataset('Own money', calcMyOwnMoney(innerDatasets)));
+        }
 
         return datasets;
     }
@@ -712,6 +770,10 @@
         datasets.filter(item => item.label === label).forEach(dataset => dataset.hidden = hidden);
 
         let fromEndCount = 2;
+
+        if (calcMethod === CALC_METHODS.ABSOLUTE_TOTAL) {
+            fromEndCount = 3;
+        }
 
         const newTotal = calcTotal(datasets.slice(0, datasets.length - fromEndCount));
         const chartDatasets = chart.config.data.datasets;
