@@ -264,10 +264,12 @@
         return data;
     }
 
-    function calcData(title, data, amount, isUsd) {
-        if (!Object.values(CALC_METHODS).includes(calcMethod)) {
+    function calcData(title, data, amount, isUsd, method = calcMethod) {
+        if (!Object.values(CALC_METHODS).includes(method)) {
             return [];
         }
+
+        amount = parseInt(amount, 10);
 
         const calculated = data.slice(0).map(item => Object.assign({}, item));
 
@@ -275,10 +277,10 @@
         let usdValue;
 
         if (calculated.length !== 0) {
-            let koef = isUsd && (calcMethod === CALC_METHODS.ABSOLUTE || calcMethod === CALC_METHODS.ABSOLUTE_TOTAL) ? usdData.filter(item => item.date === calculated[0].date)[0].value : 1;
+            let koef = isUsd && (method === CALC_METHODS.ABSOLUTE || method === CALC_METHODS.ABSOLUTE_TOTAL) ? usdData.filter(item => item.date === calculated[0].date)[0].value : 1;
             let initialValue = calculated[0].value * koef;
 
-            if (calcMethod === CALC_METHODS.ABSOLUTE || calcMethod === CALC_METHODS.ABSOLUTE_TOTAL) {
+            if (method === CALC_METHODS.ABSOLUTE || method === CALC_METHODS.ABSOLUTE_TOTAL) {
                 initialValue *= amount;
             }
 
@@ -287,9 +289,9 @@
                     calculated[i].value = 0;
                 } else {
                     // TODO: Здесь только расчёты, а данные ведь те же самые. В дальнейшем, отрефакторить, чтобы не делать лишних запросов.
-                    if (calcMethod === CALC_METHODS.RELATIVE) {
+                    if (method === CALC_METHODS.RELATIVE) {
                         calculated[i].value = (calculated[i].value - initialValue) / initialValue * 100;
-                    } else if (calcMethod === CALC_METHODS.ABSOLUTE || calcMethod === CALC_METHODS.ABSOLUTE_TOTAL) {
+                    } else if (method === CALC_METHODS.ABSOLUTE || method === CALC_METHODS.ABSOLUTE_TOTAL) {
                         usdValue = usdData.filter(item => item.date === calculated[i].date);
                         if (usdValue.length !== 0) {
                             usdValue = usdValue[0].value;
@@ -303,7 +305,7 @@
                     }
                 }
 
-                if (calcMethod === CALC_METHODS.ABSOLUTE_TOTAL) {
+                if (method === CALC_METHODS.ABSOLUTE_TOTAL) {
                     calculated[i].value += initialValue;
                 }
             }
@@ -341,36 +343,50 @@
         }
 
         let values;
+        let valuesAbsTotal;
         let dates;
         let hasBegun = false;
         let prevValue;
+        let prevValueAbsTotal;
         let calculatedData;
+        let calculatedDataAbsTotal;
+        let shouldStoreAbsTotal = false;
 
         if (title.toLowerCase() === 'total' || title.toLowerCase() === 'bank depo') {
             calculatedData = data;
         } else {
             calculatedData = calcData(title, data, amount, isUsd);
+            shouldStoreAbsTotal = true;
+            calculatedDataAbsTotal = calcData(title, data, amount, isUsd, CALC_METHODS.ABSOLUTE_TOTAL);
         }
 
         if (datesFullArray.length !== 0) {
             dates = datesFullArray.slice(0);
             values = [];
+            valuesAbsTotal = [];
 
             for (const [index, date] of dates.entries()) {
                 let valueByDate;
+                let valueByDateAbsTotal;
                 const itemFilteredByDate = calculatedData.filter(item => item.date === date)[0];
+                const itemFilteredByDateAbsTotal = shouldStoreAbsTotal && calculatedDataAbsTotal.filter(item => item.date === date)[0];
                 if (itemFilteredByDate !== undefined) {
                     valueByDate = itemFilteredByDate.value;
+                    valueByDateAbsTotal = shouldStoreAbsTotal && itemFilteredByDateAbsTotal.value;
                     hasBegun = true;
                     prevValue = valueByDate;
+                    prevValueAbsTotal = shouldStoreAbsTotal && valueByDateAbsTotal;
                 } else {
                     if (!hasBegun) {
                         valueByDate = NaN;
+                        valueByDateAbsTotal = NaN;
                     } else {
                         valueByDate = prevValue;
+                        valueByDateAbsTotal = prevValueAbsTotal;
                     }
                 }
                 values.push(valueByDate);
+                shouldStoreAbsTotal && valuesAbsTotal.push(valueByDateAbsTotal);
             }
         } else {
             dates = calculatedData.map(item => item.date);
@@ -388,7 +404,12 @@
             fill: false,
             lineTension: 0,
             borderWidth,
+            amount,
         };
+
+        if (shouldStoreAbsTotal) {
+            dataset.dataAbsTotal = valuesAbsTotal;
+        }
 
         if (borderDash !== undefined) {
             dataset.borderDash = borderDash;
@@ -480,16 +501,64 @@
         return total;
     }
 
-    function calcBankDeposit() {
+    function calcBankDeposit(datasets) {
         const values = [];
         const dates = datesFullArray;
         const date1 = moment(dates[0], DATE_FORMATS.default);
 
-        for (const date of dates) {
+        datasets = datasets.filter(dataset => dataset.hidden !== true);
+
+        let prevSavedValues = [];
+        let initialValues = [];
+
+        for (const i in dates) {
+            const date = dates[i];
+
             const date2 = moment(date, DATE_FORMATS.default);
             const daysBetween = date2.diff(date1, 'days');
             const yearsKoef = daysBetween / 360;
             let value = BANK_DEPOSIT * yearsKoef * 100;
+
+            if (calcMethod === CALC_METHODS.ABSOLUTE || calcMethod === CALC_METHODS.ABSOLUTE_TOTAL) {
+                for (const j in datasets) {
+                    const dataset = datasets[j];
+                    const value = dataset.data[i];
+                    const valueAbsTotal = dataset?.dataAbsTotal[i];
+
+                    if (!isNaN(value) && value !== null) {
+                        if (initialValues[j] === undefined && valueAbsTotal !== undefined) {
+                            initialValues[j] = {
+                                date: date,
+                                value: valueAbsTotal,
+                            };
+                        }
+                    }
+                }
+
+                let total = 0;
+
+                for (const n in datasets) {
+                    if (initialValues[n] !== undefined) {
+                        const date1 = moment(initialValues[n].date, DATE_FORMATS.default);
+                        const value1 = initialValues[n].value;
+
+                        const date2 = moment(date, DATE_FORMATS.default);
+                        const daysBetween = date2.diff(date1, 'days');
+                        const yearsKoef = daysBetween / 360;
+                        let v;
+
+                        if (calcMethod === CALC_METHODS.ABSOLUTE) {
+                            v = value1 * (BANK_DEPOSIT * yearsKoef);
+                        } else if (calcMethod === CALC_METHODS.ABSOLUTE_TOTAL) {
+                            v = value1 * (1 + BANK_DEPOSIT * yearsKoef);
+                        }
+
+                        total += v;
+                    }
+                }
+
+                value = total;
+            }
 
             values.push({
                 value: value,
@@ -527,9 +596,7 @@
             datasets.push(prepareSingleDataset('Total', calcTotal(datasets.slice(0))))
         }
 
-        if (calcMethod === CALC_METHODS.RELATIVE) {
-            datasets.push(prepareSingleDataset('Bank depo', calcBankDeposit()))
-        }
+        datasets.push(prepareSingleDataset('Bank depo', calcBankDeposit(datasets.slice(0, datasets.length - 1))))
 
         return datasets;
     }
@@ -644,10 +711,7 @@
 
         datasets.filter(item => item.label === label).forEach(dataset => dataset.hidden = hidden);
 
-        let fromEndCount = 1;
-        if (calcMethod === CALC_METHODS.RELATIVE) {
-            fromEndCount = 2;
-        }
+        let fromEndCount = 2;
 
         const newTotal = calcTotal(datasets.slice(0, datasets.length - fromEndCount));
         const chartDatasets = chart.config.data.datasets;
