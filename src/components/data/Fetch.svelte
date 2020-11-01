@@ -378,7 +378,7 @@
 
     // TODO: Как минимум, отрефакторить. Как максимум, ещё раз проанализировать верность расчётов.
     function calcTotal(datasets) {
-        datasets = datasets.filter(dataset => dataset.isHidden !== true);
+        datasets = datasets.filter(dataset => dataset.hidden !== true);
 
         const total = [];
         const dates = datesFullArray;
@@ -563,8 +563,10 @@
     }
 
     function onLegendClick(legendItem) {
-        const isHidden = !legendItem.hidden;
-        datasets[legendItem.datasetIndex].isHidden = isHidden;
+        const hidden = !legendItem.hidden;
+        const label = datasets[legendItem.datasetIndex].label;
+
+        datasets.filter(item => item.label === label).forEach(dataset => dataset.hidden = hidden);
 
         const newTotal = calcTotal(datasets.slice(0, datasets.length - 1));
         const chartDatasets = chart.config.data.datasets;
