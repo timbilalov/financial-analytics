@@ -22,6 +22,7 @@
     let calcMethod = Storage.get(STORAGE_KEYS.calcMethod) || CALC_METHODS.RELATIVE;
     let calcMethodSaved = calcMethod;
     let usdData = Storage.get(STORAGE_KEYS.usdData) || [];
+    let legendItems = [];
 
     $: {
         // TODO: Хз как добиться внятного поведения без такого хака. Поизучать...
@@ -526,6 +527,18 @@
                     }
                 },
                 legend: {
+                    labels: {
+                        filter: function(item) {
+                            const title = item.text.toLowerCase();
+
+                            if (!legendItems.includes(title)) {
+                                legendItems.push(title);
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        },
+                    },
                     onClick: function(e, legendItem) {
                         Chart.defaults.global.legend.onClick.call(this, e, legendItem);
                         onLegendClick.call(this, legendItem)
@@ -542,6 +555,8 @@
 
         optionsYAxes.ticks.min = currentYMin;
         optionsYAxes.ticks.max = currentYMax;
+
+        legendItems = [];
         chart.update();
 
         return chart;
@@ -558,6 +573,7 @@
         currentTotalDataset.data = newTotal.map(item => item.value);
         currentTotalDataset.dates = newTotal.map(item => item.date);
 
+        legendItems = [];
         chart.update();
     }
 
