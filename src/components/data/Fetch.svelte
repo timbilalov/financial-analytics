@@ -2,7 +2,7 @@
     import debounce from 'lodash/debounce';
     import moment from 'moment';
     import { dateFormat } from '../../utils/helpers';
-    import {DATE_FORMATS} from "../../utils/constants";
+    import {CALC_METHODS, DATE_FORMATS} from "../../utils/constants";
     import Chart from 'chart.js';
     import Storage from '../../utils/storage';
     import Personal from './Personal.svelte';
@@ -19,7 +19,7 @@
     let datasets = Storage.get(STORAGE_KEYS.datasets) || [];
     let datesFullArray = Storage.get(STORAGE_KEYS.datesFullArray) || [];
     let currentAssets = Storage.get(STORAGE_KEYS.assets) || [];
-    let calcMethod = Storage.get(STORAGE_KEYS.calcMethod) || 'relative';
+    let calcMethod = Storage.get(STORAGE_KEYS.calcMethod) || CALC_METHODS.RELATIVE;
     let calcMethodSaved = calcMethod;
     let usdData = Storage.get(STORAGE_KEYS.usdData) || [];
 
@@ -263,16 +263,20 @@
     }
 
     function calcData(title, data, amount, isUsd) {
+        if (!Object.values(CALC_METHODS).includes(calcMethod)) {
+            return [];
+        }
+
         const calculated = data.slice(0).map(item => Object.assign({}, item));
 
         let prevUsdValue;
         let usdValue;
 
         if (calculated.length !== 0) {
-            let koef = isUsd && calcMethod === 'absolute' ? usdData.filter(item => item.date === calculated[0].date)[0].value : 1;
+            let koef = isUsd && (calcMethod === CALC_METHODS.ABSOLUTE || calcMethod === CALC_METHODS.ABSOLUTE_TOTAL) ? usdData.filter(item => item.date === calculated[0].date)[0].value : 1;
             let initialValue = calculated[0].value * koef;
 
-            if (calcMethod === 'absolute') {
+            if (calcMethod === CALC_METHODS.ABSOLUTE || calcMethod === CALC_METHODS.ABSOLUTE_TOTAL) {
                 initialValue *= amount;
             }
 
@@ -281,9 +285,9 @@
                     calculated[i].value = 0;
                 } else {
                     // TODO: Здесь только расчёты, а данные ведь те же самые. В дальнейшем, отрефакторить, чтобы не делать лишних запросов.
-                    if (calcMethod === 'relative') {
+                    if (calcMethod === CALC_METHODS.RELATIVE) {
                         calculated[i].value = (calculated[i].value - initialValue) / initialValue * 100;
-                    } else if (calcMethod === 'absolute') {
+                    } else if (calcMethod === CALC_METHODS.ABSOLUTE || calcMethod === CALC_METHODS.ABSOLUTE_TOTAL) {
                         usdValue = usdData.filter(item => item.date === calculated[i].date);
                         if (usdValue.length !== 0) {
                             usdValue = usdValue[0].value;
@@ -295,6 +299,10 @@
                         koef = isUsd ? usdValue : 1;
                         calculated[i].value = calculated[i].value * koef * amount - initialValue;
                     }
+                }
+
+                if (calcMethod === CALC_METHODS.ABSOLUTE_TOTAL) {
+                    calculated[i].value += initialValue;
                 }
             }
         }
@@ -430,9 +438,9 @@
             }
 
             if (nonZeroCount !== 0) {
-                if (calcMethod === 'relative') {
+                if (calcMethod === CALC_METHODS.RELATIVE) {
                     totalValue2 = prevSavedTotal + totalValue / nonZeroCount;
-                } else if (calcMethod === 'absolute') {
+                } else if (calcMethod === CALC_METHODS.ABSOLUTE || calcMethod === CALC_METHODS.ABSOLUTE_TOTAL) {
                     totalValue2 = prevSavedTotal + totalValue;
                 }
             } else {
@@ -638,12 +646,16 @@
 
     <hr>
     <label>
-        <input type="radio" bind:group={calcMethod} value="relative">
+        <input type="radio" bind:group={calcMethod} value={CALC_METHODS.RELATIVE}>
         <span>relative</span>
     </label>
     <label>
-        <input type="radio" bind:group={calcMethod} value="absolute">
+        <input type="radio" bind:group={calcMethod} value={CALC_METHODS.ABSOLUTE}>
         <span>absolute</span>
+    </label>
+    <label>
+        <input type="radio" bind:group={calcMethod} value={CALC_METHODS.ABSOLUTE_TOTAL}>
+        <span>absolute total</span>
     </label>
 
     <hr>
