@@ -70,6 +70,10 @@
         newAssetValues.buyDate = event.target.value;
     }
 
+    function handleSellDateInput(event) {
+        newAssetValues.sellDate = event.target.value;
+    }
+
     function handleAmountInput(event) {
         newAssetValues.amount = event.target.value;
     }
@@ -147,6 +151,9 @@
             Buy date: <input type="text" value={newAssetValues.buyDate || ''} on:input={handleBuyDateInput}>
         </div>
         <div>
+            Sell date: <input type="text" value={newAssetValues.sellDate || ''} on:input={handleSellDateInput}>
+        </div>
+        <div>
             Amount: <input type="text" value={newAssetValues.amount || ''} on:input={handleAmountInput}>
         </div>
         <div>
@@ -173,6 +180,7 @@
                         <tr>
                             <td contenteditable="true" bind:innerHTML={asset.ticker}></td>
                             <td contenteditable="true" bind:innerHTML={asset.buyDate}></td>
+                            <td contenteditable="true" bind:innerHTML={asset.sellDate}></td>
                             <td contenteditable="true" bind:innerHTML={asset.amount}></td>
                             <td contenteditable="true" bind:innerHTML={asset.moex}></td>
                             <td contenteditable="true" bind:innerHTML={asset.usd}></td>

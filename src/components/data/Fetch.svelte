@@ -90,20 +90,24 @@
         }
     }
 
-    async function getData(symbol, manualDateFrom, amount, useMoex = false, isUsd = false) {
+    async function getData(symbol, manualDateFrom, manualDateTo, amount, useMoex = false, isUsd = false) {
         let dateFrom;
         let dateTo;
 
         if (manualDateFrom !== undefined) {
             dateFrom = moment(manualDateFrom, DATE_FORMATS.default);
-            dateTo = moment();
+            if (manualDateTo !== undefined && manualDateTo !== '') {
+                dateTo = moment(manualDateTo, DATE_FORMATS.default);
+            } else {
+                dateTo = moment();
+            }
         } else {
             dateFrom = moment(`2019.0${Math.round(Math.random() * 8) + 1}.01`, DATE_FORMATS.default);
             dateTo = moment(`2020.0${Math.round(Math.random() * 8) + 1}.01`, DATE_FORMATS.default);
         }
         const resolution = 60;
         const url = `https://investcab.ru/api/chistory?symbol=${symbol}&resolution=${resolution}&from=${dateFrom.unix()}&to=${dateTo.unix()}`;
-        const url2 = `http://iss.moex.com/iss/history/engines/stock/markets/shares/securities/${symbol}/securities.json?from=${dateFrom.format(DATE_FORMATS.moex)}&to=${dateTo.format(DATE_FORMATS.moex)}`;
+        const url2 = `http://iss.moex.com/iss/history/engines/stock/markets/shares/securities/${symbol}/securities.json?from=${dateFrom.format(DATE_FORMATS.moex)}&till=${dateTo.format(DATE_FORMATS.moex)}`;
         const urlToFetch = useMoex ? url2 : url;
         let response = await fetch(urlToFetch);
 
@@ -383,7 +387,13 @@
                     prevValue = valueByDate;
                     prevValueAbsTotal = shouldStoreAbsTotal && valueByDateAbsTotal;
                 } else {
-                    if (!hasBegun) {
+                    const date1 = moment(calculatedData[calculatedData.length - 1].date, DATE_FORMATS.default);
+                    const date2 = moment(date, DATE_FORMATS.default);
+                    const diff = date2.diff(date1, 'days');
+
+                    let hasFinished = diff > 0;
+
+                    if (!hasBegun || hasFinished) {
                         valueByDate = NaN;
                         valueByDateAbsTotal = NaN;
                     } else {
@@ -636,6 +646,18 @@
         }
 
         datesFullArray.sort();
+
+        const firstDate = moment(datesFullArray[0], DATE_FORMATS.default);
+        const lastDate = moment(datesFullArray[datesFullArray.length - 1], DATE_FORMATS.default);
+        const diff = lastDate.diff(firstDate, 'days');
+        const datesFullArray2 = [];
+        for (let i = 0; i < diff; i++) {
+            const date = firstDate.add(1, 'days').format(DATE_FORMATS.default);
+            datesFullArray2.push(date);
+        }
+
+        datesFullArray = datesFullArray2;
+
         Storage.set(STORAGE_KEYS.datesFullArray, datesFullArray);
 
         await getUsdData(datesFullArray[0]);
@@ -775,12 +797,25 @@
             fromEndCount = 3;
         }
 
-        const newTotal = calcTotal(datasets.slice(0, datasets.length - fromEndCount));
+        const innerDatasets = datasets.slice(0, datasets.length - fromEndCount);
         const chartDatasets = chart.config.data.datasets;
-        const currentTotalDataset = chartDatasets[chartDatasets.length - fromEndCount];
 
+        const newTotal = calcTotal(innerDatasets);
+        const currentTotalDataset = chartDatasets[chartDatasets.length - fromEndCount];
         currentTotalDataset.data = newTotal.map(item => item.value);
         currentTotalDataset.dates = newTotal.map(item => item.date);
+
+        const newDepo = calcBankDeposit(innerDatasets);
+        const currentDepoDataset = chartDatasets[chartDatasets.length - fromEndCount + 1];
+        currentDepoDataset.data = newDepo.map(item => item.value);
+        currentDepoDataset.dates = newDepo.map(item => item.date);
+
+        if (calcMethod === CALC_METHODS.ABSOLUTE_TOTAL) {
+            const newOwn = calcMyOwnMoney(innerDatasets);
+            const currentOwnDataset = chartDatasets[chartDatasets.length - fromEndCount + 2];
+            currentOwnDataset.data = newOwn.map(item => item.value);
+            currentOwnDataset.dates = newOwn.map(item => item.date);
+        }
 
         legendItems = [];
         chart.update();
@@ -799,7 +834,7 @@
         const items = [];
         currentAssets = Array.from(assets);
 
-        for (const { ticker, buyDate, amount, moex, usd, hide } of assets) {
+        for (const { ticker, buyDate, sellDate, amount, moex, usd, hide } of assets) {
             const isMoex = moex === true || moex === '1';
             const isUsd = usd === true || usd === '1';
             const shouldHide = hide === true || hide === '1';
@@ -808,8 +843,8 @@
                 continue;
             }
 
-            const data = await getData(ticker, buyDate, amount, isMoex, isUsd);
-            console.log('ticker', ticker, isUsd, buyDate, amount, data)
+            const data = await getData(ticker, buyDate, sellDate, amount, isMoex, isUsd);
+            console.log('ticker', ticker, isUsd, buyDate, sellDate, amount, data)
             if (data) {
                 items.push(data);
             }
