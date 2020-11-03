@@ -49,11 +49,7 @@ export async function getUsdData(enteredDateFrom, enteredDateTo) {
         const data = parseResponseDataUsd(json);
 
         Storage.set(STORAGE_KEYS.usdData, data);
-        // usdData = data;
 
-        // return {
-        //     data,
-        // };
         return data;
     } else {
         console.log("Ошибка HTTP: " + response.status);
