@@ -32,6 +32,10 @@
     async function update2(assets = currentAssets, force = false) {
         const items = await getAssetsData(assets, force, currentAssets);
 
+        if (!items || items.length === 0) {
+            return;
+        }
+
         if (items !== undefined) {
             datasets = await prepareDatasets(items, datesFullArray, usdData, calcMethod, datasetsColors);
             Storage.set(STORAGE_KEYS.datasets, datasets);

@@ -1,9 +1,10 @@
 import {getData} from "../get";
 
 export async function getAssetsData(assets, force = false, currentAssetsToLink) {
-    if (!force && (JSON.stringify(assets) === JSON.stringify(currentAssetsToLink))) { // TODO
-        return;
-    }
+    // TEMP: Пока что работает не так, как надо. В дальнейшем — доработать.
+    // if (!force && (JSON.stringify(assets) === JSON.stringify(currentAssetsToLink))) { // TODO
+    //     return;
+    // }
 
     const items = [];
     currentAssetsToLink = Array.from(assets);

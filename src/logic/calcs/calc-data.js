@@ -13,7 +13,17 @@ export function calcData(title, data, amount, isUsd, method, usdData) {
     let usdValue;
 
     if (calculated.length !== 0) {
-        let koef = isUsd && (method === CALC_METHODS.ABSOLUTE || method === CALC_METHODS.ABSOLUTE_TOTAL) ? usdData.filter(item => item.date === calculated[0].date)[0].value : 1;
+        let k = 0;
+        let m = 100;
+        let usdDataValue = [];
+
+        // TODO: Здесь какая-то хрень творится... ))
+        while (usdDataValue.length === 0 && m-- > 0) {
+            usdDataValue = usdData.filter(item => item.date === calculated[k].date);
+            k++;
+        }
+
+        let koef = isUsd && (method === CALC_METHODS.ABSOLUTE || method === CALC_METHODS.ABSOLUTE_TOTAL) ? usdDataValue[0].value : 1;
         let initialValue = calculated[0].value * koef;
 
         if (method === CALC_METHODS.ABSOLUTE || method === CALC_METHODS.ABSOLUTE_TOTAL) {
