@@ -2,7 +2,7 @@ import moment from "moment";
 import {DATE_FORMATS} from "../../utils/constants";
 import {parseResponseData} from "../parse";
 
-export async function getData(symbol, manualDateFrom, manualDateTo, amount, useMoex = false, isUsd = false) {
+export async function getData(symbol, manualDateFrom, manualDateTo, amount, useMoex = false, isUsd = false, isBond = false) {
     let dateFrom;
     let dateTo;
 
@@ -20,7 +20,15 @@ export async function getData(symbol, manualDateFrom, manualDateTo, amount, useM
     const resolution = 60;
     const url = `https://investcab.ru/api/chistory?symbol=${symbol}&resolution=${resolution}&from=${dateFrom.unix()}&to=${dateTo.unix()}`;
     const url2 = `http://iss.moex.com/iss/history/engines/stock/markets/shares/securities/${symbol}/securities.json?from=${dateFrom.format(DATE_FORMATS.moex)}&till=${dateTo.format(DATE_FORMATS.moex)}`;
-    const urlToFetch = useMoex ? url2 : url;
+    const url3 = `http://iss.moex.com/iss/history/engines/stock/markets/bonds/securities/${symbol}/securities.json?from=${dateFrom.format(DATE_FORMATS.moex)}&till=${dateTo.format(DATE_FORMATS.moex)}`;
+
+    let urlToFetch = url;
+    if (useMoex) {
+        urlToFetch = url2;
+    }
+    if (isBond) {
+        urlToFetch = url3;
+    }
     let response = await fetch(urlToFetch);
 
     if (response.ok) {
@@ -40,7 +48,7 @@ export async function getData(symbol, manualDateFrom, manualDateTo, amount, useM
                 const [ index, total, pageSize ] = cursorData;
 
                 if (index + pageSize < total) {
-                    const url2more = `${url2}&start=${index + pageSize}`;
+                    const url2more = `${isBond ? url3 : url2}&start=${index + pageSize}`;
                     let response2 = await fetch(url2more);
                     if (response2.ok) {
                         json2 = await response2.json();
@@ -54,7 +62,7 @@ export async function getData(symbol, manualDateFrom, manualDateTo, amount, useM
             json.history.data = allData;
         }
 
-        const data = parseResponseData(json, useMoex);
+        const data = parseResponseData(json, useMoex, isBond);
 
         return {
             title: symbol,

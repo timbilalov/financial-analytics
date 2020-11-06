@@ -9,17 +9,18 @@ export async function getAssetsData(assets, force = false, currentAssetsToLink) 
     const items = [];
     currentAssetsToLink = Array.from(assets);
 
-    for (const { ticker, buyDate, sellDate, amount, moex, usd, hide } of assets) {
+    for (const { ticker, buyDate, sellDate, amount, moex, usd, bond, hide } of assets) {
         const isMoex = moex === true || moex === '1';
         const isUsd = usd === true || usd === '1';
+        const isBond = bond === true || bond === '1';
         const shouldHide = hide === true || hide === '1';
 
         if (shouldHide) {
             continue;
         }
 
-        const data = await getData(ticker, buyDate, sellDate, amount, isMoex, isUsd);
-        console.log('ticker', ticker, isUsd, buyDate, sellDate, amount, data)
+        const data = await getData(ticker, buyDate, sellDate, amount, isMoex, isUsd, isBond);
+        console.log('ticker', ticker, isUsd, isBond, buyDate, sellDate, amount, data)
         if (data) {
             items.push(data);
         }

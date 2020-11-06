@@ -86,6 +86,10 @@
         newAssetValues.usd = event.target.value;
     }
 
+    function handleBondInput(event) {
+        newAssetValues.bond = event.target.value;
+    }
+
     function handleHideInput(event) {
         newAssetValues.hide = event.target.value;
     }
@@ -163,6 +167,9 @@
             USD: <input type="text" value={newAssetValues.usd || ''} on:input={handleUsdInput}>
         </div>
         <div>
+            Bond: <input type="text" value={newAssetValues.bond || ''} on:input={handleBondInput}>
+        </div>
+        <div>
             hide: <input type="text" value={newAssetValues.hide || ''} on:input={handleHideInput}>
         </div>
         <div>
@@ -184,6 +191,7 @@
                             <td contenteditable="true" bind:innerHTML={asset.amount}></td>
                             <td contenteditable="true" bind:innerHTML={asset.moex}></td>
                             <td contenteditable="true" bind:innerHTML={asset.usd}></td>
+                            <td contenteditable="true" bind:innerHTML={asset.bond}></td>
                             <td contenteditable="true" bind:innerHTML={asset.hide}></td>
                             <td><span class="remove" on:click={removeAsset(asset)}>delete</span></td>
                         </tr>
