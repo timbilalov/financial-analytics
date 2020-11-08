@@ -29,7 +29,9 @@ export function buildChart(datasets, calcMethod, datesFullArray, chartToLink, le
                 intersect: false,
                 mode: 'index',
                 callbacks: {
-                    label: labelCallback,
+                    label: function (tooltipItem, data) {
+                        return labelCallback(tooltipItem, data, calcMethod);
+                    },
                 },
             },
             legend: {
