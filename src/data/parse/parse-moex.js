@@ -10,14 +10,18 @@ export function parseResponseDataMoex(responseData, isBond) {
     let prevDataObject;
 
     let initialDate;
+    let initialBondNkd;
     for (let i = 0; i < historyData.length; i++) {
         const item = historyData[i];
-        if ((!isBond && item[0] !== 'TQBR') || (isBond && item[0] !== 'TQOB')) {
+        if ((!isBond && item[0] !== 'TQBR') || (isBond && (item[0] !== 'TQOB' && item[0] !== 'TQCB'))) {
             continue;
         }
 
         if (initialDate === undefined) {
             initialDate = moment(item[1], DATE_FORMATS.moex);
+            if (isBond) {
+                initialBondNkd = item[10];
+            }
         }
 
         let date = moment(item[1], DATE_FORMATS.moex).format(DATE_FORMATS.default);
@@ -34,6 +38,7 @@ export function parseResponseDataMoex(responseData, isBond) {
             const dateDiff = moment(item[1], DATE_FORMATS.moex).diff(initialDate, 'days');
             const valueDiff = initialCost * couponPercent / 100 * dateDiff / 365;
 
+            value += initialBondNkd;
             value += valueDiff;
         }
 

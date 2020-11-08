@@ -15,11 +15,11 @@
     let isReadyToSave;
 
     $: {
-        Storage.set(STORAGE_KEYS.assets, assets);
         isReadyToSave = newAssetValues.ticker && newAssetValues.buyDate && newAssetValues.amount;
     }
 
     function update() {
+        Storage.set(STORAGE_KEYS.assets, assets);
         dispatch('updateAssets', {
             assets,
         });
