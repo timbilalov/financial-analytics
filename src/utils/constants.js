@@ -18,3 +18,14 @@ export const STORAGE_KEYS = {
     calcMethod: 'calcMethod',
     usdData: 'usdData',
 };
+
+export const ASSET_DEFAULT_FIELDS = [
+    'ticker',
+    'buyDate',
+    'sellDate',
+    'amount',
+    'moex',
+    'usd',
+    'bond',
+    'hide',
+];

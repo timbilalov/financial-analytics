@@ -1,18 +1,16 @@
 <script>
     import Storage from '../../utils/storage';
     import { createEventDispatcher } from 'svelte';
+    import {ASSET_DEFAULT_FIELDS, STORAGE_KEYS} from "../../utils/constants";
 
     const dispatch = createEventDispatcher();
-
-    const STORAGE_KEYS = {
-        assets: 'assets',
-    };
 
     let assets = Storage.get(STORAGE_KEYS.assets) || [];
     let isAddDialogOpened = false;
     let isManageDialogOpened = false;
     let newAssetValues = {};
     let isReadyToSave;
+    let assetFields = ASSET_DEFAULT_FIELDS;
 
     $: {
         isReadyToSave = newAssetValues.ticker && newAssetValues.buyDate && newAssetValues.amount;
@@ -62,36 +60,12 @@
         isManageDialogOpened = false;
     }
 
-    function handleTickerInput(event) {
-        newAssetValues.ticker = event.target.value;
-    }
+    function handleNewAssetFieldInput(event) {
+        const {target} = event;
+        const {name, value} = target;
+        const field = name;
 
-    function handleBuyDateInput(event) {
-        newAssetValues.buyDate = event.target.value;
-    }
-
-    function handleSellDateInput(event) {
-        newAssetValues.sellDate = event.target.value;
-    }
-
-    function handleAmountInput(event) {
-        newAssetValues.amount = event.target.value;
-    }
-
-    function handleMoexInput(event) {
-        newAssetValues.moex = event.target.value;
-    }
-
-    function handleUsdInput(event) {
-        newAssetValues.usd = event.target.value;
-    }
-
-    function handleBondInput(event) {
-        newAssetValues.bond = event.target.value;
-    }
-
-    function handleHideInput(event) {
-        newAssetValues.hide = event.target.value;
+        newAssetValues[field] = value;
     }
 
     function save() {
@@ -129,9 +103,11 @@
         border-collapse: collapse;
     }
 
-    .table td {
+    .table td,
+    .table th {
         border: 1px solid #cccccc;
         min-width: 20px;
+        text-align: left;
     }
 
     .remove {
@@ -148,30 +124,11 @@
 
     {#if isAddDialogOpened}
         <hr>
-        <div>
-            Ticker: <input type="text" value={newAssetValues.ticker || ''} on:input={handleTickerInput}>
-        </div>
-        <div>
-            Buy date: <input type="text" value={newAssetValues.buyDate || ''} on:input={handleBuyDateInput}>
-        </div>
-        <div>
-            Sell date: <input type="text" value={newAssetValues.sellDate || ''} on:input={handleSellDateInput}>
-        </div>
-        <div>
-            Amount: <input type="text" value={newAssetValues.amount || ''} on:input={handleAmountInput}>
-        </div>
-        <div>
-            MOEX: <input type="text" value={newAssetValues.moex || ''} on:input={handleMoexInput}>
-        </div>
-        <div>
-            USD: <input type="text" value={newAssetValues.usd || ''} on:input={handleUsdInput}>
-        </div>
-        <div>
-            Bond: <input type="text" value={newAssetValues.bond || ''} on:input={handleBondInput}>
-        </div>
-        <div>
-            hide: <input type="text" value={newAssetValues.hide || ''} on:input={handleHideInput}>
-        </div>
+        {#each assetFields as field}
+            <div>
+                {field}: <input type="text" name={field} value={newAssetValues[field] || ''} on:input={handleNewAssetFieldInput}>
+            </div>
+        {/each}
         <div>
             <button disabled={!isReadyToSave} on:click={save}>Save</button>
             <button on:click={cancel}>Cancel</button>
@@ -182,17 +139,20 @@
         <hr>
         <div>
             <table class="table" cellpadding="0" cellspacing="0">
+                <thead>
+                    <tr>
+                        {#each assetFields as field}
+                            <th>{field}</th>
+                        {/each}
+                        <th>actions</th>
+                    </tr>
+                </thead>
                 <tbody>
                     {#each assets as asset}
                         <tr>
-                            <td contenteditable="true" bind:innerHTML={asset.ticker}></td>
-                            <td contenteditable="true" bind:innerHTML={asset.buyDate}></td>
-                            <td contenteditable="true" bind:innerHTML={asset.sellDate}></td>
-                            <td contenteditable="true" bind:innerHTML={asset.amount}></td>
-                            <td contenteditable="true" bind:innerHTML={asset.moex}></td>
-                            <td contenteditable="true" bind:innerHTML={asset.usd}></td>
-                            <td contenteditable="true" bind:innerHTML={asset.bond}></td>
-                            <td contenteditable="true" bind:innerHTML={asset.hide}></td>
+                            {#each assetFields as field}
+                                <td contenteditable="true" bind:innerHTML={asset[field]}></td>
+                            {/each}
                             <td><span class="remove" on:click={removeAsset(asset)}>delete</span></td>
                         </tr>
                     {/each}
