@@ -3,7 +3,7 @@ import {DATE_FORMATS, STORAGE_KEYS} from "../../utils/constants";
 import Storage from "../../utils/storage";
 import { parseResponseDataUsd } from '../parse';
 
-export async function getUsdData(enteredDateFrom, enteredDateTo) {
+export async function fetchUsd(enteredDateFrom, enteredDateTo) {
     let dateFrom;
     let dateTo;
 

@@ -2,7 +2,7 @@ import moment from "moment";
 import {DATE_FORMATS} from "../../utils/constants";
 import {parseResponseData} from "../parse";
 
-export async function getData(symbol, manualDateFrom, manualDateTo, amount, useMoex = false, isUsd = false, isBond = false) {
+export async function fetchData(symbol, manualDateFrom, manualDateTo, amount, useMoex = false, isUsd = false, isBond = false) {
     let dateFrom;
     let dateTo;
 

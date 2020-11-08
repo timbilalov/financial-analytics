@@ -1,4 +1,4 @@
-import {getData} from "../get";
+import {fetchData} from "../fetch";
 
 export async function getAssetsData(assets, force = false, currentAssetsToLink) {
     // TEMP: Пока что работает не так, как надо. В дальнейшем — доработать.
@@ -19,7 +19,7 @@ export async function getAssetsData(assets, force = false, currentAssetsToLink) 
             continue;
         }
 
-        const data = await getData(ticker, buyDate, sellDate, amount, isMoex, isUsd, isBond);
+        const data = await fetchData(ticker, buyDate, sellDate, amount, isMoex, isUsd, isBond);
         console.log('ticker', ticker, isUsd, isBond, buyDate, sellDate, amount, data)
         if (data) {
             items.push(data);
