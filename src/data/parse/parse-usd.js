@@ -4,13 +4,11 @@ import {DATE_FORMATS} from "@constants";
 export function parseResponseDataUsd(responseData) {
     const data = [];
 
-    const historyData = responseData.history.data;
-
     let prevDate;
     let prevDataObject;
 
-    for (let i = 0; i < historyData.length; i++) {
-        const item = historyData[i];
+    for (let i = 0; i < responseData.length; i++) {
+        const item = responseData[i];
         if (item[0] !== 'CETS') {
             continue;
         }

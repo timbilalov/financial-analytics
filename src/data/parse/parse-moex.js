@@ -4,15 +4,13 @@ import {DATE_FORMATS} from "@constants";
 export function parseResponseDataMoex(responseData, isBond) {
     const data = [];
 
-    const historyData = responseData.history.data;
-
     let prevDate;
     let prevDataObject;
 
     let initialDate;
     let initialBondNkd;
-    for (let i = 0; i < historyData.length; i++) {
-        const item = historyData[i];
+    for (let i = 0; i < responseData.length; i++) {
+        const item = responseData[i];
         if ((!isBond && item[0] !== 'TQBR') || (isBond && (item[0] !== 'TQOB' && item[0] !== 'TQCB'))) {
             continue;
         }

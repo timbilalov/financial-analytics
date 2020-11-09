@@ -7,3 +7,8 @@ export function dateFormat(dateUTC, format = 'YYYY.MM.DD') {
 
     return moment(dateUTC).format(format);
 }
+
+// TODO: Подумать насчёт того, чтобы сделать более осмысленный обработчик ошибок.
+export function errorHandler() {
+    console.log("Ошибка HTTP: " + response.status);
+}

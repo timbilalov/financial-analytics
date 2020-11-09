@@ -20,7 +20,7 @@ export async function getAssetsData(assets, force = false, currentAssetsToLink) 
             continue;
         }
 
-        const dataRaw = await fetchData(ticker, buyDate, sellDate, amount, isMoex, isUsd, isBond);
+        const dataRaw = await fetchData(ticker, buyDate, sellDate, isMoex, isBond);
         const dataParsed = parseResponseData(dataRaw, isMoex, isBond);
 
         const data = {
