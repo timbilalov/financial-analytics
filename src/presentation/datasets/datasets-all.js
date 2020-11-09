@@ -1,7 +1,7 @@
 import moment from "moment";
 import {CALC_METHODS, DATE_FORMATS, STORAGE_KEYS} from "@constants";
 import Storage from "@utils/storage";
-import {fetchUsd} from "@data";
+import {fetchUsd, parseResponseDataUsd} from "@data";
 import {calcBankDeposit, calcOwnMoney, calcTotal} from "@logic";
 import {prepareSingleDataset} from "./datasets-single";
 
@@ -35,7 +35,10 @@ export async function prepareDatasets(items, datesFullArrayToLink, usdDataToLink
 
     Storage.set(STORAGE_KEYS.datesFullArray, datesFullArray);
 
-    const usdData = await fetchUsd(datesFullArray[0]);
+    const usdDataRaw = await fetchUsd(datesFullArray[0]);
+    const usdData = parseResponseDataUsd(usdDataRaw);
+
+    Storage.set(STORAGE_KEYS.usdData, usdData);
     usdDataToLink = usdData;
 
     for (const {title, data, amount, isUsd} of items) {

@@ -1,6 +1,5 @@
 import moment from "moment";
 import {DATE_FORMATS} from "@constants";
-import {parseResponseData} from "../parse";
 
 export async function fetchData(symbol, manualDateFrom, manualDateTo, amount, useMoex = false, isUsd = false, isBond = false) {
     let dateFrom;
@@ -62,14 +61,7 @@ export async function fetchData(symbol, manualDateFrom, manualDateTo, amount, us
             json.history.data = allData;
         }
 
-        const data = parseResponseData(json, useMoex, isBond);
-
-        return {
-            title: symbol,
-            data: data,
-            amount: amount,
-            isUsd: isUsd,
-        };
+        return json;
     } else {
         console.log("Ошибка HTTP: " + response.status);
     }

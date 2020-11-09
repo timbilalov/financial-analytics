@@ -64,8 +64,10 @@ export default {
 				'@constants': path.resolve(projectRootDir, './src/utils/constants'),
 				'@utils': path.resolve(projectRootDir, './src/utils'),
 				'@presentation': path.resolve(projectRootDir, './src/presentation'),
-				'@data': path.resolve(projectRootDir, './src/data'),
 				'@logic': path.resolve(projectRootDir, './src/logic'),
+				'@data': path.resolve(projectRootDir, './src/data'),
+				'@fetch': path.resolve(projectRootDir, './src/data/fetch'),
+				'@parse': path.resolve(projectRootDir, './src/data/parse'),
 			}
 		}),
 

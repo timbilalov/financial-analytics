@@ -1,4 +1,5 @@
-import {fetchData} from "../fetch";
+import {fetchData} from "@fetch";
+import {parseResponseData} from "@parse";
 
 export async function getAssetsData(assets, force = false, currentAssetsToLink) {
     // TEMP: Пока что работает не так, как надо. В дальнейшем — доработать.
@@ -19,7 +20,16 @@ export async function getAssetsData(assets, force = false, currentAssetsToLink) 
             continue;
         }
 
-        const data = await fetchData(ticker, buyDate, sellDate, amount, isMoex, isUsd, isBond);
+        const dataRaw = await fetchData(ticker, buyDate, sellDate, amount, isMoex, isUsd, isBond);
+        const dataParsed = parseResponseData(dataRaw, isMoex, isBond);
+
+        const data = {
+            title: ticker,
+            data: dataParsed,
+            amount: amount,
+            isUsd: isUsd,
+        };
+
         console.log('ticker', ticker, isUsd, isBond, buyDate, sellDate, amount, data)
         if (data) {
             items.push(data);

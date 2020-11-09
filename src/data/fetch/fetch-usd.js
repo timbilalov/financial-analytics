@@ -1,7 +1,5 @@
 import moment from "moment";
-import {DATE_FORMATS, STORAGE_KEYS} from "@constants";
-import Storage from "@utils/storage";
-import { parseResponseDataUsd } from '../parse';
+import {DATE_FORMATS} from "@constants";
 
 export async function fetchUsd(enteredDateFrom, enteredDateTo) {
     let dateFrom;
@@ -45,12 +43,7 @@ export async function fetchUsd(enteredDateFrom, enteredDateTo) {
         }
 
         json.history.data = allData;
-
-        const data = parseResponseDataUsd(json);
-
-        Storage.set(STORAGE_KEYS.usdData, data);
-
-        return data;
+        return json;
     } else {
         console.log("Ошибка HTTP: " + response.status);
     }
