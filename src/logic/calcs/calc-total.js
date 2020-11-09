@@ -1,4 +1,4 @@
-import {CALC_METHODS} from "../../utils/constants";
+import {CALC_METHODS} from "@constants";
 
 // TODO: Как минимум, отрефакторить. Как максимум, ещё раз проанализировать верность расчётов.
 export function calcTotal(datasets, datesFullArray, calcMethod) {

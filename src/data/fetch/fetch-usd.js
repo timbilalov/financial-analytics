@@ -1,6 +1,6 @@
 import moment from "moment";
-import {DATE_FORMATS, STORAGE_KEYS} from "../../utils/constants";
-import Storage from "../../utils/storage";
+import {DATE_FORMATS, STORAGE_KEYS} from "@constants";
+import Storage from "@utils/storage";
 import { parseResponseDataUsd } from '../parse';
 
 export async function fetchUsd(enteredDateFrom, enteredDateTo) {

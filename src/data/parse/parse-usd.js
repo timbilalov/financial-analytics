@@ -1,5 +1,5 @@
 import moment from "moment";
-import {DATE_FORMATS} from "../../utils/constants";
+import {DATE_FORMATS} from "@constants";
 
 export function parseResponseDataUsd(responseData) {
     const data = [];

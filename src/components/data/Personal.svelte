@@ -1,7 +1,7 @@
 <script>
-    import Storage from '../../utils/storage';
+    import Storage from '@utils/storage';
     import { createEventDispatcher } from 'svelte';
-    import {ASSET_DEFAULT_FIELDS, STORAGE_KEYS} from "../../utils/constants";
+    import {ASSET_DEFAULT_FIELDS, STORAGE_KEYS} from "@constants";
 
     const dispatch = createEventDispatcher();
 

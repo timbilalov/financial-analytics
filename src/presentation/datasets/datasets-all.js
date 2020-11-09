@@ -1,8 +1,8 @@
 import moment from "moment";
-import {CALC_METHODS, DATE_FORMATS, STORAGE_KEYS} from "../../utils/constants";
-import Storage from "../../utils/storage";
-import {fetchUsd} from "../../data/fetch";
-import {calcBankDeposit, calcOwnMoney, calcTotal} from "../../logic/calcs";
+import {CALC_METHODS, DATE_FORMATS, STORAGE_KEYS} from "@constants";
+import Storage from "@utils/storage";
+import {fetchUsd} from "@data";
+import {calcBankDeposit, calcOwnMoney, calcTotal} from "@logic";
 import {prepareSingleDataset} from "./datasets-single";
 
 export async function prepareDatasets(items, datesFullArrayToLink, usdDataToLink, calcMethod, datasetsColors) {

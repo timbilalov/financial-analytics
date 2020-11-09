@@ -1,5 +1,5 @@
 import moment from "moment";
-import {DATE_FORMATS} from "../../utils/constants";
+import {DATE_FORMATS} from "@constants";
 import {parseResponseData} from "../parse";
 
 export async function fetchData(symbol, manualDateFrom, manualDateTo, amount, useMoex = false, isUsd = false, isBond = false) {

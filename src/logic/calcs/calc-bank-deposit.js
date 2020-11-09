@@ -1,5 +1,5 @@
 import moment from "moment";
-import {BANK_DEPOSIT, CALC_METHODS, DATE_FORMATS} from "../../utils/constants";
+import {BANK_DEPOSIT, CALC_METHODS, DATE_FORMATS} from "@constants";
 
 export function calcBankDeposit(datasets, datesFullArray, calcMethod) {
     const values = [];

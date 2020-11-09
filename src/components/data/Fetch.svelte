@@ -1,8 +1,8 @@
 <script>
-    import { CALC_METHODS, STORAGE_KEYS } from "../../utils/constants";
-    import Storage from '../../utils/storage';
-    import { getAssetsData } from '../../data';
-    import { prepareDatasets, buildChart } from '../../presentation';
+    import { CALC_METHODS, STORAGE_KEYS } from "@constants";
+    import Storage from '@utils/storage';
+    import { getAssetsData } from '@data';
+    import { prepareDatasets, buildChart } from '@presentation';
     import Personal from './Personal.svelte';
 
     let chart;

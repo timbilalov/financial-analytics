@@ -1,4 +1,4 @@
-import { CALC_METHODS } from "../../utils/constants";
+import { CALC_METHODS } from "@constants";
 
 export function calcData(title, data, amount, isUsd, method, usdData) {
     if (!Object.values(CALC_METHODS).includes(method)) {

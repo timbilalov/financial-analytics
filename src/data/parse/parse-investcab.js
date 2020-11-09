@@ -1,4 +1,4 @@
-import {dateFormat} from "../../utils/helpers";
+import {dateFormat} from "@utils/helpers";
 
 export function parseResponseDataInvestcab(responseData) {
     const parsed = JSON.parse(responseData);

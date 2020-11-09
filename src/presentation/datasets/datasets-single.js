@@ -1,5 +1,5 @@
-import {calcData} from "../../logic/calcs";
-import {CALC_METHODS, DATE_FORMATS} from "../../utils/constants";
+import {calcData} from "@logic";
+import {CALC_METHODS, DATE_FORMATS} from "@constants";
 import moment from "moment";
 
 export function prepareSingleDataset(title, data, amount, isUsd, datasets, datesFullArray, datasetsColors, calcMethod, usdData) {

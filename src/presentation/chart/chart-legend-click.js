@@ -1,5 +1,5 @@
-import {CALC_METHODS} from "../../utils/constants";
-import {calcBankDeposit, calcOwnMoney, calcTotal} from "../../logic/calcs";
+import {CALC_METHODS} from "@constants";
+import {calcBankDeposit, calcOwnMoney, calcTotal} from "@logic";
 
 export function onLegendClick(legendItem, chart, calcMethod, datasets, datesFullArray, legendItemsToLink) {
     const hidden = !legendItem.hidden;
