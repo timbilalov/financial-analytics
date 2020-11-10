@@ -9,19 +9,21 @@ export function parseResponseDataUsd(responseData) {
 
     for (let i = 0; i < responseData.length; i++) {
         const item = responseData[i];
-        if (item[0] !== 'CETS') {
+        const marketType = item[0];
+
+        // TODO: В дальнейшем, разобраться более детально с типами торгов.
+        if (marketType !== 'CETS') {
             continue;
         }
 
-        let date = moment(item[1], DATE_FORMATS.moex).format(DATE_FORMATS.default);
-        let dateUTC = moment(date, DATE_FORMATS.default).unix();
-        let value = (item[4] + item[7]) / 2;
+        const date = moment(item[1], DATE_FORMATS.moex).format(DATE_FORMATS.default);
+        const value = (item[4] + item[7]) / 2;
 
+        // TODO: Возможно, что для Moex первое условие никогда не выполняется. Проверить.
         if (date === prevDate) {
             prevDataObject.value = (prevDataObject.value + value) / 2;
         } else {
             const dataObject = {
-                dateUTC,
                 date,
                 value,
             };

@@ -20,17 +20,16 @@
         if (calcMethod && calcMethod !== calcMethodSaved) {
             calcMethodSaved = calcMethod;
             Storage.set(STORAGE_KEYS.calcMethod, calcMethod);
-            update2(currentAssets, true);
+            update(currentAssets, true);
         }
     }
 
     function handleUpdateAssets(event) {
-        const { assets } = event.detail;
-        update2(assets);
+        update(event.detail.assets);
     }
 
-    async function update2(assets = currentAssets, force = false) {
-        const items = await getAssetsData(assets, force, currentAssets);
+    async function update(assets = currentAssets) {
+        const items = await getAssetsData(assets);
 
         if (!items || items.length === 0) {
             return;
@@ -46,7 +45,7 @@
         }, 200);
     }
 
-    update2();
+    update();
 </script>
 
 <style>
@@ -85,7 +84,7 @@
 
     <div>
         <br>
-        <button on:click={() => update2(currentAssets, true)}>force refresh</button>
+        <button on:click={() => update(currentAssets, true)}>force refresh</button>
     </div>
 
     <hr>

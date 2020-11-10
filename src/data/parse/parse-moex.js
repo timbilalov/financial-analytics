@@ -6,31 +6,35 @@ export function parseResponseDataMoex(responseData, isBond) {
 
     let prevDate;
     let prevDataObject;
-
     let initialDate;
     let initialBondNkd;
+
     for (let i = 0; i < responseData.length; i++) {
         const item = responseData[i];
-        if ((!isBond && item[0] !== 'TQBR') || (isBond && (item[0] !== 'TQOB' && item[0] !== 'TQCB'))) {
+        const marketType = item[0];
+
+        // TODO: В дальнейшем, разобраться более детально с типами торгов.
+        if ((!isBond && marketType !== 'TQBR') || (isBond && (marketType !== 'TQOB' && marketType !== 'TQCB'))) {
             continue;
         }
 
         if (initialDate === undefined) {
             initialDate = moment(item[1], DATE_FORMATS.moex);
+
             if (isBond) {
                 initialBondNkd = item[10];
             }
         }
 
-        let date = moment(item[1], DATE_FORMATS.moex).format(DATE_FORMATS.default);
-        let dateUTC = moment(date, DATE_FORMATS.default).unix();
-        let value = (item[6] + item[11]) / 2;
+        const date = moment(item[1], DATE_FORMATS.moex).format(DATE_FORMATS.default);
+        let value;
 
         if (isBond) {
             const initialCost = item[30];
             const couponPercent = item[26];
 
-            value = (item[13] + item[8]) / 2 / 100;
+            value = (item[13] + item[8]) / 2;
+            value /= 100;
             value *= initialCost;
 
             const dateDiff = moment(item[1], DATE_FORMATS.moex).diff(initialDate, 'days');
@@ -38,13 +42,15 @@ export function parseResponseDataMoex(responseData, isBond) {
 
             value += initialBondNkd;
             value += valueDiff;
+        } else {
+            value = (item[6] + item[11]) / 2;
         }
 
+        // TODO: Возможно, что для Moex первое условие никогда не выполняется. Проверить.
         if (date === prevDate) {
             prevDataObject.value = (prevDataObject.value + value) / 2;
         } else {
             const dataObject = {
-                dateUTC,
                 date,
                 value,
             };

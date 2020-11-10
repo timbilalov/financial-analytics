@@ -2,30 +2,48 @@ import {dateFormat} from "@utils/helpers";
 
 export function parseResponseDataInvestcab(responseData) {
     const parsed = JSON.parse(responseData);
+    const datesArray = parsed.t;
+    const openingPricesArray = parsed.o;
+    const closingPricesArray = parsed.c;
+    const parsedDataCount = datesArray.length;
+    const clearParsedData = [];
     const data = [];
 
     let prevDate;
     let prevDataObject;
 
-    for (let i = 0; i < parsed.t.length; i++) {
-        let dateUTC = parsed.t[i];
-        let date = dateFormat(dateUTC);
-        let value = (parsed.c[i] + parsed.o[i]) / 2;
+    for (let i = 0; i < parsedDataCount; i++) {
+        const dateUTC = datesArray[i];
+        const date = dateFormat(dateUTC);
+        const openingPrice = openingPricesArray[i];
+        const closingPrice = closingPricesArray[i];
 
         if (date === prevDate) {
-            prevDataObject.value = (prevDataObject.value + value) / 2;
+            prevDataObject.closingPrice = closingPrice;
         } else {
             const dataObject = {
-                dateUTC,
                 date,
-                value,
+                openingPrice,
+                closingPrice,
             };
 
-            data.push(dataObject);
+            clearParsedData.push(dataObject);
 
             prevDate = date;
             prevDataObject = dataObject;
         }
+    }
+
+    for (let i = 0; i < clearParsedData.length; i++) {
+        const { date, openingPrice, closingPrice } = clearParsedData[i];
+        const value = (openingPrice + closingPrice) / 2;
+
+        const dataObject = {
+            date,
+            value,
+        };
+
+        data.push(dataObject);
     }
 
     return data;
