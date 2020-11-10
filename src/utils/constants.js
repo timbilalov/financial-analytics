@@ -12,6 +12,8 @@ export const CALC_METHODS = {
 export const BANK_DEPOSIT = 0.05;
 
 export const STORAGE_KEYS = {
+    portfolio: 'portfolio',
+    portfolioList: 'portfolioList',
     datasets: 'datasets',
     datesFullArray: 'datesFullArray',
     assets: 'assets',

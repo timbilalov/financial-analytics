@@ -6,6 +6,10 @@
     import Personal from './Personal.svelte';
 
     let chart;
+    let currentPortfolio = Storage.get(STORAGE_KEYS.portfolio) || 'default';
+    let portfolioList = Storage.get(STORAGE_KEYS.portfolioList) || [currentPortfolio];
+    let newPortfolioTitle = '';
+
     let datasets = Storage.get(STORAGE_KEYS.datasets) || [];
     let datesFullArray = Storage.get(STORAGE_KEYS.datesFullArray) || [];
     let currentAssets = Storage.get(STORAGE_KEYS.assets) || [];
@@ -16,11 +20,41 @@
     let datasetsColors = {};
 
     $: {
+        Storage.set(STORAGE_KEYS.portfolio, currentPortfolio);
+
         // TODO: Хз как добиться внятного поведения без такого хака. Поизучать...
         if (calcMethod && calcMethod !== calcMethodSaved) {
             calcMethodSaved = calcMethod;
             Storage.set(STORAGE_KEYS.calcMethod, calcMethod);
             update(currentAssets, true);
+        }
+    }
+
+    function addPortfolio() {
+        if (newPortfolioTitle.trim() === '' || portfolioList.includes(newPortfolioTitle)) {
+            return;
+        }
+
+        portfolioList.push(newPortfolioTitle);
+        portfolioList = portfolioList;
+        Storage.set(STORAGE_KEYS.portfolioList, portfolioList);
+
+        newPortfolioTitle = '';
+    }
+
+    function removePortfolio(portfolio) {
+        const index = portfolioList.indexOf(portfolio);
+
+        if (index === -1) {
+            return;
+        }
+
+        portfolioList.splice(index, 1);
+        portfolioList = portfolioList;
+        Storage.set(STORAGE_KEYS.portfolioList, portfolioList);
+
+        if (portfolio === currentPortfolio) {
+            currentPortfolio = portfolioList[0];
         }
     }
 
@@ -73,10 +107,6 @@
     .controls:hover {
         opacity: 1;
     }
-
-    .controls input {
-        text-transform: uppercase;
-    }
 </style>
 
 <div class="controls">
@@ -86,6 +116,22 @@
         <br>
         <button on:click={() => update(currentAssets, true)}>force refresh</button>
     </div>
+
+    <hr>
+
+    Portfolio:
+    <br>
+    {#each portfolioList as item}
+        <label style="display: inline-block;">
+            <input type="radio" bind:group={currentPortfolio} value={item}>
+            <span>{item}</span>
+        </label>
+        {#if portfolioList.length > 1}
+            <button on:click={removePortfolio(item)}>remove</button>
+        {/if}
+        <br>
+    {/each}
+    <input type="text" bind:value={newPortfolioTitle}><button on:click={addPortfolio}>Add portfolio</button>
 
     <hr>
     <label>
