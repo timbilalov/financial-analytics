@@ -14,6 +14,7 @@ export const BANK_DEPOSIT = 0.05;
 export const STORAGE_KEYS = {
     portfolio: 'portfolio',
     portfolioList: 'portfolioList',
+    portfoliosData: 'portfoliosData',
     datasets: 'datasets',
     datesFullArray: 'datesFullArray',
     assets: 'assets',

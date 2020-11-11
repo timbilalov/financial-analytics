@@ -1,11 +1,11 @@
 <script>
-    import Storage from '@utils/storage';
     import { createEventDispatcher } from 'svelte';
-    import {ASSET_DEFAULT_FIELDS, STORAGE_KEYS} from "@constants";
+    import {ASSET_DEFAULT_FIELDS} from "@constants";
+
+    export let assets;
 
     const dispatch = createEventDispatcher();
 
-    let assets = Storage.get(STORAGE_KEYS.assets) || [];
     let isAddDialogOpened = false;
     let isManageDialogOpened = false;
     let newAssetValues = {};
@@ -17,7 +17,6 @@
     }
 
     function update() {
-        Storage.set(STORAGE_KEYS.assets, assets);
         dispatch('updateAssets', {
             assets,
         });

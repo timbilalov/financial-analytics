@@ -7,22 +7,33 @@
 
     let chart;
     let currentPortfolio = Storage.get(STORAGE_KEYS.portfolio) || 'default';
+    let currentPortfolioSaved = currentPortfolio;
     let portfolioList = Storage.get(STORAGE_KEYS.portfolioList) || [currentPortfolio];
     let newPortfolioTitle = '';
-
+    let portfoliosData = Storage.get(STORAGE_KEYS.portfoliosData) || {};
+    let currentPortfolioData = portfoliosData[currentPortfolio] || {};
     let datasets = Storage.get(STORAGE_KEYS.datasets) || [];
     let datesFullArray = Storage.get(STORAGE_KEYS.datesFullArray) || [];
-    let currentAssets = Storage.get(STORAGE_KEYS.assets) || [];
+    let currentAssets = currentPortfolioData.assets || [];
     let calcMethod = Storage.get(STORAGE_KEYS.calcMethod) || CALC_METHODS.RELATIVE;
     let calcMethodSaved = calcMethod;
-    let usdData = Storage.get(STORAGE_KEYS.usdData) || [];
+    let usdData = [];
     let legendItems = [];
     let datasetsColors = {};
 
-    $: {
-        Storage.set(STORAGE_KEYS.portfolio, currentPortfolio);
+    console.log('portfoliosData', portfoliosData)
 
+    $: {
         // TODO: Хз как добиться внятного поведения без такого хака. Поизучать...
+        if (currentPortfolio && currentPortfolio !== currentPortfolioSaved) {
+            currentPortfolioSaved = currentPortfolio;
+            Storage.set(STORAGE_KEYS.portfolio, currentPortfolio);
+
+            currentPortfolioData = portfoliosData[currentPortfolio] || {};
+            currentAssets = currentPortfolioData.assets || [];
+            update(currentAssets, true);
+        }
+
         if (calcMethod && calcMethod !== calcMethodSaved) {
             calcMethodSaved = calcMethod;
             Storage.set(STORAGE_KEYS.calcMethod, calcMethod);
@@ -58,8 +69,20 @@
         }
     }
 
+    function savePortfolioData(params) {
+        currentPortfolioData = Object.assign({}, currentPortfolioData, params);
+        portfoliosData[currentPortfolio] = currentPortfolioData;
+        Storage.set(STORAGE_KEYS.portfoliosData, portfoliosData);
+    }
+
     function handleUpdateAssets(event) {
-        update(event.detail.assets);
+        const { assets } = event.detail;
+
+        savePortfolioData({
+            assets,
+        });
+
+        update(assets);
     }
 
     async function update(assets = currentAssets) {
@@ -70,7 +93,7 @@
         }
 
         if (items !== undefined) {
-            datasets = await prepareDatasets(items, datesFullArray, usdData, calcMethod, datasetsColors);
+            datasets = await prepareDatasets(items, usdData, calcMethod, datasetsColors);
             Storage.set(STORAGE_KEYS.datasets, datasets);
         }
 
@@ -149,7 +172,7 @@
 
     <hr>
 
-    <Personal on:updateAssets={handleUpdateAssets} />
+    <Personal assets={currentAssets} on:updateAssets={handleUpdateAssets} />
 </div>
 
 <div class="chart-container">

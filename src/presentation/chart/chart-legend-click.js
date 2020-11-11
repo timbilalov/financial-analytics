@@ -16,7 +16,7 @@ export function onLegendClick(legendItem, chart, calcMethod, datasets, datesFull
     const innerDatasets = datasets.slice(0, datasets.length - fromEndCount);
     const chartDatasets = chart.config.data.datasets;
 
-    const newTotal = calcTotal(innerDatasets, datesFullArray, calcMethod);
+    const newTotal = calcTotal(innerDatasets, calcMethod);
     const currentTotalDataset = chartDatasets[chartDatasets.length - fromEndCount];
     currentTotalDataset.data = newTotal.map(item => item.value);
     currentTotalDataset.dates = newTotal.map(item => item.date);

@@ -1,18 +1,19 @@
-import {CALC_METHODS} from "@constants";
+import Storage from '@utils/storage';
+import {CALC_METHODS, STORAGE_KEYS} from "@constants";
 
 // TODO: Как минимум, отрефакторить. Как максимум, ещё раз проанализировать верность расчётов.
-export function calcTotal(datasets, datesFullArray, calcMethod) {
+export function calcTotal(datasets, calcMethod) {
     datasets = datasets.filter(dataset => dataset.hidden !== true);
 
     const total = [];
-    const dates = datesFullArray;
+    const datesFullArray = Storage.get(STORAGE_KEYS.datesFullArray) || [];
 
     let prevTotal = 0;
     let prevSavedTotal = 0;
     let currentNonZeroCount = 0;
     let prevSavedValues = [];
 
-    for (const i in dates) {
+    for (const i in datesFullArray) {
         let totalValue = 0;
         let totalValue2 = 0;
         let nonZeroCount = 0;
@@ -74,7 +75,7 @@ export function calcTotal(datasets, datesFullArray, calcMethod) {
 
         total.push({
             value: totalValue2,
-            date: dates[i],
+            date: datesFullArray[i],
         });
 
         prevTotal = totalValue;
