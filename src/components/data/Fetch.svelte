@@ -2,7 +2,7 @@
     import { CALC_METHODS, STORAGE_KEYS } from "@constants";
     import Storage from '@utils/storage';
     import { getAssetsData } from '@data';
-    import { prepareDatasets, buildChart } from '@presentation';
+    import { prepareDatasets, buildChart, locales } from '@presentation';
     import Personal from './Personal.svelte';
 
     let chart;
@@ -133,16 +133,7 @@
 </style>
 
 <div class="controls">
-    <div>Data count: {(datasets || [])[0]?.data?.length || 0}</div>
-
-    <div>
-        <br>
-        <button on:click={() => update(currentAssets, true)}>force refresh</button>
-    </div>
-
-    <hr>
-
-    Portfolio:
+    <b>{locales('common.portfolio')}</b>:
     <br>
     {#each portfolioList as item}
         <label style="display: inline-block;">
@@ -150,24 +141,26 @@
             <span>{item}</span>
         </label>
         {#if portfolioList.length > 1}
-            <button on:click={removePortfolio(item)}>remove</button>
+            <button on:click={removePortfolio(item)}>{locales('actions.remove')}</button>
         {/if}
         <br>
     {/each}
-    <input type="text" bind:value={newPortfolioTitle}><button on:click={addPortfolio}>Add portfolio</button>
+    <input type="text" bind:value={newPortfolioTitle}><button on:click={addPortfolio}>{locales('actions.add')}</button>
 
     <hr>
+    <b>{locales('common.calc')}</b>:
+    <br>
     <label>
         <input type="radio" bind:group={calcMethod} value={CALC_METHODS.RELATIVE}>
-        <span>relative</span>
+        <span>{locales('calcMethod.relative')}</span>
     </label>
     <label>
         <input type="radio" bind:group={calcMethod} value={CALC_METHODS.ABSOLUTE}>
-        <span>absolute</span>
+        <span>{locales('calcMethod.absolute')}</span>
     </label>
     <label>
         <input type="radio" bind:group={calcMethod} value={CALC_METHODS.ABSOLUTE_TOTAL}>
-        <span>absolute total</span>
+        <span>{locales('calcMethod.absoluteTotal')}</span>
     </label>
 
     <hr>

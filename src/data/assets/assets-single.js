@@ -2,7 +2,7 @@ import {fetchData} from "@fetch";
 import {parseResponseData} from "@parse";
 
 export async function getSingleAssetData(asset) {
-    const { ticker, buyDate, sellDate, amount, moex, usd, bond, hide } = asset;
+    const { ticker, title, buyDate, sellDate, amount, moex, usd, bond, hide } = asset;
 
     const isMoex = moex === true || moex === '1';
     const isUsd = usd === true || usd === '1';
@@ -17,7 +17,7 @@ export async function getSingleAssetData(asset) {
     const dataParsed = parseResponseData(dataRaw, isMoex, isBond);
 
     const data = {
-        title: ticker,
+        title: title || ticker.toUpperCase(),
         data: dataParsed,
         amount: amount,
         isUsd: isUsd,

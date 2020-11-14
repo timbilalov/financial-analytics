@@ -20,10 +20,19 @@ export const STORAGE_KEYS = {
     assets: 'assets',
     calcMethod: 'calcMethod',
     usdData: 'usdData',
+    lang: 'lang',
 };
+
+export const LANGUAGES = {
+    en: 'en',
+    ru: 'ru',
+};
+
+export const DEFAULT_LANGUAGE = LANGUAGES.ru;
 
 export const ASSET_DEFAULT_FIELDS = [
     'ticker',
+    'title',
     'buyDate',
     'sellDate',
     'amount',

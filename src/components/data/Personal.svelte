@@ -1,6 +1,7 @@
 <script>
     import { createEventDispatcher } from 'svelte';
     import {ASSET_DEFAULT_FIELDS} from "@constants";
+    import {locales} from "@presentation";
 
     export let assets;
 
@@ -44,6 +45,8 @@
     }
 
     function openAddDialog() {
+        closeManageDialog();
+
         isAddDialogOpened = true;
     }
 
@@ -52,6 +55,8 @@
     }
 
     function openManageDialog() {
+        closeAddDialog();
+
         isManageDialogOpened = true;
     }
 
@@ -79,6 +84,7 @@
 
     function cancel() {
         closeAddDialog();
+        closeManageDialog();
     }
 
     function clearNewAssetData() {
@@ -116,21 +122,23 @@
 </style>
 
 <div>
-    Assets: {assets.length}
-    <button on:click={onAddButtonClick}>add</button>
-    <button on:click={onManageButtonClick}>manage</button>
-    <button on:click={onClearButtonClick}>clear</button>
+    {locales('common.assets')}: {assets.length}
+    <br>
+
+    <button on:click={onAddButtonClick}>{locales('actions.add')}</button>
+    <button on:click={onManageButtonClick}>{locales('actions.change')}</button>
+    <button on:click={onClearButtonClick}>{locales('actions.clear')}</button>
 
     {#if isAddDialogOpened}
         <hr>
         {#each assetFields as field}
             <div>
-                {field}: <input type="text" name={field} value={newAssetValues[field] || ''} on:input={handleNewAssetFieldInput}>
+                {locales(`assets.${field}`)}: <input type="text" name={field} value={newAssetValues[field] || ''} on:input={handleNewAssetFieldInput}>
             </div>
         {/each}
         <div>
-            <button disabled={!isReadyToSave} on:click={save}>Save</button>
-            <button on:click={cancel}>Cancel</button>
+            <button disabled={!isReadyToSave} on:click={save}>{locales('actions.save')}</button>
+            <button on:click={cancel}>{locales('actions.cancel')}</button>
         </div>
     {/if}
 
@@ -141,23 +149,27 @@
                 <thead>
                     <tr>
                         {#each assetFields as field}
-                            <th>{field}</th>
+                            <th>{locales(`assets.${field}`)}</th>
                         {/each}
-                        <th>actions</th>
+                        <th>{locales(`common.actions`)}</th>
                     </tr>
                 </thead>
                 <tbody>
                     {#each assets as asset}
                         <tr>
                             {#each assetFields as field}
-                                <td contenteditable="true" bind:innerHTML={asset[field]}></td>
+                                <td contenteditable="true" bind:textContent={asset[field]}></td>
                             {/each}
-                            <td><span class="remove" on:click={removeAsset(asset)}>delete</span></td>
+                            <td><span class="remove" on:click={removeAsset(asset)}>{locales('actions.remove')}</span></td>
                         </tr>
                     {/each}
                 </tbody>
             </table>
-            <button on:click={updateAssets}>save</button>
+
+            <div>
+                <button on:click={updateAssets}>{locales('actions.save')}</button>
+                <button on:click={cancel}>{locales('actions.cancel')}</button>
+            </div>
         </div>
     {/if}
 </div>

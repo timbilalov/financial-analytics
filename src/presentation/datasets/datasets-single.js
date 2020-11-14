@@ -94,7 +94,7 @@ export function prepareSingleDataset(title, data, amount, isUsd, datasets, dates
     }
 
     const dataset = {
-        label: title.toUpperCase(),
+        label: title,
         backgroundColor: `rgba(${colorRGB.join(', ')}, 0.2)`,
         borderColor: `rgba(${colorRGB.join(', ')}, ${opacity})`,
         data: values,
