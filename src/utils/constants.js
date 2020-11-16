@@ -9,6 +9,11 @@ export const CALC_METHODS = {
     ABSOLUTE_TOTAL: 'absolute-total',
 };
 
+export const CALC_CURRENCIES = {
+    RUB: 'rub',
+    USD: 'usd',
+};
+
 export const BANK_DEPOSIT = 0.05;
 
 export const STORAGE_KEYS = {
@@ -19,6 +24,7 @@ export const STORAGE_KEYS = {
     datesFullArray: 'datesFullArray',
     assets: 'assets',
     calcMethod: 'calcMethod',
+    calcCurrency: 'calcCurrency',
     usdData: 'usdData',
     lang: 'lang',
 };

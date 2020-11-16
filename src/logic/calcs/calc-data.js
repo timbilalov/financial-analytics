@@ -1,6 +1,6 @@
-import { CALC_METHODS } from "@constants";
+import {CALC_CURRENCIES, CALC_METHODS} from "@constants";
 
-export function calcData(title, data, amount, isUsd, method, usdData) {
+export function calcData(title, data, amount, isUsd, method, usdData, calcCurrency) {
     if (!Object.values(CALC_METHODS).includes(method)) {
         return [];
     }
@@ -14,7 +14,7 @@ export function calcData(title, data, amount, isUsd, method, usdData) {
 
     if (calculated.length !== 0) {
         let k = 0;
-        let m = 100;
+        let m = 10000;
         let usdDataValue = [];
 
         // TODO: Здесь какая-то хрень творится... ))
@@ -26,6 +26,10 @@ export function calcData(title, data, amount, isUsd, method, usdData) {
         let koef = isUsd && (method === CALC_METHODS.ABSOLUTE || method === CALC_METHODS.ABSOLUTE_TOTAL) ? usdDataValue[0].value : 1;
         let initialValue = calculated[0].value * koef;
 
+        if (calcCurrency === CALC_CURRENCIES.USD && (method === CALC_METHODS.ABSOLUTE || method === CALC_METHODS.ABSOLUTE_TOTAL)) {
+            initialValue /= usdDataValue[0].value;
+        }
+
         if (method === CALC_METHODS.ABSOLUTE || method === CALC_METHODS.ABSOLUTE_TOTAL) {
             initialValue *= amount;
         }
@@ -36,6 +40,7 @@ export function calcData(title, data, amount, isUsd, method, usdData) {
             } else {
                 // TODO: Здесь только расчёты, а данные ведь те же самые. В дальнейшем, отрефакторить, чтобы не делать лишних запросов.
                 if (method === CALC_METHODS.RELATIVE) {
+                    // TODO: Учесть расчёты в долларах
                     calculated[i].value = (calculated[i].value - initialValue) / initialValue * 100;
                 } else if (method === CALC_METHODS.ABSOLUTE || method === CALC_METHODS.ABSOLUTE_TOTAL) {
                     usdValue = usdData.filter(item => item.date === calculated[i].date);
@@ -47,7 +52,17 @@ export function calcData(title, data, amount, isUsd, method, usdData) {
                     }
 
                     koef = isUsd ? usdValue : 1;
-                    calculated[i].value = calculated[i].value * koef * amount - initialValue;
+
+                    switch (calcCurrency) {
+                        case CALC_CURRENCIES.USD:
+                            calculated[i].value = calculated[i].value * koef * amount / usdValue - initialValue;
+                            break;
+
+                        default:
+                        case CALC_CURRENCIES.RUB:
+                            calculated[i].value = calculated[i].value * koef * amount - initialValue;
+                            break;
+                    }
                 }
             }
 

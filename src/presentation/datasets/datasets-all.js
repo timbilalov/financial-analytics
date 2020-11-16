@@ -4,7 +4,7 @@ import {fetchUsd, getAllDatesInterval, parseResponseDataUsd} from "@data";
 import {calcBankDeposit, calcOwnMoney, calcTotal} from "@logic";
 import {prepareSingleDataset} from "./datasets-single";
 
-export async function prepareDatasets(items, usdDataToLink, calcMethod, datasetsColors) {
+export async function prepareDatasets(items, usdDataToLink, calcMethod, datasetsColors, calcCurrency) {
     const datasets = [];
 
     const datesFullArray = getAllDatesInterval(items);
@@ -15,7 +15,7 @@ export async function prepareDatasets(items, usdDataToLink, calcMethod, datasets
     usdDataToLink = usdData;
 
     for (const {title, data, amount, isUsd} of items) {
-        datasets.push(prepareSingleDataset(title, data, amount, isUsd, datasets, datesFullArray, datasetsColors, calcMethod, usdData));
+        datasets.push(prepareSingleDataset(title, data, amount, isUsd, datasets, datesFullArray, datasetsColors, calcMethod, usdData, calcCurrency));
     }
 
     const innerDatasets = datasets.slice(0);

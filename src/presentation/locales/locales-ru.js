@@ -10,6 +10,10 @@ export const LOCALES_RU = {
         absolute: 'Абсолютный',
         absoluteTotal: 'Общий капитал',
     },
+    calcCurrency: {
+        rub: 'В рублях',
+        usd: 'В долларах',
+    },
     actions: {
         save: 'Сохранить',
         remove: 'Удалить',

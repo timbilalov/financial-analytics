@@ -1,5 +1,5 @@
 <script>
-    import { CALC_METHODS, STORAGE_KEYS } from "@constants";
+    import { CALC_METHODS, STORAGE_KEYS, CALC_CURRENCIES } from "@constants";
     import Storage from '@utils/storage';
     import { getAssetsData } from '@data';
     import { prepareDatasets, buildChart, locales } from '@presentation';
@@ -17,6 +17,8 @@
     let currentAssets = currentPortfolioData.assets || [];
     let calcMethod = Storage.get(STORAGE_KEYS.calcMethod) || CALC_METHODS.RELATIVE;
     let calcMethodSaved = calcMethod;
+    let calcCurrency = Storage.get(STORAGE_KEYS.calcCurrency) || CALC_CURRENCIES.RUB;
+    let calcCurrencySaved = calcCurrency;
     let usdData = [];
     let legendItems = [];
     let datasetsColors = {};
@@ -37,6 +39,12 @@
         if (calcMethod && calcMethod !== calcMethodSaved) {
             calcMethodSaved = calcMethod;
             Storage.set(STORAGE_KEYS.calcMethod, calcMethod);
+            update(currentAssets, true);
+        }
+
+        if (calcCurrency && calcCurrency !== calcCurrencySaved) {
+            calcCurrencySaved = calcCurrency;
+            Storage.set(STORAGE_KEYS.calcCurrency, calcCurrency);
             update(currentAssets, true);
         }
     }
@@ -93,7 +101,7 @@
         }
 
         if (items !== undefined) {
-            datasets = await prepareDatasets(items, usdData, calcMethod, datasetsColors);
+            datasets = await prepareDatasets(items, usdData, calcMethod, datasetsColors, calcCurrency);
             Storage.set(STORAGE_KEYS.datasets, datasets);
         }
 
@@ -154,13 +162,27 @@
         <input type="radio" bind:group={calcMethod} value={CALC_METHODS.RELATIVE}>
         <span>{locales('calcMethod.relative')}</span>
     </label>
+    <br>
     <label>
         <input type="radio" bind:group={calcMethod} value={CALC_METHODS.ABSOLUTE}>
         <span>{locales('calcMethod.absolute')}</span>
     </label>
+    <br>
     <label>
         <input type="radio" bind:group={calcMethod} value={CALC_METHODS.ABSOLUTE_TOTAL}>
         <span>{locales('calcMethod.absoluteTotal')}</span>
+    </label>
+
+    <hr>
+
+    <label>
+        <input type="radio" bind:group={calcCurrency} value={CALC_CURRENCIES.RUB}>
+        <span>{locales('calcCurrency.rub')}</span>
+    </label>
+    <br>
+    <label>
+        <input type="radio" bind:group={calcCurrency} value={CALC_CURRENCIES.USD}>
+        <span>{locales('calcCurrency.usd')}</span>
     </label>
 
     <hr>

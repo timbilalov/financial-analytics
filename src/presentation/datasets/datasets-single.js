@@ -2,7 +2,7 @@ import {calcData} from "@logic";
 import {CALC_METHODS, DATE_FORMATS} from "@constants";
 import moment from "moment";
 
-export function prepareSingleDataset(title, data, amount, isUsd, datasets, datesFullArray, datasetsColors, calcMethod, usdData) {
+export function prepareSingleDataset(title, data, amount, isUsd, datasets, datesFullArray, datasetsColors, calcMethod, usdData, calcCurrency) {
     const sameLabelDatasets = datasets.filter(item => item.label.toLowerCase() === title.toLowerCase());
     const getRandomNumber = () => Math.round(Math.random() * 255);
 
@@ -49,9 +49,9 @@ export function prepareSingleDataset(title, data, amount, isUsd, datasets, dates
     if (title.toLowerCase() === 'total' || title.toLowerCase() === 'bank depo' || title.toLowerCase() === 'own money') {
         calculatedData = data;
     } else {
-        calculatedData = calcData(title, data, amount, isUsd, calcMethod, usdData);
+        calculatedData = calcData(title, data, amount, isUsd, calcMethod, usdData, calcCurrency);
         shouldStoreAbsTotal = true;
-        calculatedDataAbsTotal = calcData(title, data, amount, isUsd, CALC_METHODS.ABSOLUTE_TOTAL, usdData);
+        calculatedDataAbsTotal = calcData(title, data, amount, isUsd, CALC_METHODS.ABSOLUTE_TOTAL, usdData, calcCurrency);
     }
 
     if (datesFullArray.length !== 0) {
