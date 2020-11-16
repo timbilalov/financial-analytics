@@ -22,6 +22,8 @@ export function getAllDatesInterval(items) {
     const diff = lastDate.diff(firstDate, 'days');
     const dates2 = [];
 
+    dates2.push(dates1[0]);
+
     for (let i = 0; i < diff; i++) {
         const date = firstDate.add(1, 'days').format(DATE_FORMATS.default);
         dates2.push(date);
