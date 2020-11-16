@@ -1,7 +1,7 @@
 <script>
     import { CALC_METHODS, STORAGE_KEYS, CALC_CURRENCIES } from "@constants";
     import Storage from '@utils/storage';
-    import { getAssetsData } from '@data';
+    import {fetchUsd, getAllDatesInterval, getAssetsData, parseResponseDataUsd} from '@data';
     import { prepareDatasets, buildChart, locales } from '@presentation';
     import Personal from './Personal.svelte';
 
@@ -19,7 +19,6 @@
     let calcMethodSaved = calcMethod;
     let calcCurrency = Storage.get(STORAGE_KEYS.calcCurrency) || CALC_CURRENCIES.RUB;
     let calcCurrencySaved = calcCurrency;
-    let usdData = [];
     let legendItems = [];
     let datasetsColors = {};
 
@@ -96,17 +95,19 @@
     async function update(assets = currentAssets) {
         const items = await getAssetsData(assets);
 
-        if (!items || items.length === 0) {
+        if (items === undefined || items.length === 0) {
             return;
         }
 
-        if (items !== undefined) {
-            datasets = await prepareDatasets(items, usdData, calcMethod, datasetsColors, calcCurrency);
-            Storage.set(STORAGE_KEYS.datasets, datasets);
-        }
+        const datesFullArray = getAllDatesInterval(items);
+        const usdDataRaw = await fetchUsd(datesFullArray[0]);
+        const usdData = parseResponseDataUsd(usdDataRaw);
+
+        datasets = await prepareDatasets(items, datesFullArray, usdData, calcMethod, datasetsColors, calcCurrency);
+        Storage.set(STORAGE_KEYS.datasets, datasets);
 
         setTimeout(() => {
-            chart = buildChart(datasets, calcMethod, datesFullArray, chart, legendItems);
+            chart = buildChart(datasets, calcMethod, datesFullArray, chart, legendItems, usdData, calcCurrency);
         }, 200);
     }
 

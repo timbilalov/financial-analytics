@@ -3,7 +3,7 @@ import {onLegendClick} from "./chart-legend-click";
 import {labelCallback} from "./chart-label-callback";
 import {labelsFilter} from "./chart-labels-filter";
 
-export function buildChart(datasets, calcMethod, datesFullArray, chartToLink, legendItemsToLink) {
+export function buildChart(datasets, calcMethod, datesFullArray, chartToLink, legendItemsToLink, usdData, calcCurrency) {
     console.log('buildChart', datasets);
 
     if (!datasets || !datasets.length) {
@@ -42,7 +42,8 @@ export function buildChart(datasets, calcMethod, datesFullArray, chartToLink, le
                 },
                 onClick: function(e, legendItem) {
                     Chart.defaults.global.legend.onClick.call(this, e, legendItem);
-                    onLegendClick.call(this, legendItem, chart, calcMethod, datasets, datesFullArray, legendItemsToLink);
+                    console.log('on click', usdData, calcCurrency)
+                    onLegendClick.call(this, legendItem, chart, calcMethod, datasets, datesFullArray, legendItemsToLink, usdData, calcCurrency);
                 }
             },
         }

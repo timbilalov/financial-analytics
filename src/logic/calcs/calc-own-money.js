@@ -1,14 +1,24 @@
-export function calcOwnMoney(datasets, datesFullArray) {
-    const values = [];
+import {CALC_CURRENCIES} from "@constants";
+
+export function calcOwnMoney(datasets, datesFullArray, usdData, calcCurrency) {
+    const items = [];
     const dates = datesFullArray;
 
     datasets = datasets.filter(dataset => dataset.hidden !== true);
 
     let initialValues = [];
+    let prevUsdValue = usdData[0];
 
     for (const i in dates) {
         const date = dates[i];
         let total = 0;
+        let usdValue = usdData.filter(item => item.date === date);
+        if (usdValue.length !== 0) {
+            usdValue = usdValue[0].value;
+            prevUsdValue = usdValue;
+        } else {
+            usdValue = prevUsdValue;
+        }
 
         for (const j in datasets) {
             const dataset = datasets[j];
@@ -20,6 +30,7 @@ export function calcOwnMoney(datasets, datesFullArray) {
                     initialValues[j] = {
                         date: date,
                         value: valueAbsTotal,
+                        usd: usdValue,
                     };
                 }
             }
@@ -27,15 +38,21 @@ export function calcOwnMoney(datasets, datesFullArray) {
 
         for (const n in datasets) {
             if (initialValues[n] !== undefined) {
-                total += initialValues[n].value;
+                let value = initialValues[n].value;
+
+                if (calcCurrency === CALC_CURRENCIES.USD) {
+                    value = value / usdValue * initialValues[n].usd;
+                }
+
+                total += value;
             }
         }
 
-        values.push({
+        items.push({
+            date,
             value: total,
-            date: date,
         });
     }
 
-    return values;
+    return items;
 }

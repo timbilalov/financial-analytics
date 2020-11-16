@@ -1,7 +1,7 @@
 import {CALC_METHODS} from "@constants";
 import {calcBankDeposit, calcOwnMoney, calcTotal} from "@logic";
 
-export function onLegendClick(legendItem, chart, calcMethod, datasets, datesFullArray, legendItemsToLink) {
+export function onLegendClick(legendItem, chart, calcMethod, datasets, datesFullArray, legendItemsToLink, usdData, calcCurrency) {
     const hidden = !legendItem.hidden;
     const label = datasets[legendItem.datasetIndex].label;
 
@@ -27,7 +27,7 @@ export function onLegendClick(legendItem, chart, calcMethod, datasets, datesFull
     currentDepoDataset.dates = newDepo.map(item => item.date);
 
     if (calcMethod === CALC_METHODS.ABSOLUTE_TOTAL) {
-        const newOwn = calcOwnMoney(innerDatasets, datesFullArray);
+        const newOwn = calcOwnMoney(innerDatasets, datesFullArray, usdData, calcCurrency);
         const currentOwnDataset = chartDatasets[chartDatasets.length - fromEndCount + 2];
         currentOwnDataset.data = newOwn.map(item => item.value);
         currentOwnDataset.dates = newOwn.map(item => item.date);
