@@ -15,7 +15,7 @@ export async function prepareDatasets(items, datesFullArray, usdData, calcMethod
         datasets.push(prepareSingleDataset('Total', calcTotal(innerDatasets, calcMethod), undefined, undefined, datasets, datesFullArray, datasetsColors, calcMethod, usdData))
     }
 
-    datasets.push(prepareSingleDataset('Bank depo', calcBankDeposit(innerDatasets, datesFullArray, calcMethod), undefined, undefined, datasets, datesFullArray, datasetsColors, calcMethod, usdData))
+    datasets.push(prepareSingleDataset('Bank depo', calcBankDeposit(innerDatasets, datesFullArray, calcMethod, usdData, calcCurrency), undefined, undefined, datasets, datesFullArray, datasetsColors, calcMethod, usdData))
 
     if (calcMethod === CALC_METHODS.ABSOLUTE_TOTAL) {
         datasets.push(prepareSingleDataset('Own money', calcOwnMoney(innerDatasets, datesFullArray, usdData, calcCurrency), undefined, undefined, datasets, datesFullArray, datasetsColors, calcMethod, usdData));

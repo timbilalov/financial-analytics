@@ -1,8 +1,8 @@
 import moment from "moment";
 import {DATE_FORMATS} from "@constants";
 
-export function parseResponseDataUsd(responseData) {
-    const data = [];
+export function parseResponseDataUsd(responseData, datesFullArray) {
+    const data1 = [];
 
     let prevDate;
     let prevDataObject;
@@ -28,12 +28,31 @@ export function parseResponseDataUsd(responseData) {
                 value,
             };
 
-            data.push(dataObject);
+            data1.push(dataObject);
 
             prevDate = date;
             prevDataObject = dataObject;
         }
     }
 
-    return data;
+    let prevValue = data1[0];
+    const data2 = [];
+
+    for (let i = 0; i < datesFullArray.length; i++) {
+        const date = datesFullArray[i];
+        let value = data1.filter(item => item.date === date);
+        if (value.length !== 0) {
+            value = value[0].value;
+            prevValue = value;
+        } else {
+            value = prevValue;
+        }
+
+        data2.push({
+            date,
+            value,
+        });
+    }
+
+    return data2;
 }

@@ -21,7 +21,7 @@ export function onLegendClick(legendItem, chart, calcMethod, datasets, datesFull
     currentTotalDataset.data = newTotal.map(item => item.value);
     currentTotalDataset.dates = newTotal.map(item => item.date);
 
-    const newDepo = calcBankDeposit(innerDatasets, datesFullArray, calcMethod);
+    const newDepo = calcBankDeposit(innerDatasets, datesFullArray, calcMethod, usdData, calcCurrency);
     const currentDepoDataset = chartDatasets[chartDatasets.length - fromEndCount + 1];
     currentDepoDataset.data = newDepo.map(item => item.value);
     currentDepoDataset.dates = newDepo.map(item => item.date);

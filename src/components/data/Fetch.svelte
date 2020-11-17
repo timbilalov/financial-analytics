@@ -100,8 +100,10 @@
         }
 
         const datesFullArray = getAllDatesInterval(items);
-        const usdDataRaw = await fetchUsd(datesFullArray[0]);
-        const usdData = parseResponseDataUsd(usdDataRaw);
+        const usdDataRaw = await fetchUsd(datesFullArray);
+        const usdData = parseResponseDataUsd(usdDataRaw, datesFullArray);
+
+        console.log('usdData', usdData);
 
         datasets = await prepareDatasets(items, datesFullArray, usdData, calcMethod, datasetsColors, calcCurrency);
         Storage.set(STORAGE_KEYS.datasets, datasets);
