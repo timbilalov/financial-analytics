@@ -42,7 +42,6 @@ export function buildChart(datasets, calcMethod, datesFullArray, chartToLink, le
                 },
                 onClick: function(e, legendItem) {
                     Chart.defaults.global.legend.onClick.call(this, e, legendItem);
-                    console.log('on click', usdData, calcCurrency)
                     onLegendClick.call(this, legendItem, chart, calcMethod, datasets, datesFullArray, legendItemsToLink, usdData, calcCurrency);
                 }
             },
