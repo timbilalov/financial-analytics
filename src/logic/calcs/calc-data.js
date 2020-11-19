@@ -39,7 +39,7 @@ export function calcData(title, data, amount, isUsd, method, usdData, calcCurren
                 calculated[i].value = 0;
             } else {
                 // TODO: Здесь только расчёты, а данные ведь те же самые. В дальнейшем, отрефакторить, чтобы не делать лишних запросов.
-                if (method === CALC_METHODS.RELATIVE) {
+                if (method === CALC_METHODS.RELATIVE || method === CALC_METHODS.RELATIVE_ANNUAL) {
                     // TODO: Учесть расчёты в долларах
                     calculated[i].value = (calculated[i].value - initialValue) / initialValue * 100;
                 } else if (method === CALC_METHODS.ABSOLUTE || method === CALC_METHODS.ABSOLUTE_TOTAL) {

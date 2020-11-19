@@ -5,6 +5,7 @@ export const DATE_FORMATS = {
 
 export const CALC_METHODS = {
     RELATIVE: 'relative',
+    RELATIVE_ANNUAL: 'relative-annual',
     ABSOLUTE: 'absolute',
     ABSOLUTE_TOTAL: 'absolute-total',
 };

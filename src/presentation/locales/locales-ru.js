@@ -7,6 +7,7 @@ export const LOCALES_RU = {
     },
     calcMethod: {
         relative: 'Процентный',
+        relativeAnnual: 'Доходность',
         absolute: 'Абсолютный',
         absoluteTotal: 'Общий капитал',
     },

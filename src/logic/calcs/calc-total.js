@@ -64,8 +64,11 @@ export function calcTotal(datasets, calcMethod) {
         }
 
         if (nonZeroCount !== 0) {
-            if (calcMethod === CALC_METHODS.RELATIVE) {
+            if (calcMethod === CALC_METHODS.RELATIVE_ANNUAL) {
+                // TODO: Вот тут должна быть какая-то магия похитрее, чем просто среднеарифметическое.
                 // totalValue2 = prevSavedTotal + totalValue / nonZeroCount;
+                totalValue2 = totalValue / nonZeroCount;
+            } else if (calcMethod === CALC_METHODS.RELATIVE) {
                 totalValue2 = prevSavedTotal + totalValue;
             } else if (calcMethod === CALC_METHODS.ABSOLUTE || calcMethod === CALC_METHODS.ABSOLUTE_TOTAL) {
                 totalValue2 = prevSavedTotal + totalValue;
