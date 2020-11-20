@@ -48,3 +48,5 @@ export const ASSET_DEFAULT_FIELDS = [
     'bond',
     'hide',
 ];
+
+export const EXPORT_HREF_PARAM_NAME = 'export';

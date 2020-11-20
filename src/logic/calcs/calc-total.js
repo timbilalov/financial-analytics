@@ -1,4 +1,4 @@
-import Storage from '@utils/storage';
+import LocalStorage from '@utils/local-storage';
 import {CALC_METHODS, STORAGE_KEYS} from "@constants";
 
 // TODO: Как минимум, отрефакторить. Как максимум, ещё раз проанализировать верность расчётов.
@@ -6,7 +6,7 @@ export function calcTotal(datasets, calcMethod) {
     datasets = datasets.filter(dataset => dataset.hidden !== true);
 
     const total = [];
-    const datesFullArray = Storage.get(STORAGE_KEYS.datesFullArray) || [];
+    const datesFullArray = LocalStorage.get(STORAGE_KEYS.datesFullArray) || [];
 
     let prevTotal = 0;
     let prevSavedTotal = 0;

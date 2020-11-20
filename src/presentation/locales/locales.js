@@ -1,4 +1,4 @@
-import Storage from '@utils/storage';
+import LocalStorage from '@utils/local-storage';
 import {DEFAULT_LANGUAGE, LANGUAGES, STORAGE_KEYS} from "@constants";
 import {LOCALES_RU} from "./locales-ru";
 
@@ -9,7 +9,7 @@ export function locales(namespace) {
         return messageFallback;
     }
 
-    let lang = Storage.get(STORAGE_KEYS.lang);
+    let lang = LocalStorage.get(STORAGE_KEYS.lang);
     if (LANGUAGES[lang] === undefined) {
         lang = DEFAULT_LANGUAGE;
     }

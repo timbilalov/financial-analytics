@@ -1,34 +1,40 @@
 <script>
     import { CALC_METHODS, STORAGE_KEYS, CALC_CURRENCIES } from "@constants";
-    import Storage from '@utils/storage';
+    import LocalStorage from '@utils/local-storage';
     import {fetchUsd, getAllDatesInterval, getAssetsData, parseResponseDataUsd} from '@data';
     import { prepareDatasets, buildChart, locales } from '@presentation';
+    import {checkImportUrl, makeExportUrl} from "@utils/helpers";
     import Personal from './Personal.svelte';
 
+    checkImportUrl();
+
     let chart;
-    let currentPortfolio = Storage.get(STORAGE_KEYS.portfolio) || 'default';
+    let currentPortfolio = LocalStorage.get(STORAGE_KEYS.portfolio) || 'default';
     let currentPortfolioSaved = currentPortfolio;
-    let portfolioList = Storage.get(STORAGE_KEYS.portfolioList) || [currentPortfolio];
+    let portfolioList = LocalStorage.get(STORAGE_KEYS.portfolioList) || [currentPortfolio];
     let newPortfolioTitle = '';
-    let portfoliosData = Storage.get(STORAGE_KEYS.portfoliosData) || {};
+    let portfoliosData = LocalStorage.get(STORAGE_KEYS.portfoliosData) || {};
     let currentPortfolioData = portfoliosData[currentPortfolio] || {};
-    let datasets = Storage.get(STORAGE_KEYS.datasets) || [];
-    let datesFullArray = Storage.get(STORAGE_KEYS.datesFullArray) || [];
+    let datasets = LocalStorage.get(STORAGE_KEYS.datasets) || [];
+    let datesFullArray = LocalStorage.get(STORAGE_KEYS.datesFullArray) || [];
     let currentAssets = currentPortfolioData.assets || [];
-    let calcMethod = Storage.get(STORAGE_KEYS.calcMethod) || CALC_METHODS.RELATIVE;
+    let calcMethod = LocalStorage.get(STORAGE_KEYS.calcMethod) || CALC_METHODS.RELATIVE;
     let calcMethodSaved = calcMethod;
-    let calcCurrency = Storage.get(STORAGE_KEYS.calcCurrency) || CALC_CURRENCIES.RUB;
+    let calcCurrency = LocalStorage.get(STORAGE_KEYS.calcCurrency) || CALC_CURRENCIES.RUB;
     let calcCurrencySaved = calcCurrency;
     let legendItems = [];
     let datasetsColors = {};
+    let exportUrl = '';
 
     console.log('portfoliosData', portfoliosData)
 
     $: {
+        exportUrl = '';
+
         // TODO: Хз как добиться внятного поведения без такого хака. Поизучать...
         if (currentPortfolio && currentPortfolio !== currentPortfolioSaved) {
             currentPortfolioSaved = currentPortfolio;
-            Storage.set(STORAGE_KEYS.portfolio, currentPortfolio);
+            LocalStorage.set(STORAGE_KEYS.portfolio, currentPortfolio);
 
             currentPortfolioData = portfoliosData[currentPortfolio] || {};
             currentAssets = currentPortfolioData.assets || [];
@@ -37,13 +43,13 @@
 
         if (calcMethod && calcMethod !== calcMethodSaved) {
             calcMethodSaved = calcMethod;
-            Storage.set(STORAGE_KEYS.calcMethod, calcMethod);
+            LocalStorage.set(STORAGE_KEYS.calcMethod, calcMethod);
             update(currentAssets, true);
         }
 
         if (calcCurrency && calcCurrency !== calcCurrencySaved) {
             calcCurrencySaved = calcCurrency;
-            Storage.set(STORAGE_KEYS.calcCurrency, calcCurrency);
+            LocalStorage.set(STORAGE_KEYS.calcCurrency, calcCurrency);
             update(currentAssets, true);
         }
     }
@@ -55,7 +61,7 @@
 
         portfolioList.push(newPortfolioTitle);
         portfolioList = portfolioList;
-        Storage.set(STORAGE_KEYS.portfolioList, portfolioList);
+        LocalStorage.set(STORAGE_KEYS.portfolioList, portfolioList);
 
         newPortfolioTitle = '';
     }
@@ -69,7 +75,7 @@
 
         portfolioList.splice(index, 1);
         portfolioList = portfolioList;
-        Storage.set(STORAGE_KEYS.portfolioList, portfolioList);
+        LocalStorage.set(STORAGE_KEYS.portfolioList, portfolioList);
 
         if (portfolio === currentPortfolio) {
             currentPortfolio = portfolioList[0];
@@ -79,7 +85,7 @@
     function savePortfolioData(params) {
         currentPortfolioData = Object.assign({}, currentPortfolioData, params);
         portfoliosData[currentPortfolio] = currentPortfolioData;
-        Storage.set(STORAGE_KEYS.portfoliosData, portfoliosData);
+        LocalStorage.set(STORAGE_KEYS.portfoliosData, portfoliosData);
     }
 
     function handleUpdateAssets(event) {
@@ -106,7 +112,7 @@
         console.log('usdData', usdData);
 
         datasets = await prepareDatasets(items, datesFullArray, usdData, calcMethod, datasetsColors, calcCurrency);
-        Storage.set(STORAGE_KEYS.datasets, datasets);
+        LocalStorage.set(STORAGE_KEYS.datasets, datasets);
 
         setTimeout(() => {
             chart = buildChart(datasets, calcMethod, datesFullArray, chart, legendItems, usdData, calcCurrency);
@@ -196,6 +202,9 @@
     <hr>
 
     <Personal assets={currentAssets} on:updateAssets={handleUpdateAssets} />
+
+    <hr>
+    <input type="text" bind:value={exportUrl}><button on:click={async () => exportUrl = await makeExportUrl()}>{locales('common.export')}</button>
 </div>
 
 <div class="chart-container">

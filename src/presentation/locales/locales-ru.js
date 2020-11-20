@@ -4,6 +4,7 @@ export const LOCALES_RU = {
         actions: 'Действия',
         assets: 'Покупки',
         calc: 'Метод расчёта',
+        export: 'Поделиться ссылкой',
     },
     calcMethod: {
         relative: 'Процентный',

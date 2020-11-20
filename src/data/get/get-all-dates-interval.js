@@ -1,6 +1,6 @@
 import moment from "moment";
 import {DATE_FORMATS, STORAGE_KEYS} from "@constants";
-import Storage from "@utils/storage";
+import LocalStorage from "@utils/local-storage";
 
 export function getAllDatesInterval(items) {
     const dates1 = [];
@@ -29,7 +29,7 @@ export function getAllDatesInterval(items) {
         dates2.push(date);
     }
 
-    Storage.set(STORAGE_KEYS.datesFullArray, dates2);
+    LocalStorage.set(STORAGE_KEYS.datesFullArray, dates2);
 
     return dates2;
 }
