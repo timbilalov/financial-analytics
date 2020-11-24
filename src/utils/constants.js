@@ -28,6 +28,7 @@ export const STORAGE_KEYS = {
     calcCurrency: 'calcCurrency',
     usdData: 'usdData',
     lang: 'lang',
+    fetchData: 'fetchData',
 };
 
 export const LANGUAGES = {
