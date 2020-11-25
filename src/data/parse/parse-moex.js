@@ -14,7 +14,7 @@ export function parseResponseDataMoex(responseData, isBond) {
         const marketType = item[0];
 
         // TODO: В дальнейшем, разобраться более детально с типами торгов.
-        if ((!isBond && marketType !== 'TQBR') || (isBond && (marketType !== 'TQOB' && marketType !== 'TQCB' && marketType !== 'TQIR'))) {
+        if ((!isBond && (marketType !== 'TQBR' && marketType !== 'TQTF')) || (isBond && (marketType !== 'TQOB' && marketType !== 'TQCB' && marketType !== 'TQIR'))) {
             continue;
         }
 

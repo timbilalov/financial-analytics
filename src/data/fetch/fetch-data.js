@@ -7,14 +7,22 @@ import {DATE_FORMATS, STORAGE_KEYS} from "@constants";
 export async function fetchData(ticker, manualDateFrom, manualDateTo, isMoex = false, isBond = false, isCurrency = false) {
     let result;
 
+    const today = moment().format(DATE_FORMATS.default);
+
     if (manualDateTo === undefined || (typeof manualDateTo === 'string' && manualDateTo.trim() === '')) {
-        manualDateTo = moment().format(DATE_FORMATS.default);
+        manualDateTo = today;
     }
 
     let cachedDataArray = LocalStorage.get(STORAGE_KEYS.fetchData) || [];
 
     // Clean LS, because of size limits
-    cachedDataArray = cachedDataArray.filter(item => item.manualDateTo === manualDateTo);
+    cachedDataArray = cachedDataArray.filter(item => {
+        if (item.manualDateFrom === today) {
+            return item.ticker === ticker && item.manualDateFrom === manualDateFrom;
+        } else {
+            return true;
+        }
+    });
 
     const cachedItem = cachedDataArray.filter(item => {
         const condition1 = item.ticker.toLowerCase() === ticker.toLowerCase();
