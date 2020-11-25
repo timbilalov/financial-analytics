@@ -1,6 +1,6 @@
-import {CALC_CURRENCIES, CALC_METHODS} from "@constants";
+import {CALC_CURRENCIES, CALC_METHODS, DEFAULT_TAX} from "@constants";
 
-export function calcData(title, data, amount, isUsd, method, usdData, calcCurrency) {
+export function calcData(title, data, amount, isUsd, method, usdData, calcCurrency, useTaxes) {
     if (!Object.values(CALC_METHODS).includes(method)) {
         return [];
     }
@@ -11,6 +11,9 @@ export function calcData(title, data, amount, isUsd, method, usdData, calcCurren
 
     let prevUsdValue;
     let usdValue;
+
+    // TODO: Прикрутить привязку к дате покупке, так как есть правило отмены налогов, если владеешь бумагой более 3 лет.
+    const taxesKoef = useTaxes ? (1 - DEFAULT_TAX) : 1;
 
     if (calculated.length !== 0) {
         let k = 0;
@@ -35,13 +38,14 @@ export function calcData(title, data, amount, isUsd, method, usdData, calcCurren
         }
 
         for (let i = 0; i < calculated.length; i++) {
+            let value = calculated[i].value;
+
             if (i === 0) {
-                calculated[i].value = 0;
+                value = 0;
             } else {
-                // TODO: Здесь только расчёты, а данные ведь те же самые. В дальнейшем, отрефакторить, чтобы не делать лишних запросов.
                 if (method === CALC_METHODS.RELATIVE || method === CALC_METHODS.RELATIVE_ANNUAL) {
                     // TODO: Учесть расчёты в долларах
-                    calculated[i].value = (calculated[i].value - initialValue) / initialValue * 100;
+                    value = (value - initialValue) / initialValue * 100;
                 } else if (method === CALC_METHODS.ABSOLUTE || method === CALC_METHODS.ABSOLUTE_TOTAL) {
                     usdValue = usdData.filter(item => item.date === calculated[i].date);
                     if (usdValue.length !== 0) {
@@ -55,20 +59,24 @@ export function calcData(title, data, amount, isUsd, method, usdData, calcCurren
 
                     switch (calcCurrency) {
                         case CALC_CURRENCIES.USD:
-                            calculated[i].value = calculated[i].value * koef * amount / usdValue - initialValue;
+                            value = value * koef * amount / usdValue - initialValue;
                             break;
 
                         default:
                         case CALC_CURRENCIES.RUB:
-                            calculated[i].value = calculated[i].value * koef * amount - initialValue;
+                            value = value * koef * amount - initialValue;
                             break;
                     }
                 }
             }
 
             if (method === CALC_METHODS.ABSOLUTE_TOTAL) {
-                calculated[i].value += initialValue;
+                value += initialValue;
             }
+
+            // TODO: Проверить, всё ли верно, если тупо в одно месте этот множитель вкорячить
+            value *= taxesKoef;
+            calculated[i].value = value;
         }
     }
 

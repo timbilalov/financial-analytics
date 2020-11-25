@@ -2,11 +2,11 @@ import {CALC_METHODS} from "@constants";
 import {calcBankDeposit, calcOwnMoney, calcTotal} from "@logic";
 import {prepareSingleDataset} from "./datasets-single";
 
-export async function prepareDatasets(items, datesFullArray, usdData, calcMethod, datasetsColors, calcCurrency) {
+export async function prepareDatasets(items, datesFullArray, usdData, calcMethod, datasetsColors, calcCurrency, useTaxes) {
     const datasets = [];
 
     for (const {title, data, amount, isUsd} of items) {
-        datasets.push(prepareSingleDataset(title, data, amount, isUsd, datasets, datesFullArray, datasetsColors, calcMethod, usdData, calcCurrency));
+        datasets.push(prepareSingleDataset(title, data, amount, isUsd, datasets, datesFullArray, datasetsColors, calcMethod, usdData, calcCurrency, useTaxes));
     }
 
     const innerDatasets = datasets.slice(0);

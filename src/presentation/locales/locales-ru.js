@@ -5,6 +5,11 @@ export const LOCALES_RU = {
         assets: 'Покупки',
         calc: 'Метод расчёта',
         export: 'Поделиться ссылкой',
+        calcCurrency: 'Валюта расчётов',
+        consider: 'Учитывать',
+    },
+    use: {
+        taxes: 'Налоги',
     },
     calcMethod: {
         relative: 'Процентный',

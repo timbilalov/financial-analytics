@@ -2,7 +2,7 @@
     import { CALC_METHODS, STORAGE_KEYS, CALC_CURRENCIES } from "@constants";
     import LocalStorage from '@utils/local-storage';
     import {fetchUsd, getAllDatesInterval, getAssetsData, parseResponseDataUsd} from '@data';
-    import { prepareDatasets, buildChart, locales } from '@presentation';
+    import {prepareDatasets, buildChart, locales} from '@presentation';
     import {checkImportUrl, makeExportUrl} from "@utils/helpers";
     import Personal from './Personal.svelte';
 
@@ -25,6 +25,8 @@
     let legendItems = [];
     let datasetsColors = {};
     let exportUrl = '';
+    let useTaxes = LocalStorage.get(STORAGE_KEYS.useTaxes) || false;
+    let useTaxesSaved = useTaxes;
 
     console.log('portfoliosData', portfoliosData)
 
@@ -50,6 +52,12 @@
         if (calcCurrency && calcCurrency !== calcCurrencySaved) {
             calcCurrencySaved = calcCurrency;
             LocalStorage.set(STORAGE_KEYS.calcCurrency, calcCurrency);
+            update(currentAssets, true);
+        }
+
+        if (useTaxes !== useTaxesSaved) {
+            useTaxesSaved = useTaxes;
+            LocalStorage.set(STORAGE_KEYS.useTaxes, useTaxes);
             update(currentAssets, true);
         }
     }
@@ -111,11 +119,11 @@
 
         console.log('usdData', usdData);
 
-        datasets = await prepareDatasets(items, datesFullArray, usdData, calcMethod, datasetsColors, calcCurrency);
+        datasets = await prepareDatasets(items, datesFullArray, usdData, calcMethod, datasetsColors, calcCurrency, useTaxes);
         LocalStorage.set(STORAGE_KEYS.datasets, datasets);
 
         setTimeout(() => {
-            chart = buildChart(datasets, calcMethod, datesFullArray, chart, legendItems, usdData, calcCurrency);
+            chart = buildChart(datasets, calcMethod, datesFullArray, chart, legendItems, usdData, calcCurrency, useTaxes);
         }, 200);
     }
 
@@ -188,7 +196,8 @@
     </label>
 
     <hr>
-
+    <b>{locales('common.calcCurrency')}</b>:
+    <br>
     <label>
         <input type="radio" bind:group={calcCurrency} value={CALC_CURRENCIES.RUB}>
         <span>{locales('calcCurrency.rub')}</span>
@@ -197,6 +206,14 @@
     <label>
         <input type="radio" bind:group={calcCurrency} value={CALC_CURRENCIES.USD}>
         <span>{locales('calcCurrency.usd')}</span>
+    </label>
+
+    <hr>
+    <b>{locales('common.consider')}</b>:
+    <br>
+    <label>
+        <input type="checkbox" bind:checked={useTaxes}>
+        <span>{locales('use.taxes')}</span>
     </label>
 
     <hr>

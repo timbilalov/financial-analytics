@@ -16,6 +16,7 @@ export const CALC_CURRENCIES = {
 };
 
 export const BANK_DEPOSIT = 0.05;
+export const DEFAULT_TAX = 0.13;
 
 export const STORAGE_KEYS = {
     portfolio: 'portfolio',
@@ -29,6 +30,7 @@ export const STORAGE_KEYS = {
     usdData: 'usdData',
     lang: 'lang',
     fetchData: 'fetchData',
+    useTaxes: 'useTaxes',
 };
 
 export const LANGUAGES = {
