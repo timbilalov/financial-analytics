@@ -28,6 +28,7 @@ export const LOCALES_RU = {
         cancel: 'Отменить',
         change: 'Изменить',
         clear: 'Очистить',
+        clearCache: 'Сбросить кэш',
     },
     assets: {
         ticker: 'Тикер',

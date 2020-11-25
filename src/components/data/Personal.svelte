@@ -1,7 +1,8 @@
 <script>
     import { createEventDispatcher } from 'svelte';
-    import {ASSET_DEFAULT_FIELDS} from "@constants";
+    import {ASSET_DEFAULT_FIELDS, STORAGE_KEYS} from "@constants";
     import {locales} from "@presentation";
+    import LocalStorage from "@utils/local-storage";
 
     export let assets;
 
@@ -100,6 +101,13 @@
         update();
         isManageDialogOpened = false;
     }
+
+    function onClearCacheButtonClick() {
+        const removeStatus = LocalStorage.remove(STORAGE_KEYS.fetchData);
+        if (removeStatus === true) {
+            window.location.reload();
+        }
+    }
 </script>
 
 <style>
@@ -128,6 +136,9 @@
     <button on:click={onAddButtonClick}>{locales('actions.add')}</button>
     <button on:click={onManageButtonClick}>{locales('actions.change')}</button>
     <button on:click={onClearButtonClick}>{locales('actions.clear')}</button>
+    <br>
+
+    <button on:click={onClearCacheButtonClick}>{locales('actions.clearCache')}</button>
 
     {#if isAddDialogOpened}
         <hr>

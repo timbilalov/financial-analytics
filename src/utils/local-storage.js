@@ -40,6 +40,24 @@ class LocalStorage {
         return result;
     }
 
+    remove(key) {
+        if (typeof key !== 'string' || (typeof key === 'string' && key.trim() === '')) {
+            console.error('Key must be a non-empty string');
+            return false;
+        }
+
+        let result = false;
+
+        try {
+            localStorage.removeItem(PREFIX + key);
+            result = true;
+        } catch (error) {
+            console.error(`Error while removing '${key}' item from storage`, error);
+        }
+
+        return result;
+    }
+
     export(namesArray) {
         const values = {};
 
