@@ -70,12 +70,12 @@ export function calcData(title, data, amount, isUsd, method, usdData, calcCurren
                 }
             }
 
+            value *= taxesKoef;
+
             if (method === CALC_METHODS.ABSOLUTE_TOTAL) {
                 value += initialValue;
             }
 
-            // TODO: Проверить, всё ли верно, если тупо в одно месте этот множитель вкорячить
-            value *= taxesKoef;
             calculated[i].value = value;
         }
     }
