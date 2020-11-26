@@ -7,8 +7,10 @@ export async function fetchMoex(ticker, enteredDateFrom, enteredDateTo, isBond =
         return;
     }
 
+    const yesterday = moment().add(-1, 'days');
+
     const dateFrom = moment(enteredDateFrom, DATE_FORMATS.default);
-    const dateTo = enteredDateTo ? moment(enteredDateTo, DATE_FORMATS.default) : moment();
+    const dateTo = enteredDateTo ? moment(enteredDateTo, DATE_FORMATS.default) : yesterday;
 
     let market = 'shares';
     let engine = 'stock';
