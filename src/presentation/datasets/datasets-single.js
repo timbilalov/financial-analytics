@@ -1,40 +1,48 @@
 import {calcData} from "@logic";
-import {CALC_METHODS, DATE_FORMATS} from "@constants";
+import {BANK_DEPOSIT_LABEL, CALC_METHODS, DATE_FORMATS, OWN_MONEY_LABEL, TOTAL_LABEL} from "@constants";
 import moment from "moment";
+import {addDatasetColor, datasetsColorsStore} from "@store";
 
-export function prepareSingleDataset(title, data, amount, isUsd, datasets, datesFullArray, datasetsColors, calcMethod, usdData, calcCurrency, useTaxes) {
-    const sameLabelDatasets = datasets.filter(item => item.label.toLowerCase() === title.toLowerCase());
+export function prepareSingleDataset(options) {
+    const {title, data, amount, isUsd, datesFullArray, calcMethod, usdData, calcCurrency, useTaxes} = options;
+
+    const datasetsColors = datasetsColorsStore.getState();
     const getRandomNumber = () => Math.round(Math.random() * 255);
 
     let colorRGB;
-    if (sameLabelDatasets.length > 1 && datasetsColors[title] !== undefined) {
-        colorRGB = datasetsColors[title];
-    } else {
-        colorRGB = [getRandomNumber(), getRandomNumber(), getRandomNumber()];
-        datasetsColors[title] = colorRGB;
-    }
     let opacity = 0.6;
     let borderWidth = 1;
     let borderDash;
 
-    if (title.toLowerCase() === 'total') {
+    if (datasetsColors[title] !== undefined) {
+        colorRGB = datasetsColors[title];
+    } else {
+        colorRGB = [getRandomNumber(), getRandomNumber(), getRandomNumber()];
+    }
+
+    if (title === TOTAL_LABEL) {
         colorRGB = [0, 0, 0];
         opacity = 1;
         borderWidth = 2;
     }
 
-    if (title.toLowerCase() === 'bank depo') {
+    if (title === BANK_DEPOSIT_LABEL) {
         colorRGB = [160, 160, 160];
         opacity = 0.7;
         borderWidth = 2;
         borderDash = [20, 20];
     }
 
-    if (title.toLowerCase() === 'own money') {
+    if (title === OWN_MONEY_LABEL) {
         colorRGB = [20, 160, 20];
         opacity = 0.15;
         borderWidth = 0;
     }
+
+    addDatasetColor({
+        title,
+        color: colorRGB,
+    });
 
     let values;
     let valuesAbsTotal;
@@ -115,7 +123,7 @@ export function prepareSingleDataset(title, data, amount, isUsd, datasets, dates
         dataset.borderDash = borderDash;
     }
 
-    if (title.toLowerCase() === 'own money') {
+    if (title === OWN_MONEY_LABEL) {
         dataset.type = 'bar';
     }
 

@@ -1,6 +1,7 @@
 import {CALC_METHODS} from "@constants";
 
-export function labelCallback(tooltipItem, data, calcMethod) {
+export function labelCallback(tooltipItem, data, options) {
+    const {calcMethod} = options;
     const dataset = data.datasets[tooltipItem.datasetIndex];
     const label = dataset.label;
     const date = tooltipItem.label;

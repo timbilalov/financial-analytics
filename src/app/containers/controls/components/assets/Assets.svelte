@@ -1,0 +1,66 @@
+<script>
+    import {locales} from "@presentation";
+    import {portfoliosStore} from "@store";
+    import AddNewAsset from "./components/AddNewAsset.svelte";
+    import ManageAssets from "./components/ManageAssets.svelte";
+    import LocalStorage from "@utils/local-storage";
+    import {STORAGE_KEYS} from "@constants";
+
+    let assets = [];
+    let isAddDialogOpened = false;
+    let isManageDialogOpened = false;
+
+    portfoliosStore.watch(function (state) {
+        const currentPortfolio = state.list.filter(item => item.name === state.current)[0];
+
+        assets = currentPortfolio.assets;
+    });
+
+    function onAddButtonClick() {
+        isAddDialogOpened = !isAddDialogOpened;
+
+        if (isAddDialogOpened === true) {
+            isManageDialogOpened = false;
+        }
+    }
+
+    function onManageButtonClick() {
+        isManageDialogOpened = !isManageDialogOpened;
+
+        if (isManageDialogOpened === true) {
+            isAddDialogOpened = false;
+        }
+    }
+
+    function handleNewAssetDone() {
+        isAddDialogOpened = false;
+    }
+
+    function handleManageAssetsDone() {
+        isManageDialogOpened = false;
+    }
+
+    function onClearCacheButtonClick() {
+        const removeStatus = LocalStorage.remove(STORAGE_KEYS.fetchData);
+        if (removeStatus === true) {
+            window.location.reload();
+        }
+    }
+</script>
+
+{locales('common.assets')}: {assets.length}
+<br>
+
+<button on:click={onAddButtonClick}>{locales('actions.add')}</button>
+<button on:click={onManageButtonClick}>{locales('actions.change')}</button>
+<br>
+
+<button on:click={onClearCacheButtonClick}>{locales('actions.clearCache')}</button>
+
+{#if isAddDialogOpened}
+    <AddNewAsset on:done={handleNewAssetDone} />
+{/if}
+
+{#if isManageDialogOpened}
+    <ManageAssets on:done={handleManageAssetsDone} />
+{/if}

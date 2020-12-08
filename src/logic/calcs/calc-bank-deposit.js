@@ -1,7 +1,8 @@
 import moment from "moment";
 import {BANK_DEPOSIT, CALC_CURRENCIES, CALC_METHODS, DATE_FORMATS} from "@constants";
 
-export function calcBankDeposit(datasets, datesFullArray, calcMethod, usdData, calcCurrency) {
+export function calcBankDeposit(datasets, options) {
+    const {datesFullArray, calcMethod, usdData, calcCurrency} = options;
     const values = [];
     const dates = datesFullArray;
     const date1 = moment(dates[0], DATE_FORMATS.default);

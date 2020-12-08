@@ -63,11 +63,16 @@ export default {
 			entries: {
 				'@constants': path.resolve(projectRootDir, './src/utils/constants'),
 				'@utils': path.resolve(projectRootDir, './src/utils'),
+				'@helpers': path.resolve(projectRootDir, './src/utils/helpers.js'),
 				'@presentation': path.resolve(projectRootDir, './src/presentation'),
 				'@logic': path.resolve(projectRootDir, './src/logic'),
 				'@data': path.resolve(projectRootDir, './src/data'),
 				'@fetch': path.resolve(projectRootDir, './src/data/fetch'),
 				'@parse': path.resolve(projectRootDir, './src/data/parse'),
+				'@app': path.resolve(projectRootDir, './src/app'),
+				'@components': path.resolve(projectRootDir, './src/app/components'),
+				'@containers': path.resolve(projectRootDir, './src/app/containers'),
+				'@store': path.resolve(projectRootDir, './src/store'),
 			}
 		}),
 

@@ -1,6 +1,7 @@
 import LocalStorage from '@utils/local-storage';
 import {DEFAULT_LANGUAGE, LANGUAGES, STORAGE_KEYS} from "@constants";
 import {LOCALES_RU} from "./locales-ru";
+import {deepClone} from "@helpers";
 
 export function locales(namespace) {
     const messageFallback = '...';
@@ -28,7 +29,7 @@ export function locales(namespace) {
 
     const namespaceSplit = namespace.split('.');
 
-    let result = Object.assign({}, localesObject);
+    let result = deepClone(localesObject);
     let hasError = false;
 
     try {

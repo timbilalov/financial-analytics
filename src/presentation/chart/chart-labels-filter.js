@@ -1,8 +1,11 @@
-export function labelsFilter(item, legendItemsToLink) {
-    const title = item.text.toLowerCase();
+import {legendItemsStore, addLegendItem} from "@store";
 
-    if (!legendItemsToLink.includes(title)) {
-        legendItemsToLink.push(title);
+export function labelsFilter(item) {
+    const title = item.text.toLowerCase();
+    const existingLabels = legendItemsStore.getState();
+
+    if (existingLabels.includes(title) === false) {
+        addLegendItem(title);
         return true;
     } else {
         return false;

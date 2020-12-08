@@ -1,6 +1,6 @@
 import moment from "moment";
 import {DATE_FORMATS} from "@constants";
-import {errorHandler} from "@utils/helpers";
+import {errorHandler} from "@helpers";
 
 export async function fetchInvestcab(ticker, enteredDateFrom, enteredDateTo) {
     if (ticker === undefined || enteredDateFrom === undefined) {

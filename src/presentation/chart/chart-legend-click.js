@@ -1,38 +1,38 @@
-import {CALC_METHODS} from "@constants";
+import {BANK_DEPOSIT_LABEL, OWN_MONEY_LABEL, TOTAL_LABEL} from "@constants";
 import {calcBankDeposit, calcOwnMoney, calcTotal} from "@logic";
+import {clearLegendItems, chartInstanceStore} from "@store";
+import {isLabelCommon} from "@helpers";
 
-export function onLegendClick(legendItem, chart, calcMethod, datasets, datesFullArray, legendItemsToLink, usdData, calcCurrency) {
+export function onLegendClick(legendItem, options) {
+    const chart = chartInstanceStore.getState();
+    const datasets = chart.config.data.datasets;
     const hidden = !legendItem.hidden;
     const label = datasets[legendItem.datasetIndex].label;
+    const innerDatasets = datasets.filter(item => isLabelCommon(item.label) === false);
 
     datasets.filter(item => item.label === label).forEach(dataset => dataset.hidden = hidden);
 
-    let fromEndCount = 2;
-
-    if (calcMethod === CALC_METHODS.ABSOLUTE_TOTAL) {
-        fromEndCount = 3;
+    const currentTotalDataset = datasets.filter(item => item.label === TOTAL_LABEL)[0];
+    if (currentTotalDataset !== undefined) {
+        const newTotal = calcTotal(innerDatasets, options);
+        currentTotalDataset.data = newTotal.map(item => item.value);
+        currentTotalDataset.dates = newTotal.map(item => item.date);
     }
 
-    const innerDatasets = datasets.slice(0, datasets.length - fromEndCount);
-    const chartDatasets = chart.config.data.datasets;
+    const currentDepoDataset = datasets.filter(item => item.label === BANK_DEPOSIT_LABEL)[0];
+    if (currentDepoDataset !== undefined) {
+        const newDepo = calcBankDeposit(innerDatasets, options);
+        currentDepoDataset.data = newDepo.map(item => item.value);
+        currentDepoDataset.dates = newDepo.map(item => item.date);
+    }
 
-    const newTotal = calcTotal(innerDatasets, calcMethod);
-    const currentTotalDataset = chartDatasets[chartDatasets.length - fromEndCount];
-    currentTotalDataset.data = newTotal.map(item => item.value);
-    currentTotalDataset.dates = newTotal.map(item => item.date);
-
-    const newDepo = calcBankDeposit(innerDatasets, datesFullArray, calcMethod, usdData, calcCurrency);
-    const currentDepoDataset = chartDatasets[chartDatasets.length - fromEndCount + 1];
-    currentDepoDataset.data = newDepo.map(item => item.value);
-    currentDepoDataset.dates = newDepo.map(item => item.date);
-
-    if (calcMethod === CALC_METHODS.ABSOLUTE_TOTAL) {
-        const newOwn = calcOwnMoney(innerDatasets, datesFullArray, usdData, calcCurrency);
-        const currentOwnDataset = chartDatasets[chartDatasets.length - fromEndCount + 2];
+    const currentOwnDataset = datasets.filter(item => item.label === OWN_MONEY_LABEL)[0];
+    if (currentOwnDataset !== undefined) {
+        const newOwn = calcOwnMoney(innerDatasets, options);
         currentOwnDataset.data = newOwn.map(item => item.value);
         currentOwnDataset.dates = newOwn.map(item => item.date);
     }
 
-    legendItemsToLink.splice(0, legendItemsToLink.length);
+    clearLegendItems();
     chart.update();
 }

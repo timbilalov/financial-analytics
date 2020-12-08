@@ -1,6 +1,7 @@
 import {CALC_CURRENCIES} from "@constants";
 
-export function calcOwnMoney(datasets, datesFullArray, usdData, calcCurrency) {
+export function calcOwnMoney(datasets, options) {
+    const {datesFullArray, usdData, calcCurrency} = options;
     const items = [];
     const dates = datesFullArray;
 

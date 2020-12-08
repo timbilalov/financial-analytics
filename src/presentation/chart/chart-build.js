@@ -2,8 +2,9 @@ import Chart from "chart.js";
 import {onLegendClick} from "./chart-legend-click";
 import {labelCallback} from "./chart-label-callback";
 import {labelsFilter} from "./chart-labels-filter";
+import {chartInstanceStore, clearLegendItems, setChartInstance} from "@store";
 
-export function buildChart(datasets, calcMethod, datesFullArray, chartToLink, legendItemsToLink, usdData, calcCurrency) {
+export function buildChart(datasets, options) {
     console.log('buildChart', datasets);
 
     if (!datasets || !datasets.length) {
@@ -12,9 +13,10 @@ export function buildChart(datasets, calcMethod, datesFullArray, chartToLink, le
 
     const ctx = document.getElementById('myChart');
     const labels = datasets[0].dates;
+    const existingChartInstance = chartInstanceStore.getState();
 
-    if (chartToLink !== undefined && typeof chartToLink.destroy === 'function') {
-        chartToLink.destroy();
+    if (existingChartInstance !== undefined && typeof existingChartInstance.destroy === 'function') {
+        existingChartInstance.destroy();
     }
 
     const chart = new Chart(ctx, {
@@ -30,19 +32,17 @@ export function buildChart(datasets, calcMethod, datesFullArray, chartToLink, le
                 mode: 'index',
                 callbacks: {
                     label: function (tooltipItem, data) {
-                        return labelCallback(tooltipItem, data, calcMethod);
+                        return labelCallback(tooltipItem, data, options);
                     },
                 },
             },
             legend: {
                 labels: {
-                    filter: function (item) {
-                        return labelsFilter(item, legendItemsToLink);
-                    },
+                    filter: labelsFilter,
                 },
                 onClick: function(e, legendItem) {
                     Chart.defaults.global.legend.onClick.call(this, e, legendItem);
-                    onLegendClick.call(this, legendItem, chart, calcMethod, datasets, datesFullArray, legendItemsToLink, usdData, calcCurrency);
+                    onLegendClick.call(this, legendItem, options);
                 }
             },
         }
@@ -57,8 +57,9 @@ export function buildChart(datasets, calcMethod, datesFullArray, chartToLink, le
     optionsYAxes.ticks.min = currentYMin;
     optionsYAxes.ticks.max = currentYMax;
 
-    legendItemsToLink.splice(0, legendItemsToLink.length);
+    clearLegendItems();
     chart.update();
+    setChartInstance(chart);
 
     return chart;
 }

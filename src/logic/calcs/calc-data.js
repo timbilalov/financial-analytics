@@ -1,4 +1,5 @@
 import {CALC_CURRENCIES, CALC_METHODS, DEFAULT_TAX} from "@constants";
+import {deepClone} from "@helpers";
 
 export function calcData(title, data, amount, isUsd, method, usdData, calcCurrency, useTaxes) {
     if (!Object.values(CALC_METHODS).includes(method)) {
@@ -7,7 +8,7 @@ export function calcData(title, data, amount, isUsd, method, usdData, calcCurren
 
     amount = parseInt(amount, 10);
 
-    const calculated = data.slice(0).map(item => Object.assign({}, item));
+    const calculated = data.slice(0).map(item => deepClone(item));
 
     let prevUsdValue;
     let usdValue;

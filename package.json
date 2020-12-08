@@ -23,6 +23,7 @@
     "svelte": "^3.0.0"
   },
   "dependencies": {
+    "effector": "^21.7.5",
     "sirv-cli": "^1.0.0"
   }
 }
