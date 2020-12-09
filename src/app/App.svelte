@@ -3,8 +3,10 @@
     import Controls from '@containers/controls/Controls.svelte';
     import {portfoliosStore, calcStore, setUsdData, setDatesFullArray, datesStore, usdDataStore} from "@store";
     import {buildChart, prepareDatasets} from "@presentation";
-    import {debounce, deepClone} from "@helpers";
+    import {checkImportUrl, debounce, deepClone} from "@helpers";
     import {fetchUsd, getAllDatesInterval, getAssetsData, parseResponseDataUsd} from "@data";
+
+    checkImportUrl();
 
     function prepareOptions() {
         const calcState = calcStore.getState();
