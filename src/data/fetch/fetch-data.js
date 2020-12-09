@@ -52,5 +52,7 @@ export async function fetchData(ticker, manualDateFrom, manualDateTo, isMoex = f
     cachedDataArray.push(itemToCache);
     LocalStorage.set(STORAGE_KEYS.fetchData, cachedDataArray);
 
+    console.log('fetched', ticker, manualDateFrom, manualDateTo)
+
     return result;
 }

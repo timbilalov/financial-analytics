@@ -3,11 +3,10 @@ import {CALC_METHODS, STORAGE_KEYS} from "@constants";
 
 // TODO: Как минимум, отрефакторить. Как максимум, ещё раз проанализировать верность расчётов.
 export function calcTotal(datasets, options) {
-    const {calcMethod} = options;
-    datasets = datasets.filter(dataset => dataset.hidden !== true);
-
+    const {calcMethod, datesFullArray} = options;
     const total = [];
-    const datesFullArray = LocalStorage.get(STORAGE_KEYS.datesFullArray) || [];
+
+    datasets = datasets.filter(dataset => dataset.hidden !== true);
 
     let prevTotal = 0;
     let prevSavedTotal = 0;

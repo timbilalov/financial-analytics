@@ -29,7 +29,5 @@ export function getAllDatesInterval(items) {
         dates2.push(date);
     }
 
-    LocalStorage.set(STORAGE_KEYS.datesFullArray, dates2);
-
     return dates2;
 }

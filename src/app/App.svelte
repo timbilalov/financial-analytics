@@ -42,7 +42,6 @@
         const usdDataRaw = await fetchUsd(datesFullArray);
         const usdData = parseResponseDataUsd(usdDataRaw, datesFullArray);
 
-        console.log('usdData', usdData);
         setUsdData(usdData);
         setDatesFullArray(datesFullArray);
 

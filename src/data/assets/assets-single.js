@@ -23,8 +23,6 @@ export async function getSingleAssetData(asset) {
         isUsd: isUsd,
     };
 
-    console.log('ticker', ticker, buyDate, amount, data)
-
     if (dataParsed && dataParsed.length !== 0) {
         return data;
     }

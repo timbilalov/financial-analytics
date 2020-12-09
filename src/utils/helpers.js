@@ -17,11 +17,8 @@ export function errorHandler() {
 
 export async function makeExportUrl() {
     const namesArray = [
-        STORAGE_KEYS.portfoliosData,
-        STORAGE_KEYS.portfolioList,
-        STORAGE_KEYS.portfolio,
-        STORAGE_KEYS.calcMethod,
-        STORAGE_KEYS.calcCurrency,
+        STORAGE_KEYS.portfolios,
+        STORAGE_KEYS.calc,
     ];
     const encodedString = LocalStorage.export(namesArray);
 

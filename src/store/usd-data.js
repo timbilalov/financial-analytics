@@ -4,11 +4,6 @@ import {isArraysSimilar} from "@helpers";
 export const usdDataStore = createStore([]);
 export const setUsdData = createEvent();
 
-// TEMP
-usdDataStore.watch(function (state) {
-    console.log('usdDataStore changed', state)
-});
-
 usdDataStore.on(setUsdData, function (state, usdData) {
     if (Array.isArray(usdData) === false || isArraysSimilar(state, usdData) === true) {
         return state;

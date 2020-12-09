@@ -3,26 +3,16 @@ import LocalStorage from "@utils/local-storage";
 import {CALC_CURRENCIES, CALC_METHODS, POSSIBLE_USES, STORAGE_KEYS} from "@constants";
 import {deepClone, isObjectsEqual} from "@helpers";
 
-const method = LocalStorage.get(STORAGE_KEYS.calcMethod) || CALC_METHODS.RELATIVE;
-const currency = LocalStorage.get(STORAGE_KEYS.calcCurrency) || CALC_CURRENCIES.RUB;
-const uses = {
-    taxes: LocalStorage.get(STORAGE_KEYS.useTaxes) || false,
-};
-
-const defaultState = {
-    method,
-    currency,
-    uses,
-};
+const defaultState = LocalStorage.get(STORAGE_KEYS.calc) || {};
 
 export const calcStore = createStore(defaultState);
 export const setCalcMethod = createEvent();
 export const setCurrency = createEvent();
 export const setCalcUses = createEvent();
 
-// TEMP
 calcStore.watch(function (state) {
-    console.log('calcStore changed', state)
+    console.log('calcStore changed', deepClone(state))
+    LocalStorage.set(STORAGE_KEYS.calc, state);
 });
 
 calcStore.on(setCalcMethod, function (state, method) {

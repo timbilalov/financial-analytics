@@ -19,19 +19,10 @@ export const BANK_DEPOSIT = 0.05;
 export const DEFAULT_TAX = 0.13;
 
 export const STORAGE_KEYS = {
-    portfolio: 'portfolio',
     portfolios: 'portfolios',
-    portfolioList: 'portfolioList',
-    portfoliosData: 'portfoliosData',
-    datasets: 'datasets',
-    datesFullArray: 'datesFullArray',
-    assets: 'assets',
-    calcMethod: 'calcMethod',
-    calcCurrency: 'calcCurrency',
-    usdData: 'usdData',
+    calc: 'calc',
     lang: 'lang',
     fetchData: 'fetchData',
-    useTaxes: 'useTaxes',
 };
 
 export const LANGUAGES = {

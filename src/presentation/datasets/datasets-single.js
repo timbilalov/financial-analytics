@@ -2,6 +2,7 @@ import {calcData} from "@logic";
 import {BANK_DEPOSIT_LABEL, CALC_METHODS, DATE_FORMATS, OWN_MONEY_LABEL, TOTAL_LABEL} from "@constants";
 import moment from "moment";
 import {addDatasetColor, datasetsColorsStore} from "@store";
+import {isLabelCommon} from "@helpers";
 
 export function prepareSingleDataset(options) {
     const {title, data, amount, isUsd, datesFullArray, calcMethod, usdData, calcCurrency, useTaxes} = options;
@@ -54,7 +55,7 @@ export function prepareSingleDataset(options) {
     let calculatedDataAbsTotal;
     let shouldStoreAbsTotal = false;
 
-    if (title.toLowerCase() === 'total' || title.toLowerCase() === 'bank depo' || title.toLowerCase() === 'own money') {
+    if (isLabelCommon(title)) {
         calculatedData = data;
     } else {
         calculatedData = calcData(title, data, amount, isUsd, calcMethod, usdData, calcCurrency, useTaxes);

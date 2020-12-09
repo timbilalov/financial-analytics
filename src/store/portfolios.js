@@ -26,9 +26,9 @@ export const addNewAsset = createEvent();
 export const removeAsset = createEvent();
 export const setAssets = createEvent();
 
-// TEMP
 portfoliosStore.watch(function (state) {
     console.log('portfoliosStore changed', deepClone(state))
+    LocalStorage.set(STORAGE_KEYS.portfolios, state);
 });
 
 portfoliosStore.on(addPortfolio, function (state, name) {
