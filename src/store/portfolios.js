@@ -3,22 +3,18 @@ import LocalStorage from "@utils/local-storage";
 import {DEFAULT_PORTFOLIO_NAME, STORAGE_KEYS} from "@constants";
 import {deepClone, isObjectsEqual} from "@helpers";
 
-const portfolios = LocalStorage.get(STORAGE_KEYS.portfolios) || {};
-
-if (portfolios.current === undefined) {
-    portfolios.current = DEFAULT_PORTFOLIO_NAME;
-}
-
-if (portfolios.list === undefined) {
-    portfolios.list = [
+const defaultState = {
+    current: DEFAULT_PORTFOLIO_NAME,
+    list: [
         {
-            name: portfolios.current,
+            name: DEFAULT_PORTFOLIO_NAME,
             assets: [],
         }
-    ];
-}
+    ],
+};
+const initialState = Object.assign({}, defaultState, LocalStorage.get(STORAGE_KEYS.portfolios));
 
-export const portfoliosStore = createStore(portfolios);
+export const portfoliosStore = createStore(initialState);
 export const addPortfolio = createEvent();
 export const removePortfolio = createEvent();
 export const setCurrentPortfolio = createEvent();

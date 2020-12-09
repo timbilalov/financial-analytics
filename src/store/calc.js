@@ -3,9 +3,14 @@ import LocalStorage from "@utils/local-storage";
 import {CALC_CURRENCIES, CALC_METHODS, POSSIBLE_USES, STORAGE_KEYS} from "@constants";
 import {deepClone, isObjectsEqual} from "@helpers";
 
-const defaultState = LocalStorage.get(STORAGE_KEYS.calc) || {};
+const defaultState = {
+    method: CALC_METHODS.RELATIVE,
+    currency: CALC_CURRENCIES.RUB,
+    uses: {},
+};
+const initialState = Object.assign({}, defaultState, LocalStorage.get(STORAGE_KEYS.calc));
 
-export const calcStore = createStore(defaultState);
+export const calcStore = createStore(initialState);
 export const setCalcMethod = createEvent();
 export const setCurrency = createEvent();
 export const setCalcUses = createEvent();
