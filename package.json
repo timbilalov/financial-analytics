@@ -1,17 +1,19 @@
 {
-  "name": "svelte-app",
-  "version": "1.0.0",
+  "name": "financial-analytics",
+  "version": "0.0.1",
   "scripts": {
-    "test": "echo \"Error: no test specified.\"",
+    "test": "jest --silent",
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "start": "sirv public"
   },
   "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.12.1",
     "@rollup/plugin-alias": "^3.1.1",
     "@rollup/plugin-commonjs": "^14.0.0",
     "@rollup/plugin-node-resolve": "^8.0.0",
     "chart.js": "^2.9.3",
+    "jest": "^26.6.3",
     "lodash": "^4.17.20",
     "lz-string": "^1.4.4",
     "moment": "^2.28.0",

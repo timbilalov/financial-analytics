@@ -16,7 +16,7 @@ export async function fetchInvestcab(ticker, enteredDateFrom, enteredDateTo) {
     const response = await fetch(url);
 
     if (!response.ok) {
-        errorHandler();
+        errorHandler(response.status);
         return;
     }
 

@@ -28,7 +28,7 @@ export async function fetchMoex(ticker, enteredDateFrom, enteredDateTo, isBond =
     let response = await fetch(url);
 
     if (!response.ok) {
-        errorHandler();
+        errorHandler(response.status);
         return;
     }
 
@@ -45,7 +45,7 @@ export async function fetchMoex(ticker, enteredDateFrom, enteredDateTo, isBond =
             response = await fetch(urlMore);
 
             if (!response.ok) {
-                errorHandler();
+                errorHandler(response.status);
                 return;
             }
 

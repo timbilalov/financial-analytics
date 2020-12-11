@@ -11,8 +11,12 @@ export function dateFormat(dateUTC, format = 'YYYY.MM.DD') {
 }
 
 // TODO: Подумать насчёт того, чтобы сделать более осмысленный обработчик ошибок.
-export function errorHandler() {
-    console.log("Ошибка HTTP: " + response.status);
+export function errorHandler(message = 'unknown') {
+    if (typeof message !== 'string') {
+        message = message.toString();
+    }
+
+    console.log("Ошибка: " + message);
 }
 
 export async function makeExportUrl() {
@@ -76,8 +80,15 @@ export function isObjectsEqual(object1, object2) {
     } else {
         for (const prop in object1) {
             if (object1[prop] !== object2[prop]) {
-                result = false;
-                break;
+                if (typeof object1[prop] === 'object') {
+                    result = isObjectsEqual(object1[prop], object2[prop]);
+                } else {
+                    result = false;
+                }
+
+                if (result === false) {
+                    break;
+                }
             }
         }
     }
@@ -97,8 +108,15 @@ export function isArraysSimilar(array1, array2) {
         array1 = deepClone(array1);
         array2 = deepClone(array2);
 
-        array1.sort();
-        array2.sort();
+        const sortFunc = function (a, b) {
+            const stringA = JSON.stringify(a);
+            const stringB = JSON.stringify(b);
+
+            return stringA > stringB ? 1 : -1;
+        };
+
+        array1.sort(sortFunc);
+        array2.sort(sortFunc);
 
         for (const index in array1) {
             const value1 = array1[index];
