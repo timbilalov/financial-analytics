@@ -1,3 +1,4 @@
+import lz from 'lz-string';
 import {
     checkImportUrl,
     dateFormat, debounce,
@@ -13,12 +14,26 @@ describe('Helpers', function () {
     test('dateFormat', function () {
         const dateUTC1 = 1577836800000; // 2020.01.01
         const dateUTC2 = 1607525676469; // 2020.12.09
+        const wrongDateNumber = 2145;
+        const wrongDateType = 'some text';
+        const wrongDateType2 = {
+            prop: 'some value',
+        };
+        const wrongDateFormat = 'bla bla bla';
+        const wrongDateFormat2 = 1234;
 
         expect(dateFormat(dateUTC1)).toBe('2020.01.01');
         expect(dateFormat(dateUTC1, 'YYYY')).toBe('2020');
+        expect(dateFormat(dateUTC1 / 1000)).toBe('2020.01.01');
 
         expect(dateFormat(dateUTC2)).toBe('2020.12.09');
         expect(dateFormat(dateUTC2, 'DD--MM')).toBe('09--12');
+
+        expect(dateFormat(wrongDateNumber)).toBe('1970.01.01');
+        expect(dateFormat(wrongDateType)).toBe(undefined);
+        expect(dateFormat(wrongDateType2)).toBe(undefined);
+        expect(typeof dateFormat(dateUTC1, wrongDateFormat)).toBe('string');
+        expect(dateFormat(dateUTC1, wrongDateFormat2)).toBe(undefined);
     });
 
     test('errorHandler', function () {
@@ -50,7 +65,24 @@ describe('Helpers', function () {
     });
 
     test('checkImportUrl', function () {
-        expect(() => checkImportUrl()).not.toThrow();
+        const urlToReload = checkImportUrl();
+
+        const encodedString = 'N4IgZg9hIFwgRgQwE4gL5A'; // lz.compressToEncodedURIComponent(JSON.stringify({ foo: 'bar' }))
+        const href = "http://dummy.com";
+        const hash = `#${EXPORT_HREF_PARAM_NAME}=${encodedString}`;
+
+        global.window = Object.create(window);
+        Object.defineProperty(window, 'location', {
+            value: {
+                href,
+                hash,
+            }
+        });
+
+        const urlToReload2 = checkImportUrl();
+
+        expect(urlToReload).toBe(undefined);
+        expect(urlToReload2).toBe(href);
     });
 
     test('deepClone', function () {
@@ -102,11 +134,23 @@ describe('Helpers', function () {
             b: '2',
             a: 1,
         };
+        const object3 = {
+            a: 1,
+            b: '2',
+        };
+        const object4 = {
+            a: 2,
+            b: '3',
+        };
 
         expect(object2).toStrictEqual(object1);
         expect(isObjectsEqual(object1, object2)).toEqual(true);
         expect(object2 === object1).toEqual(false);
         expect(object2 == object1).toEqual(false);
+
+        expect(isObjectsEqual(object1, object3)).toEqual(false);
+        expect(isObjectsEqual(object2, object3)).toEqual(false);
+        expect(isObjectsEqual(object3, object4)).toEqual(false);
     });
 
     test('isArraysSimilar', function () {
@@ -137,11 +181,29 @@ describe('Helpers', function () {
             '2',
             1,
         ];
+        const array3 = [
+            1,
+            '2',
+            {
+                foo: 'bar',
+            },
+        ];
+        const array4 = [
+            1,
+            '2',
+            {
+                foo: 'bar2',
+            },
+        ];
 
         expect(array2).not.toStrictEqual(array1);
         expect(isArraysSimilar(array1, array2)).toEqual(true);
         expect(array2 === array1).toEqual(false);
         expect(array2 == array1).toEqual(false);
+
+        expect(isArraysSimilar(array1, array3)).toEqual(false);
+        expect(isArraysSimilar(array2, array3)).toEqual(false);
+        expect(isArraysSimilar(array3, array4)).toEqual(false);
     });
 
     test('debounce', function (done) {
@@ -154,6 +216,9 @@ describe('Helpers', function () {
             setTimeout(timeoutFunc, i * 20);
         }
 
+        expect(debounce('string')).toEqual(undefined);
+        expect(debounce(func, 'string')).toEqual(undefined);
+
         setTimeout(function () {
             expect(timeoutFunc).toHaveBeenCalledTimes(times);
             expect(func).toHaveBeenCalledTimes(1);
@@ -162,6 +227,9 @@ describe('Helpers', function () {
     });
 
     test('isLabelCommon', function () {
+        expect(isLabelCommon(1234)).toEqual(undefined);
+        expect(isLabelCommon()).toEqual(undefined);
+
         expect(isLabelCommon(TOTAL_LABEL)).toEqual(true);
         expect(isLabelCommon(BANK_DEPOSIT_LABEL)).toEqual(true);
         expect(isLabelCommon(OWN_MONEY_LABEL)).toEqual(true);

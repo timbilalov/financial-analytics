@@ -5,4 +5,7 @@ module.exports = {
         '@helpers': '<rootDir>/src/utils/helpers',
         '@constants': '<rootDir>/src/utils/constants',
     },
+    coverageReporters: [
+        'text',
+    ],
 };

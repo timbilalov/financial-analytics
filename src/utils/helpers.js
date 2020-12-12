@@ -3,6 +3,10 @@ import {BANK_DEPOSIT_LABEL, EXPORT_HREF_PARAM_NAME, OWN_MONEY_LABEL, STORAGE_KEY
 import LocalStorage from '@utils/local-storage';
 
 export function dateFormat(dateUTC, format = 'YYYY.MM.DD') {
+    if (typeof dateUTC !== 'number' || typeof format !== 'string') {
+        return;
+    }
+
     if (String(dateUTC).length <= 10) {
         dateUTC *= 1000;
     }
@@ -44,20 +48,24 @@ export async function makeExportUrl() {
 
 export function checkImportUrl() {
     const hash = window.location.hash;
+    let urlToReload = window.location.href;
 
     if (!hash) {
         return;
     }
 
-    let urlToReload = window.location.href;
     urlToReload = urlToReload.replace(hash, '');
 
     const encodedValues = hash.substring(EXPORT_HREF_PARAM_NAME.length + 2);
     const decodedValues = LocalStorage.import(encodedValues);
 
-    if (decodedValues) {
+    console.log('decodedValues', typeof decodedValues, decodedValues)
+
+    if (decodedValues !== undefined) {
         window.location.href = urlToReload;
     }
+
+    return urlToReload;
 }
 
 // NOTE: Сериализация и десериализация — очень простой и понятный способ глубокого клонирования. У него есть свои минусы, но, пока что, в данном приложении, на них можно закрыть глаза.
@@ -132,7 +140,11 @@ export function isArraysSimilar(array1, array2) {
     return result;
 }
 
-export function debounce(func, wait = 200, immediate) {
+export function debounce(func, wait = 200) {
+    if (typeof wait !== 'number' || typeof func !== 'function') {
+        return;
+    }
+
     let timeout;
 
     return function executedFunction() {
@@ -141,20 +153,11 @@ export function debounce(func, wait = 200, immediate) {
 
         const later = function() {
             timeout = null;
-
-            if (!immediate) {
-                func.apply(context, args);
-            }
+            func.apply(context, args);
         };
-
-        const callNow = immediate && !timeout;
 
         clearTimeout(timeout);
         timeout = setTimeout(later, wait);
-
-        if (callNow) {
-            func.apply(context, args);
-        }
     };
 }
 

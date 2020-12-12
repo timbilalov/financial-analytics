@@ -2,7 +2,7 @@
   "name": "financial-analytics",
   "version": "0.0.1",
   "scripts": {
-    "test": "jest --silent",
+    "test": "jest --silent --coverage true",
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "start": "sirv public"
