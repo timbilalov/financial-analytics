@@ -33,7 +33,7 @@ export function parseResponseDataMoex(responseData, isBond) {
             const initialCost = item[30];
             const couponPercent = item[26];
 
-            value = (item[13] + item[8]) / 2;
+            value = item[15] || item[16] || item[11] || (item[13] + item[8]) / 2;
             value /= 100;
             value *= initialCost;
 
@@ -43,7 +43,7 @@ export function parseResponseDataMoex(responseData, isBond) {
             value += initialBondNkd;
             value += valueDiff;
         } else {
-            value = (item[6] + item[11]) / 2;
+            value = item[13] || item[14] || item[10] || (item[6] + item[11]) / 2;
         }
 
         // TODO: Возможно, что для Moex первое условие никогда не выполняется. Проверить.
