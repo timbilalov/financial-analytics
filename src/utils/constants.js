@@ -54,3 +54,5 @@ export const OWN_MONEY_LABEL = 'Own money';
 export const POSSIBLE_USES = [
     'taxes'
 ];
+
+export const DAYS_IN_YEAR = 365;

@@ -24,7 +24,7 @@ export function calcOwnMoney(datasets, options) {
         for (const j in datasets) {
             const dataset = datasets[j];
             const value = dataset.data[i];
-            const valueAbsTotal = dataset?.dataAbsTotal[i];
+            const valueAbsTotal = dataset.dataAbsTotal[i];
 
             if (!isNaN(value) && value !== null) {
                 if (initialValues[j] === undefined && valueAbsTotal !== undefined) {

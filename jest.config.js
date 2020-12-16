@@ -4,6 +4,7 @@ module.exports = {
         '@utils/(.*)': '<rootDir>/src/utils/$1',
         '@helpers': '<rootDir>/src/utils/helpers',
         '@constants': '<rootDir>/src/utils/constants',
+        '@logic': '<rootDir>/src/logic',
     },
     coverageReporters: [
         'text',

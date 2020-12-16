@@ -1,5 +1,5 @@
 import moment from "moment";
-import {BANK_DEPOSIT, CALC_CURRENCIES, CALC_METHODS, DATE_FORMATS} from "@constants";
+import {BANK_DEPOSIT, CALC_CURRENCIES, CALC_METHODS, DATE_FORMATS, DAYS_IN_YEAR} from "@constants";
 
 export function calcBankDeposit(datasets, options) {
     const {datesFullArray, calcMethod, usdData, calcCurrency} = options;
@@ -20,7 +20,7 @@ export function calcBankDeposit(datasets, options) {
         if (calcMethod === CALC_METHODS.RELATIVE_ANNUAL) {
             const date2 = moment(date, DATE_FORMATS.default);
             const daysBetween = date2.diff(date1, 'days');
-            const yearsKoef = daysBetween / 360;
+            const yearsKoef = daysBetween / DAYS_IN_YEAR;
             const usdValueByDate = usdData.filter(item => item.date === date)[0].value;
             const usdKoef = usdValueInitial / usdValueByDate;
 
@@ -35,7 +35,7 @@ export function calcBankDeposit(datasets, options) {
             for (const j in datasets) {
                 const dataset = datasets[j];
                 const value = dataset.data[i];
-                const valueAbsTotal = dataset?.dataAbsTotal[i];
+                const valueAbsTotal = dataset.dataAbsTotal[i];
 
                 if (!isNaN(value) && value !== null) {
                     if (initialValues[j] === undefined && valueAbsTotal !== undefined) {
@@ -55,7 +55,7 @@ export function calcBankDeposit(datasets, options) {
 
                     const date2 = moment(date, DATE_FORMATS.default);
                     const daysBetween = date2.diff(date1, 'days');
-                    const yearsKoef = daysBetween / 360;
+                    const yearsKoef = daysBetween / DAYS_IN_YEAR;
                     let v;
                     let usdKoef = 1;
 
@@ -82,6 +82,8 @@ export function calcBankDeposit(datasets, options) {
 
             value = total;
         }
+
+        value = parseFloat(value.toFixed(4));
 
         values.push({
             value: value,

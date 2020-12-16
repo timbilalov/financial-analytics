@@ -1,13 +1,4 @@
-import lz from 'lz-string';
-import {
-    checkImportUrl,
-    dateFormat, debounce,
-    deepClone,
-    errorHandler,
-    isArraysSimilar, isLabelCommon,
-    isObjectsEqual,
-    makeExportUrl
-} from "@helpers";
+import {checkImportUrl, dateFormat, debounce, deepClone, errorHandler, isArraysSimilar, isLabelCommon, isObjectsEqual, makeExportUrl} from "@helpers";
 import {BANK_DEPOSIT_LABEL, EXPORT_HREF_PARAM_NAME, OWN_MONEY_LABEL, TOTAL_LABEL} from "@constants";
 
 describe('Helpers', function () {
