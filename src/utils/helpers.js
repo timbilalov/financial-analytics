@@ -59,8 +59,6 @@ export function checkImportUrl() {
     const encodedValues = hash.substring(EXPORT_HREF_PARAM_NAME.length + 2);
     const decodedValues = LocalStorage.import(encodedValues);
 
-    console.log('decodedValues', typeof decodedValues, decodedValues)
-
     if (decodedValues !== undefined) {
         window.location.href = urlToReload;
     }

@@ -3,7 +3,11 @@
     import {CALC_CURRENCIES} from "@constants";
     import {calcStore, setCurrency} from "@store";
 
-    let calcCurrency = calcStore.getState().currency;
+    let calcCurrency;
+
+    calcStore.watch(function (state) {
+        calcCurrency = state.currency;
+    });
 
     $: {
         setCurrency(calcCurrency);

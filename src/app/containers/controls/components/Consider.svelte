@@ -2,7 +2,11 @@
     import {locales} from "@presentation";
     import {calcStore, setCalcUses} from "@store";
 
-    let useTaxes = calcStore.getState().uses.taxes;
+    let useTaxes;
+
+    calcStore.watch(function (state) {
+        useTaxes = state.uses.taxes;
+    });
 
     $: {
         setCalcUses({

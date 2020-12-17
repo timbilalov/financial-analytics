@@ -3,7 +3,11 @@
     import {locales} from "@presentation";
     import {calcStore, setCalcMethod} from "@store";
 
-    let calcMethod = calcStore.getState().method;
+    let calcMethod;
+
+    calcStore.watch(function (state) {
+        calcMethod = state.method;
+    });
 
     $: {
         setCalcMethod(calcMethod);

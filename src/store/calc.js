@@ -6,7 +6,9 @@ import {deepClone, isObjectsEqual} from "@helpers";
 const defaultState = {
     method: CALC_METHODS.RELATIVE,
     currency: CALC_CURRENCIES.RUB,
-    uses: {},
+    uses: {
+        taxes: true,
+    },
 };
 const initialState = Object.assign({}, defaultState, LocalStorage.get(STORAGE_KEYS.calc));
 
