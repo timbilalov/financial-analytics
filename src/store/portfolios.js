@@ -1,6 +1,6 @@
 import {createStore, createEvent} from 'effector';
 import LocalStorage from "@utils/local-storage";
-import {DEFAULT_PORTFOLIO_NAME, STORAGE_KEYS} from "@constants";
+import {DEFAULT_PORTFOLIO_NAME, STORAGE_KEYS, SUMMARY_PORTFOLIO_NAME} from "@constants";
 import {deepClone, isObjectsEqual} from "@helpers";
 
 const defaultState = {
@@ -28,45 +28,62 @@ portfoliosStore.watch(function (state) {
 });
 
 portfoliosStore.on(addPortfolio, function (state, name) {
-    if (typeof name !== 'string' || name.trim() === '' || state.list.filter(item => item.name === name).length !== 0) {
+    if (typeof name !== 'string' || name.trim() === '' || state.list.filter(item => item.name === name).length !== 0 || name === SUMMARY_PORTFOLIO_NAME) {
         return state;
     }
 
     const newState = deepClone(state);
-    newState.list.push({
+    const list = newState.list;
+    const summary = list.filter(item => item.name === SUMMARY_PORTFOLIO_NAME)[0];
+
+    list.push({
         name,
         assets: [],
     });
+
+    if (summary === undefined) {
+        list.push({
+            name: SUMMARY_PORTFOLIO_NAME,
+            assets: [],
+        });
+    } else {
+        list.splice(list.indexOf(summary), 1);
+        list.push(summary);
+    }
 
     return newState;
 });
 
 portfoliosStore.on(removePortfolio, function (state, name) {
-    if (typeof name !== 'string' || name.trim() === '' || state.list.filter(item => item.name === name).length === 0) {
+    if (typeof name !== 'string' || name.trim() === '' || state.list.filter(item => item.name === name).length === 0 || name === SUMMARY_PORTFOLIO_NAME) {
         return state;
     }
 
     const newState = deepClone(state);
+    const list = newState.list;
+    const summary = list.filter(item => item.name === SUMMARY_PORTFOLIO_NAME)[0];
+    const portfolioToRemove = list.filter(item => item.name === name)[0];
 
-    let indexToSplice;
-    for (let i = 0; i < newState.list.length; i++) {
-        if (newState.list[i].name === name) {
-            indexToSplice = i;
-            break;
+    list.splice(list.indexOf(portfolioToRemove), 1);
+
+    if (summary !== undefined) {
+        if (list.length <= 2) {
+            list.splice(list.indexOf(summary), 1);
+        } else {
+            summary.assets = list.filter(item => item.name !== SUMMARY_PORTFOLIO_NAME).map(item => item.assets).reduce((p, c) => p.concat(c));
         }
     }
 
-    newState.list.splice(indexToSplice, 1);
-
-    if (newState.list.length === 0) {
-        newState.list.push({
-            name: DEFAULT_PORTFOLIO_NAME,
-            assets: [],
-        })
+    if (list.length === 0) {
+        return deepClone(defaultState);
+        // list.push({
+        //     name: DEFAULT_PORTFOLIO_NAME,
+        //     assets: [],
+        // })
     }
 
     if (name === newState.current) {
-        newState.current = newState.list[0].name;
+        newState.current = list[0].name;
     }
 
     return newState;

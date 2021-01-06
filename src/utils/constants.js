@@ -56,3 +56,4 @@ export const POSSIBLE_USES = [
 ];
 
 export const DAYS_IN_YEAR = 365;
+export const SUMMARY_PORTFOLIO_NAME = 'summary';

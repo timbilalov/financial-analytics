@@ -1,5 +1,6 @@
 <script>
     import {locales} from "@presentation";
+    import {SUMMARY_PORTFOLIO_NAME} from "@constants";
     import {portfoliosStore, addPortfolio, removePortfolio, setCurrentPortfolio} from "@store";
 
     let currentPortfolio;
@@ -34,5 +35,13 @@
     <button on:click={removePortfolio(item)}>{locales('actions.remove')}</button>
     <br>
 {/each}
+
+{#if portfolioList.length > 1}
+    <label style="display: inline-block;">
+        <input type="radio" bind:group={currentPortfolio} value={SUMMARY_PORTFOLIO_NAME}>
+        <span>{locales('common.summaryPortfolio')}</span>
+    </label>
+    <br>
+{/if}
 
 <input type="text" bind:value={newPortfolioTitle}><button on:click={addPortfolio(newPortfolioTitle)}>{locales('actions.add')}</button>

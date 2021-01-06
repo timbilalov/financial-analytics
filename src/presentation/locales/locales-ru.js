@@ -7,6 +7,7 @@ export const LOCALES_RU = {
         export: 'Поделиться ссылкой',
         calcCurrency: 'Валюта расчётов',
         consider: 'Учитывать',
+        summaryPortfolio: 'Суммарный',
     },
     use: {
         taxes: 'Налоги',
