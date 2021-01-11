@@ -45,7 +45,7 @@ calcStore.on(setCurrency, function (state, currency) {
 });
 
 calcStore.on(setCalcUses, function (state, use) {
-    if (typeof use === undefined) {
+    if (use === undefined) {
         return state;
     }
 

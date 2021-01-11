@@ -76,10 +76,6 @@ portfoliosStore.on(removePortfolio, function (state, name) {
 
     if (list.length === 0) {
         return deepClone(defaultState);
-        // list.push({
-        //     name: DEFAULT_PORTFOLIO_NAME,
-        //     assets: [],
-        // })
     }
 
     if (name === newState.current) {

@@ -13,6 +13,7 @@ import {deepClone, isArraysSimilar, isObjectsEqual} from "@helpers";
 describe('portfolios store', function () {
     const newPortfolioName = 'some-portfolio';
     const newPortfolioName2 = 'some-portfolio-2';
+    const newPortfolioName3 = 'some-portfolio-3';
     const newAsset = {
         ticker: 'bac',
         buyDate: '2020.01.01',
@@ -23,6 +24,18 @@ describe('portfolios store', function () {
         ticker: 'bac',
         buyDate: '2020.02.01',
         amount: 10,
+        isUsd: 1,
+    };
+    const newAsset3 = {
+        ticker: 't',
+        buyDate: '2020.02.05',
+        amount: 2,
+        isUsd: 1,
+    };
+    const newAsset4 = {
+        ticker: 'pfe',
+        buyDate: '2020.03.03',
+        amount: 20,
         isUsd: 1,
     };
 
@@ -59,7 +72,6 @@ describe('portfolios store', function () {
         });
 
         test('should add summary', function () {
-            // addPortfolio(newPortfolioName);
             const state = portfoliosStore.getState();
             const list = state.list;
             const summary = list.filter(item => item.name === SUMMARY_PORTFOLIO_NAME)[0];
@@ -90,11 +102,9 @@ describe('portfolios store', function () {
             const newPortfolio = state.list.filter(item => item.name === newPortfolioName)[0];
 
             expect(newPortfolio).toEqual(undefined);
-            // expect(state.list.length).toEqual(1);
         });
 
         test('should auto-remove summary', function () {
-            // removePortfolio(newPortfolioName);
             const state = portfoliosStore.getState();
             const list = state.list;
             const summary = list.filter(item => item.name === SUMMARY_PORTFOLIO_NAME)[0];
@@ -123,6 +133,31 @@ describe('portfolios store', function () {
             const newState = portfoliosStore.getState();
 
             expect(newState.current).toBe(DEFAULT_PORTFOLIO_NAME);
+        });
+
+        test('should update summary', function () {
+            addPortfolio(newPortfolioName);
+            addPortfolio(newPortfolioName2);
+            addPortfolio(newPortfolioName3);
+
+            setCurrentPortfolio(newPortfolioName);
+            addNewAsset(newAsset);
+            addNewAsset(newAsset2);
+            setCurrentPortfolio(newPortfolioName2);
+            addNewAsset(newAsset3);
+            setCurrentPortfolio(newPortfolioName3);
+            addNewAsset(newAsset4);
+
+            removePortfolio(newPortfolioName2);
+
+            const newState = portfoliosStore.getState();
+            const summary = newState.list.filter(item => item.name === SUMMARY_PORTFOLIO_NAME)[0];
+
+            expect(summary.assets).toMatchObject([
+                newAsset,
+                newAsset2,
+                newAsset4,
+            ]);
         });
     });
 
