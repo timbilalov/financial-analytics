@@ -1,7 +1,12 @@
 import {fetchData} from "@fetch";
 import {parseResponseData} from "@parse";
+import {isObject} from "@helpers";
 
 export async function getSingleAssetData(asset) {
+    if (!isObject(asset)) {
+        return;
+    }
+
     const { ticker, title, buyDate, sellDate, amount, moex, usd, bond, hide } = asset;
 
     const isMoex = moex === true || moex === '1';

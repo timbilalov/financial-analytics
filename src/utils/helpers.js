@@ -174,3 +174,8 @@ export function isLabelCommon(label) {
 
     return commonLabels.includes(label);
 }
+
+// See: https://stackoverflow.com/a/46663081/11902026
+export function isObject(value) {
+    return value instanceof Object && value.constructor === Object;
+}

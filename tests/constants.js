@@ -26,6 +26,40 @@ export const usdData = [
     },
 ];
 
+export const valuesData = [
+    {
+        value: 4,
+        date: dates[0],
+    },
+    {
+        value: 20,
+        date: dates[1],
+    },
+    {
+        value: -7,
+        date: dates[2],
+    },
+    {
+        value: 15,
+        date: dates[3],
+    },
+];
+
+export const valuesDataWithMissingItem = [
+    {
+        value: 4,
+        date: dates[0],
+    },
+    {
+        value: 20,
+        date: dates[1],
+    },
+    {
+        value: 15,
+        date: dates[3],
+    },
+];
+
 export const datasets = [
     {
         data: [0, 10, 20, 30],
@@ -46,3 +80,20 @@ export const options = {
     calcCurrency: CALC_CURRENCIES.RUB,
     usdData,
 };
+
+export const investcabResponseObject = {
+    c: [10, 20, 30],
+    h: [11, 21, 31],
+    l: [12, 22, 32],
+    o: [13, 23, 33],
+    s: 'ok',
+    t: [14, 24, 34],
+    v: [15, 25, 35],
+};
+
+export const moexDataRows = [
+    [undefined, dates[0], undefined, undefined, 10, 20, 30, 40, 50, 60, 70],
+    [undefined, dates[1], undefined, undefined, 11, 21, 31, 41, 51, 61, 71],
+    [undefined, dates[2], undefined, undefined, 12, 22, 32, 42, 52, 62, 72],
+    [undefined, dates[3], undefined, undefined, 13, 23, 33, 43, 53, 63, 73],
+];

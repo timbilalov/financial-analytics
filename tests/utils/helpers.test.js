@@ -1,7 +1,18 @@
-import {checkImportUrl, dateFormat, debounce, deepClone, errorHandler, isArraysSimilar, isLabelCommon, isObjectsEqual, makeExportUrl} from "@helpers";
+import {
+    checkImportUrl,
+    dateFormat,
+    debounce,
+    deepClone,
+    errorHandler,
+    isArraysSimilar,
+    isLabelCommon,
+    isObject,
+    isObjectsEqual,
+    makeExportUrl
+} from "@helpers";
 import {BANK_DEPOSIT_LABEL, EXPORT_HREF_PARAM_NAME, OWN_MONEY_LABEL, TOTAL_LABEL} from "@constants";
 
-describe('Helpers', function () {
+describe('helpers', function () {
     test('dateFormat', function () {
         const dateUTC1 = 1577836800000; // 2020.01.01
         const dateUTC2 = 1607525676469; // 2020.12.09
@@ -228,5 +239,19 @@ describe('Helpers', function () {
         expect(isLabelCommon(TOTAL_LABEL.toLowerCase())).toEqual(true);
         expect(isLabelCommon('some-label')).toEqual(false);
         expect(isLabelCommon('BAC')).toEqual(false);
+    });
+
+    test('isObject', function () {
+        expect(isObject(1234)).toBe(false);
+        expect(isObject(undefined)).toBe(false);
+        expect(isObject(null)).toBe(false);
+        expect(isObject('str')).toBe(false);
+        expect(isObject([1, 's', 2])).toBe(false);
+        expect(isObject(true)).toBe(false);
+        expect(isObject(false)).toBe(false);
+        expect(isObject(function() { return 2 })).toBe(false);
+
+        expect(isObject({ a: 1 })).toBe(true);
+        expect(isObject({ a: 1, b: { c: 'str' } })).toBe(true);
     });
 });

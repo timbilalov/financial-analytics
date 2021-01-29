@@ -6,6 +6,9 @@ module.exports = {
         '@constants': '<rootDir>/src/utils/constants',
         '@logic': '<rootDir>/src/logic',
         '@store': '<rootDir>/src/store',
+        '@data': '<rootDir>/src/data',
+        '@fetch': '<rootDir>/src/data/fetch',
+        '@parse': '<rootDir>/src/data/parse',
     },
     coverageReporters: [
         'text',

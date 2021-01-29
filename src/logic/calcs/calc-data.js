@@ -9,8 +9,6 @@ export function calcData(title, data, amount, isUsd, method, usdData, calcCurren
     amount = parseInt(amount, 10);
 
     const calculated = data.slice(0).map(item => deepClone(item));
-
-    let prevUsdValue;
     let usdValue;
 
     // TODO: Прикрутить привязку к дате покупке, так как есть правило отмены налогов, если владеешь бумагой более 3 лет.
@@ -27,11 +25,12 @@ export function calcData(title, data, amount, isUsd, method, usdData, calcCurren
             k++;
         }
 
-        let koef = isUsd && (method === CALC_METHODS.ABSOLUTE || method === CALC_METHODS.ABSOLUTE_TOTAL) ? usdDataValue[0].value : 1;
-        let initialValue = calculated[0].value * koef;
+        let initialValue = calculated[0].value;
 
-        if (calcCurrency === CALC_CURRENCIES.USD && (method === CALC_METHODS.ABSOLUTE || method === CALC_METHODS.ABSOLUTE_TOTAL)) {
+        if (isUsd !== true && calcCurrency === CALC_CURRENCIES.USD) {
             initialValue /= usdDataValue[0].value;
+        } else if (isUsd === true && calcCurrency === CALC_CURRENCIES.RUB) {
+            initialValue *= usdDataValue[0].value;
         }
 
         if (method === CALC_METHODS.ABSOLUTE || method === CALC_METHODS.ABSOLUTE_TOTAL) {
@@ -44,30 +43,18 @@ export function calcData(title, data, amount, isUsd, method, usdData, calcCurren
             if (i === 0) {
                 value = 0;
             } else {
+                usdValue = usdData.filter(item => item.date === calculated[i].date)[0].value;
+
+                if (isUsd !== true && calcCurrency === CALC_CURRENCIES.USD) {
+                    value /= usdValue;
+                } else if (isUsd === true && calcCurrency === CALC_CURRENCIES.RUB) {
+                    value *= usdValue;
+                }
+
                 if (method === CALC_METHODS.RELATIVE || method === CALC_METHODS.RELATIVE_ANNUAL) {
-                    // TODO: Учесть расчёты в долларах
                     value = (value - initialValue) / initialValue * 100;
                 } else if (method === CALC_METHODS.ABSOLUTE || method === CALC_METHODS.ABSOLUTE_TOTAL) {
-                    usdValue = usdData.filter(item => item.date === calculated[i].date);
-                    if (usdValue.length !== 0) {
-                        usdValue = usdValue[0].value;
-                        prevUsdValue = usdValue;
-                    } else {
-                        usdValue = prevUsdValue;
-                    }
-
-                    koef = isUsd ? usdValue : 1;
-
-                    switch (calcCurrency) {
-                        case CALC_CURRENCIES.USD:
-                            value = value * koef * amount / usdValue - initialValue;
-                            break;
-
-                        default:
-                        case CALC_CURRENCIES.RUB:
-                            value = value * koef * amount - initialValue;
-                            break;
-                    }
+                    value = value * amount - initialValue;
                 }
             }
 
@@ -76,6 +63,8 @@ export function calcData(title, data, amount, isUsd, method, usdData, calcCurren
             if (method === CALC_METHODS.ABSOLUTE_TOTAL) {
                 value += initialValue;
             }
+
+            value = parseFloat(value.toFixed(4));
 
             calculated[i].value = value;
         }

@@ -5,6 +5,10 @@ import LocalStorage from "@utils/local-storage";
 import {DATE_FORMATS, STORAGE_KEYS} from "@constants";
 
 export async function fetchData(ticker, manualDateFrom, manualDateTo, isMoex = false, isBond = false, isCurrency = false) {
+    if (ticker === undefined || manualDateFrom === undefined) {
+        return;
+    }
+
     let result;
 
     const yesterday = moment().add(-1, 'days').format(DATE_FORMATS.default);

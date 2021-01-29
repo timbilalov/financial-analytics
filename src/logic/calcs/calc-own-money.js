@@ -1,7 +1,16 @@
-import {CALC_CURRENCIES} from "@constants";
+import {CALC_CURRENCIES, CALC_METHODS} from "@constants";
 
 export function calcOwnMoney(datasets, options) {
-    const {datesFullArray, usdData, calcCurrency} = options;
+    if (Array.isArray(datasets) === false || typeof options !== 'object') {
+        return [];
+    }
+
+    const {datesFullArray, usdData, calcCurrency, calcMethod} = options;
+
+    if (calcMethod !== CALC_METHODS.ABSOLUTE_TOTAL) {
+        return [];
+    }
+
     const items = [];
     const dates = datesFullArray;
 
@@ -13,13 +22,14 @@ export function calcOwnMoney(datasets, options) {
     for (const i in dates) {
         const date = dates[i];
         let total = 0;
-        let usdValue = usdData.filter(item => item.date === date);
-        if (usdValue.length !== 0) {
-            usdValue = usdValue[0].value;
-            prevUsdValue = usdValue;
-        } else {
-            usdValue = prevUsdValue;
-        }
+        // let usdValue = usdData.filter(item => item.date === date);
+        const usdValue = usdData.filter(item => item.date === date)[0].value;
+        // if (usdValue.length !== 0) {
+        //     usdValue = usdValue[0].value;
+        //     prevUsdValue = usdValue;
+        // } else {
+        //     usdValue = prevUsdValue;
+        // }
 
         for (const j in datasets) {
             const dataset = datasets[j];
@@ -48,6 +58,8 @@ export function calcOwnMoney(datasets, options) {
                 total += value;
             }
         }
+
+        total = parseFloat(total.toFixed(4));
 
         items.push({
             date,

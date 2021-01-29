@@ -1,11 +1,10 @@
 import lz from 'lz-string';
 
-const PREFIX = 'fa-';
+export const LOCAL_STORAGE_KEY_PREFIX = 'fa-';
 
 class LocalStorage {
     set(key, value) {
-        if (typeof key !== 'string' || (typeof key === 'string' && key.trim() === '')) {
-            console.error('Key must be a non-empty string');
+        if (typeof key !== 'string' || (typeof key === 'string' && key.trim() === '') || value === undefined) {
             return false;
         }
 
@@ -13,7 +12,7 @@ class LocalStorage {
 
         try {
             const valueToSet = JSON.stringify(value);
-            localStorage.setItem(PREFIX + key, valueToSet);
+            localStorage.setItem(LOCAL_STORAGE_KEY_PREFIX + key, valueToSet);
             result = true;
         } catch (error) {
             console.error(`Error while setting '${key}' item to storage`, error);
@@ -23,18 +22,21 @@ class LocalStorage {
     }
 
     get(key) {
+        let result = undefined;
+
         if (typeof key !== 'string' || (typeof key === 'string' && key.trim() === '')) {
-            console.error('Key must be a non-empty string');
-            return false;
+            return result;
         }
 
-        let result;
-
         try {
-            result = localStorage.getItem(PREFIX + key);
-            result = JSON.parse(result);
+            result = localStorage.getItem(LOCAL_STORAGE_KEY_PREFIX + key);
+
+            if (typeof result === 'string') {
+                result = JSON.parse(result);
+            }
         } catch (error) {
             console.error(`Error while getting '${key}' item from storage`, error);
+            result = undefined;
         }
 
         return result;
@@ -42,14 +44,13 @@ class LocalStorage {
 
     remove(key) {
         if (typeof key !== 'string' || (typeof key === 'string' && key.trim() === '')) {
-            console.error('Key must be a non-empty string');
             return false;
         }
 
         let result = false;
 
         try {
-            localStorage.removeItem(PREFIX + key);
+            localStorage.removeItem(LOCAL_STORAGE_KEY_PREFIX + key);
             result = true;
         } catch (error) {
             console.error(`Error while removing '${key}' item from storage`, error);
@@ -59,6 +60,10 @@ class LocalStorage {
     }
 
     export(namesArray) {
+        if (Array.isArray(namesArray) === false) {
+            return undefined;
+        }
+
         const values = {};
 
         for (const name of namesArray) {
