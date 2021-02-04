@@ -87,13 +87,13 @@ export const investcabResponseObject = {
     l: [12, 22, 32],
     o: [13, 23, 33],
     s: 'ok',
-    t: [14, 24, 34],
+    t: [1577826000000, 1577912400000, 1577998800000],
     v: [15, 25, 35],
 };
 
 export const moexDataRows = [
-    [undefined, dates[0], undefined, undefined, 10, 20, 30, 40, 50, 60, 70],
-    [undefined, dates[1], undefined, undefined, 11, 21, 31, 41, 51, 61, 71],
-    [undefined, dates[2], undefined, undefined, 12, 22, 32, 42, 52, 62, 72],
-    [undefined, dates[3], undefined, undefined, 13, 23, 33, 43, 53, 63, 73],
+    ['TQTF', dates[0], undefined, undefined, 10, 20, 30, 40, 50, 60, 70],
+    ['TQTF', dates[1], undefined, undefined, 11, 21, 31, 41, 51, 61, 71],
+    ['TQTF', dates[2], undefined, undefined, 12, 22, 32, 42, 52, 62, 72],
+    ['TQTF', dates[3], undefined, undefined, 13, 23, 33, 43, 53, 63, 73],
 ];

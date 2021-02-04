@@ -1,12 +1,12 @@
 import LocalStorage from '@utils/local-storage';
-import {DEFAULT_LANGUAGE, LANGUAGES, STORAGE_KEYS} from "@constants";
+import {DEFAULT_LANGUAGE, LANGUAGES, LOCALES_TEXT_FALLBACK, STORAGE_KEYS} from "@constants";
 import {LOCALES_RU} from "./locales-ru";
 import {deepClone} from "@helpers";
 
 export function locales(namespace) {
-    const messageFallback = '...';
+    const messageFallback = LOCALES_TEXT_FALLBACK;
 
-    if (namespace === undefined) {
+    if (typeof namespace !== 'string') {
         return messageFallback;
     }
 
@@ -21,10 +21,6 @@ export function locales(namespace) {
         case LANGUAGES.ru:
             localesObject = LOCALES_RU;
             break;
-    }
-
-    if (localesObject === undefined) {
-        return messageFallback;
     }
 
     const namespaceSplit = namespace.split('.');

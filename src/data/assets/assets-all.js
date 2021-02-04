@@ -1,6 +1,10 @@
 import {getSingleAssetData} from "./assets-single";
 
 export async function getAssetsData(assets) {
+    if (!Array.isArray(assets)) {
+        return;
+    }
+
     const items = [];
 
     for (const asset of assets) {

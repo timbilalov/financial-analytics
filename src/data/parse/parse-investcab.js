@@ -1,7 +1,24 @@
-import {dateFormat} from "@helpers";
+import {dateFormat, isObject} from "@helpers";
 
 export function parseResponseDataInvestcab(responseData) {
-    const parsed = JSON.parse(responseData);
+    let parsed;
+
+    if (isObject(responseData)) {
+        parsed = responseData;
+    } else if (typeof responseData === 'string') {
+        try {
+            parsed = JSON.parse(responseData);
+        } catch (ignore) {
+            return;
+        }
+    } else {
+        return;
+    }
+
+    if (parsed.t === undefined || parsed.o === undefined || parsed.c === undefined) {
+        return;
+    }
+
     const datesArray = parsed.t;
     const openingPricesArray = parsed.o;
     const closingPricesArray = parsed.c;

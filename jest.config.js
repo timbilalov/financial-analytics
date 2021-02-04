@@ -9,6 +9,7 @@ module.exports = {
         '@data': '<rootDir>/src/data',
         '@fetch': '<rootDir>/src/data/fetch',
         '@parse': '<rootDir>/src/data/parse',
+        '@presentation': '<rootDir>/src/presentation',
     },
     coverageReporters: [
         'text',

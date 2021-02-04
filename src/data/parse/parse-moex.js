@@ -2,6 +2,10 @@ import moment from "moment";
 import {DATE_FORMATS} from "@constants";
 
 export function parseResponseDataMoex(responseData, isBond) {
+    if (!Array.isArray(responseData)) {
+        return;
+    }
+
     const data = [];
 
     let prevDate;
@@ -46,7 +50,6 @@ export function parseResponseDataMoex(responseData, isBond) {
             value = item[13] || item[14] || item[10] || (item[6] + item[11]) / 2;
         }
 
-        // TODO: Возможно, что для Moex первое условие никогда не выполняется. Проверить.
         if (date === prevDate) {
             prevDataObject.value = (prevDataObject.value + value) / 2;
         } else {

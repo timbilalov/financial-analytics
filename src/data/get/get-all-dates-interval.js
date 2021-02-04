@@ -3,6 +3,10 @@ import {DATE_FORMATS, STORAGE_KEYS} from "@constants";
 import LocalStorage from "@utils/local-storage";
 
 export function getAllDatesInterval(items) {
+    if (!Array.isArray(items)) {
+        return;
+    }
+
     const dates1 = [];
 
     for (const {data} of items) {

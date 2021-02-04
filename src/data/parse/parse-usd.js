@@ -2,6 +2,10 @@ import moment from "moment";
 import {DATE_FORMATS} from "@constants";
 
 export function parseResponseDataUsd(responseData, datesFullArray) {
+    if (!Array.isArray(responseData) || !Array.isArray(datesFullArray)) {
+        return;
+    }
+
     const data1 = [];
 
     let prevDate;
@@ -33,6 +37,10 @@ export function parseResponseDataUsd(responseData, datesFullArray) {
             prevDate = date;
             prevDataObject = dataObject;
         }
+    }
+
+    if (data1.length === 0) {
+        return [];
     }
 
     let prevValue = data1[0];
