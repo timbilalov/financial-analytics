@@ -2,9 +2,13 @@ import {calcData} from "@logic";
 import {BANK_DEPOSIT_LABEL, CALC_METHODS, DATE_FORMATS, OWN_MONEY_LABEL, TOTAL_LABEL} from "@constants";
 import moment from "moment";
 import {addDatasetColor, datasetsColorsStore} from "@store";
-import {isLabelCommon} from "@helpers";
+import {isLabelCommon, isObject} from "@helpers";
 
 export function prepareSingleDataset(options) {
+    if (!isObject(options)) {
+        return;
+    }
+
     const {title, data, amount, isUsd, datesFullArray, calcMethod, usdData, calcCurrency, useTaxes} = options;
 
     const datasetsColors = datasetsColorsStore.getState();

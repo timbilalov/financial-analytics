@@ -9,7 +9,6 @@ export function calcData(title, data, amount, isUsd, method, usdData, calcCurren
     amount = parseInt(amount, 10);
 
     const calculated = data.slice(0).map(item => deepClone(item));
-    let usdValue;
 
     // TODO: Прикрутить привязку к дате покупке, так как есть правило отмены налогов, если владеешь бумагой более 3 лет.
     const taxesKoef = useTaxes ? (1 - DEFAULT_TAX) : 1;
@@ -29,8 +28,6 @@ export function calcData(title, data, amount, isUsd, method, usdData, calcCurren
 
         if (isUsd !== true && calcCurrency === CALC_CURRENCIES.USD) {
             initialValue /= usdDataValue[0].value;
-        } else if (isUsd === true && calcCurrency === CALC_CURRENCIES.RUB) {
-            initialValue *= usdDataValue[0].value;
         }
 
         if (method === CALC_METHODS.ABSOLUTE || method === CALC_METHODS.ABSOLUTE_TOTAL) {
@@ -39,20 +36,21 @@ export function calcData(title, data, amount, isUsd, method, usdData, calcCurren
 
         for (let i = 0; i < calculated.length; i++) {
             let value = calculated[i].value;
+            const usdValue = usdData.filter(item => item.date === calculated[i].date)[0].value;
 
             if (i === 0) {
                 value = 0;
             } else {
-                usdValue = usdData.filter(item => item.date === calculated[i].date)[0].value;
-
                 if (isUsd !== true && calcCurrency === CALC_CURRENCIES.USD) {
                     value /= usdValue;
-                } else if (isUsd === true && calcCurrency === CALC_CURRENCIES.RUB) {
-                    value *= usdValue;
                 }
 
                 if (method === CALC_METHODS.RELATIVE || method === CALC_METHODS.RELATIVE_ANNUAL) {
                     value = (value - initialValue) / initialValue * 100;
+
+                    if (isUsd === true && calcCurrency === CALC_CURRENCIES.RUB) {
+                        value *= usdValue / usdDataValue[0].value;
+                    }
                 } else if (method === CALC_METHODS.ABSOLUTE || method === CALC_METHODS.ABSOLUTE_TOTAL) {
                     value = value * amount - initialValue;
                 }
@@ -62,6 +60,10 @@ export function calcData(title, data, amount, isUsd, method, usdData, calcCurren
 
             if (method === CALC_METHODS.ABSOLUTE_TOTAL) {
                 value += initialValue;
+            }
+
+            if (isUsd === true && calcCurrency === CALC_CURRENCIES.RUB && (method === CALC_METHODS.ABSOLUTE || method === CALC_METHODS.ABSOLUTE_TOTAL)) {
+                value *= usdValue;
             }
 
             value = parseFloat(value.toFixed(4));

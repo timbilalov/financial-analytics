@@ -1,6 +1,7 @@
 export const DATE_FORMATS = {
     'default': 'YYYY.MM.DD',
     'moex': 'YYYY-MM-DD',
+    'investcab': 'YYYY.MM.DD hh:mm',
 };
 
 export const CALC_METHODS = {

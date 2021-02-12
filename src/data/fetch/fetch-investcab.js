@@ -7,10 +7,10 @@ export async function fetchInvestcab(ticker, enteredDateFrom, enteredDateTo) {
         return;
     }
 
-    const yesterday = moment().add(-1, 'days');
+    const yesterday = moment().add(-1, 'days').format(DATE_FORMATS.default);
+    const dateFrom = moment(`${enteredDateFrom} 10:00`, DATE_FORMATS.investcab);
+    const dateTo = moment(`${enteredDateTo ? enteredDateTo : yesterday} 19:00`, DATE_FORMATS.investcab);
 
-    const dateFrom = moment(enteredDateFrom, DATE_FORMATS.default);
-    const dateTo = enteredDateTo ? moment(enteredDateTo, DATE_FORMATS.default) : yesterday;
     const resolution = 60;
     const url = `//investcab.ru/api/chistory?symbol=${ticker}&resolution=${resolution}&from=${dateFrom.unix()}&to=${dateTo.unix()}`;
     const response = await fetch(url);
