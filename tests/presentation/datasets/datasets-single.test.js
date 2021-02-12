@@ -56,6 +56,7 @@ describe('datasets-single', function () {
             lineTension: 0,
             borderWidth: expect.any(Number),
             amount: expect.any(Number),
+            isUsd: expect.any(Boolean),
         });
     });
 });

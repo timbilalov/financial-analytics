@@ -22,14 +22,7 @@ export function calcOwnMoney(datasets, options) {
     for (const i in dates) {
         const date = dates[i];
         let total = 0;
-        // let usdValue = usdData.filter(item => item.date === date);
         const usdValue = usdData.filter(item => item.date === date)[0].value;
-        // if (usdValue.length !== 0) {
-        //     usdValue = usdValue[0].value;
-        //     prevUsdValue = usdValue;
-        // } else {
-        //     usdValue = prevUsdValue;
-        // }
 
         for (const j in datasets) {
             const dataset = datasets[j];
@@ -48,11 +41,16 @@ export function calcOwnMoney(datasets, options) {
         }
 
         for (const n in datasets) {
+            const dataset = datasets[n];
+            const {isUsd} = dataset;
+
             if (initialValues[n] !== undefined) {
                 let value = initialValues[n].value;
 
-                if (calcCurrency === CALC_CURRENCIES.USD) {
+                if (!isUsd && calcCurrency === CALC_CURRENCIES.USD) {
                     value = value / usdValue * initialValues[n].usd;
+                } else if (isUsd && calcCurrency === CALC_CURRENCIES.RUB) {
+                    value = value * usdValue / initialValues[n].usd;
                 }
 
                 total += value;

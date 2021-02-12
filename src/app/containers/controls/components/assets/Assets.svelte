@@ -14,7 +14,6 @@
         const currentPortfolioName = state.current;
         if (currentPortfolioName === SUMMARY_PORTFOLIO_NAME) {
             const allAssets = state.list.map(item => item.assets);
-            console.log('allAssets', allAssets)
             assets = [];
         } else {
             const currentPortfolio = state.list.filter(item => item.name === currentPortfolioName)[0];

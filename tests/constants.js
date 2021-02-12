@@ -66,12 +66,14 @@ export const datasets = [
         dataAbsTotal: [100, 110, 120, 130],
         dates,
         amount: 2,
+        isUsd: false,
     },
     {
         data: [NaN, 0, -2, 4],
         dataAbsTotal: [NaN, 50, 48, 54],
         dates,
         amount: 3,
+        isUsd: false,
     },
 ];
 

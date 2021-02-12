@@ -28,6 +28,8 @@ export function calcData(title, data, amount, isUsd, method, usdData, calcCurren
 
         if (isUsd !== true && calcCurrency === CALC_CURRENCIES.USD) {
             initialValue /= usdDataValue[0].value;
+        } else if (isUsd === true && calcCurrency === CALC_CURRENCIES.RUB) {
+            initialValue *= usdDataValue[0].value;
         }
 
         if (method === CALC_METHODS.ABSOLUTE || method === CALC_METHODS.ABSOLUTE_TOTAL) {
@@ -43,14 +45,12 @@ export function calcData(title, data, amount, isUsd, method, usdData, calcCurren
             } else {
                 if (isUsd !== true && calcCurrency === CALC_CURRENCIES.USD) {
                     value /= usdValue;
+                } else if (isUsd === true && calcCurrency === CALC_CURRENCIES.RUB) {
+                    value *= usdValue;
                 }
 
                 if (method === CALC_METHODS.RELATIVE || method === CALC_METHODS.RELATIVE_ANNUAL) {
                     value = (value - initialValue) / initialValue * 100;
-
-                    if (isUsd === true && calcCurrency === CALC_CURRENCIES.RUB) {
-                        value *= usdValue / usdDataValue[0].value;
-                    }
                 } else if (method === CALC_METHODS.ABSOLUTE || method === CALC_METHODS.ABSOLUTE_TOTAL) {
                     value = value * amount - initialValue;
                 }
@@ -60,10 +60,6 @@ export function calcData(title, data, amount, isUsd, method, usdData, calcCurren
 
             if (method === CALC_METHODS.ABSOLUTE_TOTAL) {
                 value += initialValue;
-            }
-
-            if (isUsd === true && calcCurrency === CALC_CURRENCIES.RUB && (method === CALC_METHODS.ABSOLUTE || method === CALC_METHODS.ABSOLUTE_TOTAL)) {
-                value *= usdValue;
             }
 
             value = parseFloat(value.toFixed(4));

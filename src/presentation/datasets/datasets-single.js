@@ -118,6 +118,7 @@ export function prepareSingleDataset(options) {
         lineTension: 0,
         borderWidth,
         amount,
+        isUsd,
     };
 
     if (shouldStoreAbsTotal) {

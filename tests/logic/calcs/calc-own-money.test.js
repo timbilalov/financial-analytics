@@ -1,8 +1,13 @@
 import {calcOwnMoney, calcTotal} from "@logic";
 import {usdData, dates, valuesData, valuesDataWithMissingItem, datasets, options} from "../../constants";
 import {CALC_CURRENCIES, CALC_METHODS} from "@constants";
+import {deepClone} from "@helpers";
 
 describe('calc-own-money', function () {
+    const datasetsUsd = deepClone(datasets).map(item => Object.assign(item, {
+        isUsd: true,
+    }));
+
     test('should return an empty array for wrong arguments', function () {
         const result1 = calcOwnMoney();
         const result2 = calcOwnMoney(123);
@@ -33,9 +38,10 @@ describe('calc-own-money', function () {
         test('rub', function () {
             expect(calcOwnMoney(datasets, Object.assign({}, options, {
                 calcMethod: CALC_METHODS.ABSOLUTE_TOTAL,
+                currency: CALC_CURRENCIES.RUB,
             }))).toMatchObject([
                 {
-                    value: 100,
+                    value: 100, // 100 + 0
                     date: dates[0],
                 },
                 {
@@ -53,25 +59,73 @@ describe('calc-own-money', function () {
             ]);
         });
 
-        test('usd', function () {
+        test('rub to usd', function () {
             expect(calcOwnMoney(datasets, Object.assign({}, options, {
                 calcMethod: CALC_METHODS.ABSOLUTE_TOTAL,
                 calcCurrency: CALC_CURRENCIES.USD,
             }))).toMatchObject([
                 {
-                    value: 100,
+                    value: 100, // 100 / 50 * 50
                     date: dates[0],
                 },
                 {
-                    value: 148.0392, // 100 * 50 / 51 + 50
+                    value: 148.0392, // 100 / 51 * 50 + 50 / 51 * 51
                     date: dates[1],
                 },
                 {
-                    value: 145.1923, // 100 * 50 / 52 + 50 * 51 / 52
+                    value: 145.1923, // 100 / 52 * 50 + 50 / 52 * 51
                     date: dates[2],
                 },
                 {
-                    value: 142.4528, // 100 * 50 / 53 + 50 * 51 / 53
+                    value: 142.4528, // 100 / 53 * 50 + 50 / 53 * 51
+                    date: dates[3],
+                },
+            ]);
+        });
+
+        test('usd to rub', function () {
+            expect(calcOwnMoney(datasetsUsd, Object.assign({}, options, {
+                calcMethod: CALC_METHODS.ABSOLUTE_TOTAL,
+                calcCurrency: CALC_CURRENCIES.RUB,
+            }))).toMatchObject([
+                {
+                    value: 100, // 100 / 50 * 50
+                    date: dates[0],
+                },
+                {
+                    value: 152, // 100 / 50 * 51 + 50 / 51 * 51
+                    date: dates[1],
+                },
+                {
+                    value: 154.9804, // 100 / 50 * 52 + 50 / 51 * 52
+                    date: dates[2],
+                },
+                {
+                    value: 157.9608, // 100 / 50 * 53 + 50 / 51 * 53
+                    date: dates[3],
+                },
+            ]);
+        });
+
+        test('usd', function () {
+            expect(calcOwnMoney(datasetsUsd, Object.assign({}, options, {
+                calcMethod: CALC_METHODS.ABSOLUTE_TOTAL,
+                calcCurrency: CALC_CURRENCIES.USD,
+            }))).toMatchObject([
+                {
+                    value: 100, // 100 + 0
+                    date: dates[0],
+                },
+                {
+                    value: 150, // 100 + 50
+                    date: dates[1],
+                },
+                {
+                    value: 150, // 100 + 50
+                    date: dates[2],
+                },
+                {
+                    value: 150, // 100 + 50
                     date: dates[3],
                 },
             ]);
