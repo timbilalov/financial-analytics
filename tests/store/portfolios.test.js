@@ -3,7 +3,7 @@ import {
     addPortfolio,
     portfoliosStore,
     removeAsset,
-    removePortfolio,
+    removePortfolio, resetPortfoliosStore,
     setAssets,
     setCurrentPortfolio
 } from "@store";
@@ -21,9 +21,9 @@ describe('portfolios store', function () {
         isUsd: 1,
     };
     const newAsset2 = {
-        ticker: 'bac',
+        ticker: 'bac2',
         buyDate: '2020.02.01',
-        amount: 10,
+        amount: 11,
         isUsd: 1,
     };
     const newAsset3 = {
@@ -38,6 +38,10 @@ describe('portfolios store', function () {
         amount: 20,
         isUsd: 1,
     };
+
+    beforeEach(function () {
+        resetPortfoliosStore();
+    });
 
     test('store should exist', function () {
         const state = portfoliosStore.getState();
@@ -66,12 +70,15 @@ describe('portfolios store', function () {
             addPortfolio(newPortfolioName);
             addPortfolio(newPortfolioName);
             addPortfolio(newPortfolioName);
+
             const state = portfoliosStore.getState();
 
             expect(state.list.filter(item => item.name === newPortfolioName).length).toEqual(1);
         });
 
         test('should add summary', function () {
+            addPortfolio(newPortfolioName);
+
             const state = portfoliosStore.getState();
             const list = state.list;
             const summary = list.filter(item => item.name === SUMMARY_PORTFOLIO_NAME)[0];
@@ -84,6 +91,7 @@ describe('portfolios store', function () {
 
     describe('removePortfolio', function () {
         test('should return current state when pass wrong value', function () {
+            addPortfolio(newPortfolioName);
             const prevState = portfoliosStore.getState();
 
             removePortfolio();
@@ -92,40 +100,55 @@ describe('portfolios store', function () {
             removePortfolio('some-wrong-portfolio');
             const newState2 = portfoliosStore.getState();
 
-            expect(newState).toEqual(prevState);
-            expect(newState2).toEqual(prevState);
+            expect(newState).toBe(prevState);
+            expect(newState2).toBe(prevState);
         });
 
         test('should remove single item', function () {
-            removePortfolio(newPortfolioName);
+            addPortfolio(newPortfolioName);
             const state = portfoliosStore.getState();
-            const newPortfolio = state.list.filter(item => item.name === newPortfolioName)[0];
+            const portfolio = state.list.filter(item => item.name === newPortfolioName)[0];
 
+            removePortfolio(newPortfolioName);
+            const newState = portfoliosStore.getState();
+            const newPortfolio = newState.list.filter(item => item.name === newPortfolioName)[0];
+
+            expect(portfolio).not.toEqual(undefined);
             expect(newPortfolio).toEqual(undefined);
         });
 
         test('should auto-remove summary', function () {
+            addPortfolio(newPortfolioName);
             const state = portfoliosStore.getState();
             const list = state.list;
             const summary = list.filter(item => item.name === SUMMARY_PORTFOLIO_NAME)[0];
 
-            expect(summary).toEqual(undefined);
-            expect(state.list.length).toEqual(1);
+            removePortfolio(newPortfolioName);
+            const newState = portfoliosStore.getState();
+            const newList = newState.list;
+            const newSummary = newList.filter(item => item.name === SUMMARY_PORTFOLIO_NAME)[0];
+
+            expect(summary).not.toEqual(undefined);
+            expect(newSummary).toEqual(undefined);
+            expect(state.list.length).toEqual(3);
+            expect(newState.list.length).toEqual(1);
         });
 
         test('should return default state when removed last portfolio', function () {
+            addPortfolio(newPortfolioName);
+            addPortfolio(newPortfolioName2);
+            removePortfolio(newPortfolioName);
+            removePortfolio(newPortfolioName2);
+
             const prevState = portfoliosStore.getState();
             removePortfolio(prevState.current);
 
             const newState = portfoliosStore.getState();
 
-            expect(newState.current).toBe(DEFAULT_PORTFOLIO_NAME);
-            expect(newState.list.length).toEqual(1);
-            expect(newState.list[0].name).toBe(DEFAULT_PORTFOLIO_NAME);
-            expect(newState.list[0].assets.length).toEqual(0);
+            expect(newState).toEqual(portfoliosStore.defaultState);
         });
 
-        test('should set first portfolio when remove current', function () {
+        test('should set default portfolio when remove current', function () {
             addPortfolio(newPortfolioName);
             setCurrentPortfolio(newPortfolioName);
             removePortfolio(newPortfolioName);
@@ -133,6 +156,15 @@ describe('portfolios store', function () {
             const newState = portfoliosStore.getState();
 
             expect(newState.current).toBe(DEFAULT_PORTFOLIO_NAME);
+        });
+
+        test('should set first remaining portfolio when remove default', function () {
+            addPortfolio(newPortfolioName);
+            removePortfolio(portfoliosStore.defaultState.current);
+
+            const newState = portfoliosStore.getState();
+
+            expect(newState.current).toBe(newPortfolioName);
         });
 
         test('should update summary', function () {
@@ -153,7 +185,8 @@ describe('portfolios store', function () {
             const newState = portfoliosStore.getState();
             const summary = newState.list.filter(item => item.name === SUMMARY_PORTFOLIO_NAME)[0];
 
-            expect(summary.assets).toMatchObject([
+            expect(summary).not.toBe(undefined);
+            expect(summary.assets).toEqual([
                 newAsset,
                 newAsset2,
                 newAsset4,
@@ -168,7 +201,7 @@ describe('portfolios store', function () {
             setCurrentPortfolio();
             const newState = portfoliosStore.getState();
 
-            expect(newState).toEqual(prevState);
+            expect(newState).toBe(prevState);
         });
 
         test('should change current', function () {
@@ -204,7 +237,7 @@ describe('portfolios store', function () {
             addNewAsset();
             const newState = portfoliosStore.getState();
 
-            expect(newState).toEqual(prevState);
+            expect(newState).toBe(prevState);
         });
 
         test('should add a single asset', function () {
@@ -214,7 +247,7 @@ describe('portfolios store', function () {
             const list = state.list.filter(item => item.name === state.current)[0];
             const assets = list.assets;
 
-            expect(assets.indexOf(newAsset)).not.toBe(-1);
+            expect(assets.includes(newAsset)).toBe(true);
         });
 
         test('should not duplicate a single asset', function () {
@@ -238,7 +271,7 @@ describe('portfolios store', function () {
             removeAsset();
             const newState = portfoliosStore.getState();
 
-            expect(newState).toEqual(prevState);
+            expect(newState).toBe(prevState);
         });
 
         test('should return current state when pass a missed asset', function () {
@@ -252,7 +285,7 @@ describe('portfolios store', function () {
             removeAsset(missedAsset);
             const newState = portfoliosStore.getState();
 
-            expect(newState).toEqual(prevState);
+            expect(newState).toBe(prevState);
         });
 
         test('should remove a single asset', function () {
@@ -264,7 +297,7 @@ describe('portfolios store', function () {
             const list = state.list.filter(item => item.name === state.current)[0];
             const assets = list.assets;
 
-            expect(assets.indexOf(newAsset)).toBe(-1);
+            expect(assets.filter(item => isObjectsEqual(item, newAsset)).length).toBe(0);
             expect(assets.filter(item => isObjectsEqual(item, newAsset2)).length).toBe(1);
         });
     });
@@ -276,7 +309,7 @@ describe('portfolios store', function () {
             setAssets();
             const newState = portfoliosStore.getState();
 
-            expect(newState).toEqual(prevState);
+            expect(newState).toBe(prevState);
         });
 
         test('should set an array of assets', function () {

@@ -30,18 +30,19 @@
 {#each portfolioList as item (item)}
     <label style="display: inline-block;">
         <input type="radio" bind:group={currentPortfolio} value={item}>
-        <span>{item}</span>
+        <span>
+            {#if item === SUMMARY_PORTFOLIO_NAME}
+                {locales('common.summaryPortfolio')}
+            {:else}
+                {item}
+            {/if}
+        </span>
     </label>
-    <button on:click={removePortfolio(item)}>{locales('actions.remove')}</button>
+
+    {#if item !== SUMMARY_PORTFOLIO_NAME}
+        <button on:click={removePortfolio(item)}>{locales('actions.remove')}</button>
+    {/if}
     <br>
 {/each}
-
-{#if portfolioList.length > 1}
-    <label style="display: inline-block;">
-        <input type="radio" bind:group={currentPortfolio} value={SUMMARY_PORTFOLIO_NAME}>
-        <span>{locales('common.summaryPortfolio')}</span>
-    </label>
-    <br>
-{/if}
 
 <input type="text" bind:value={newPortfolioTitle}><button on:click={addPortfolio(newPortfolioTitle)}>{locales('actions.add')}</button>

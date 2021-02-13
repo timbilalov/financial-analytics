@@ -14,7 +14,17 @@ const defaultState = {
 };
 const initialState = Object.assign({}, defaultState, LocalStorage.get(STORAGE_KEYS.portfolios));
 
+if (initialState.list.length > 1) {
+    initialState.list = initialState.list.filter(item => item.name !== SUMMARY_PORTFOLIO_NAME);
+    const allAssets = initialState.list.map(item => item.assets).reduce((prev, current) => prev.concat(current));
+    initialState.list.push({
+        name: SUMMARY_PORTFOLIO_NAME,
+        assets: allAssets,
+    });
+}
+
 export const portfoliosStore = createStore(initialState);
+export const resetPortfoliosStore = createEvent();
 export const addPortfolio = createEvent();
 export const removePortfolio = createEvent();
 export const setCurrentPortfolio = createEvent();
@@ -26,6 +36,8 @@ portfoliosStore.watch(function (state) {
     console.log('portfoliosStore changed', deepClone(state))
     LocalStorage.set(STORAGE_KEYS.portfolios, state);
 });
+
+portfoliosStore.reset(resetPortfoliosStore);
 
 portfoliosStore.on(addPortfolio, function (state, name) {
     if (typeof name !== 'string' || name.trim() === '' || state.list.filter(item => item.name === name).length !== 0 || name === SUMMARY_PORTFOLIO_NAME) {
