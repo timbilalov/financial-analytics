@@ -67,7 +67,7 @@ export function prepareSingleDataset(options) {
         calculatedDataAbsTotal = calcData(title, data, amount, isUsd, CALC_METHODS.ABSOLUTE_TOTAL, usdData, calcCurrency, useTaxes);
     }
 
-    if (datesFullArray.length !== 0) {
+    if (Array.isArray(datesFullArray) && datesFullArray.length !== 0) {
         dates = datesFullArray.slice(0);
         values = [];
         valuesAbsTotal = [];

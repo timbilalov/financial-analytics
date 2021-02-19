@@ -41,16 +41,11 @@ export function calcOwnMoney(datasets, options) {
         }
 
         for (const n in datasets) {
-            const dataset = datasets[n];
-            const {isUsd} = dataset;
-
             if (initialValues[n] !== undefined) {
                 let value = initialValues[n].value;
 
-                if (!isUsd && calcCurrency === CALC_CURRENCIES.USD) {
+                if (calcCurrency === CALC_CURRENCIES.USD) {
                     value = value / usdValue * initialValues[n].usd;
-                } else if (isUsd && calcCurrency === CALC_CURRENCIES.RUB) {
-                    value = value * usdValue / initialValues[n].usd;
                 }
 
                 total += value;

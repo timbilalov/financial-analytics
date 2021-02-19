@@ -36,10 +36,17 @@ describe('calc-own-money', function () {
 
     describe('should return an array of values', function () {
         test('rub', function () {
-            expect(calcOwnMoney(datasets, Object.assign({}, options, {
+            const result1 = calcOwnMoney(datasets, Object.assign({}, options, {
                 calcMethod: CALC_METHODS.ABSOLUTE_TOTAL,
                 currency: CALC_CURRENCIES.RUB,
-            }))).toMatchObject([
+            }));
+            const result2 = calcOwnMoney(datasetsUsd, Object.assign({}, options, {
+                calcMethod: CALC_METHODS.ABSOLUTE_TOTAL,
+                currency: CALC_CURRENCIES.RUB,
+            }));
+
+            expect(result1).toEqual(result2);
+            expect(result1).toEqual([
                 {
                     value: 100, // 100 + 0
                     date: dates[0],
@@ -59,11 +66,18 @@ describe('calc-own-money', function () {
             ]);
         });
 
-        test('rub to usd', function () {
-            expect(calcOwnMoney(datasets, Object.assign({}, options, {
+        test('usd', function () {
+            const result1 = calcOwnMoney(datasets, Object.assign({}, options, {
                 calcMethod: CALC_METHODS.ABSOLUTE_TOTAL,
                 calcCurrency: CALC_CURRENCIES.USD,
-            }))).toMatchObject([
+            }));
+            const result2 = calcOwnMoney(datasetsUsd, Object.assign({}, options, {
+                calcMethod: CALC_METHODS.ABSOLUTE_TOTAL,
+                calcCurrency: CALC_CURRENCIES.USD,
+            }));
+
+            expect(result1).toEqual(result2);
+            expect(result1).toEqual([
                 {
                     value: 100, // 100 / 50 * 50
                     date: dates[0],
@@ -78,54 +92,6 @@ describe('calc-own-money', function () {
                 },
                 {
                     value: 142.4528, // 100 / 53 * 50 + 50 / 53 * 51
-                    date: dates[3],
-                },
-            ]);
-        });
-
-        test('usd to rub', function () {
-            expect(calcOwnMoney(datasetsUsd, Object.assign({}, options, {
-                calcMethod: CALC_METHODS.ABSOLUTE_TOTAL,
-                calcCurrency: CALC_CURRENCIES.RUB,
-            }))).toMatchObject([
-                {
-                    value: 100, // 100 / 50 * 50
-                    date: dates[0],
-                },
-                {
-                    value: 152, // 100 / 50 * 51 + 50 / 51 * 51
-                    date: dates[1],
-                },
-                {
-                    value: 154.9804, // 100 / 50 * 52 + 50 / 51 * 52
-                    date: dates[2],
-                },
-                {
-                    value: 157.9608, // 100 / 50 * 53 + 50 / 51 * 53
-                    date: dates[3],
-                },
-            ]);
-        });
-
-        test('usd', function () {
-            expect(calcOwnMoney(datasetsUsd, Object.assign({}, options, {
-                calcMethod: CALC_METHODS.ABSOLUTE_TOTAL,
-                calcCurrency: CALC_CURRENCIES.USD,
-            }))).toMatchObject([
-                {
-                    value: 100, // 100 + 0
-                    date: dates[0],
-                },
-                {
-                    value: 150, // 100 + 50
-                    date: dates[1],
-                },
-                {
-                    value: 150, // 100 + 50
-                    date: dates[2],
-                },
-                {
-                    value: 150, // 100 + 50
                     date: dates[3],
                 },
             ]);
