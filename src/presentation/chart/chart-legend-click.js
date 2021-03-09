@@ -1,9 +1,13 @@
 import {BANK_DEPOSIT_LABEL, OWN_MONEY_LABEL, TOTAL_LABEL} from "@constants";
 import {calcBankDeposit, calcOwnMoney, calcTotal} from "@logic";
 import {clearLegendItems, chartInstanceStore} from "@store";
-import {isLabelCommon} from "@helpers";
+import {isLabelCommon, isObject} from "@helpers";
 
 export function onLegendClick(legendItem, options) {
+    if (!isObject(legendItem) || !isObject(options)) {
+        return;
+    }
+
     const chart = chartInstanceStore.getState();
     const datasets = chart.config.data.datasets;
     const hidden = !legendItem.hidden;

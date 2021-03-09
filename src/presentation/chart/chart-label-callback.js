@@ -1,9 +1,20 @@
 import {CALC_METHODS} from "@constants";
+import {isObject} from "@helpers";
 
 export function labelCallback(tooltipItem, data, options) {
+    if (!isObject(tooltipItem) || !isObject(data) || !isObject(options)) {
+        return;
+    }
+
     const {calcMethod} = options;
     const dataset = data.datasets[tooltipItem.datasetIndex];
     const label = dataset.label;
+    let labelText = '';
+
+    if (label === undefined) {
+        return labelText;
+    }
+
     const date = tooltipItem.label;
     const sameLabelDatasets = data.datasets.filter(item => item.label === label);
 
@@ -11,11 +22,6 @@ export function labelCallback(tooltipItem, data, options) {
         const index = sameLabelDatasets[0].dates.indexOf(date);
         return sameLabelDatasets.filter(item => !!item.data[index]).map(item => item.data[index]);
     })();
-    let labelText = '';
-
-    if (label === undefined) {
-        return '';
-    }
 
     const value = tooltipItem.value;
 

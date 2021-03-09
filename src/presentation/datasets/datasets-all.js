@@ -1,10 +1,15 @@
 import {BANK_DEPOSIT_LABEL, CALC_METHODS, OWN_MONEY_LABEL, TOTAL_LABEL} from "@constants";
 import {calcBankDeposit, calcOwnMoney, calcTotal} from "@logic";
 import {prepareSingleDataset} from "./datasets-single";
+import {isObject} from "@helpers";
 
 export async function prepareDatasets(items, options) {
+    if (!Array.isArray(items) || !isObject(options) || options.usdData === undefined) {
+        return [];
+    }
+
     const datasets = [];
-    const {calcMethod} = options;
+    const calcMethod = options.calcMethod || CALC_METHODS.RELATIVE;
 
     for (const item of items) {
         const singleDatasetOptions = Object.assign({}, options, item, {

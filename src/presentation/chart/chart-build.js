@@ -3,11 +3,12 @@ import {onLegendClick} from "./chart-legend-click";
 import {labelCallback} from "./chart-label-callback";
 import {labelsFilter} from "./chart-labels-filter";
 import {chartInstanceStore, clearLegendItems, setChartInstance} from "@store";
+import {isObject} from "@helpers";
 
 export function buildChart(datasets, options) {
     console.log('buildChart', datasets);
 
-    if (!datasets || !datasets.length) {
+    if (!Array.isArray(datasets) || datasets.length === 0 || !isObject(options)) {
         return;
     }
 
