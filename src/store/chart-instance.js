@@ -2,6 +2,7 @@ import {createStore, createEvent} from 'effector';
 
 export const chartInstanceStore = createStore({});
 export const setChartInstance = createEvent();
+export const resetChartInstance = createEvent();
 
 chartInstanceStore.on(setChartInstance, function (state, instance) {
     if (typeof instance !== 'object') {
@@ -10,3 +11,5 @@ chartInstanceStore.on(setChartInstance, function (state, instance) {
 
     return instance;
 });
+
+chartInstanceStore.reset(resetChartInstance);

@@ -2,11 +2,13 @@ import Chart from "chart.js";
 import {buildChart} from "@presentation";
 import {datasets, options} from "../../constants";
 import {isObject} from "@helpers";
+import {resetChartInstance} from "@store";
 
 jest.mock("chart.js");
 
 const chartMockUpdate = jest.fn();
-const chartMock = () => {
+const chartMockDestroy = jest.fn();
+const chartMock = (ctx, config) => {
     return {
         config: {
             options: {
@@ -30,16 +32,26 @@ const chartMock = () => {
             },
         },
         update: chartMockUpdate,
+        destroy: chartMockDestroy,
+        labelCallback: jest.fn(function () {
+            return config.options.tooltips.callbacks.label();
+        }),
+        legendClick: jest.fn(function () {
+            return config.options.legend.onClick();
+        }),
     };
 };
 
 Chart.mockImplementation(chartMock);
 
-beforeEach(() => {
-    Chart.mockClear();
-});
-
 describe('chart-build', function () {
+    beforeEach(() => {
+        Chart.mockClear();
+        chartMockUpdate.mockClear();
+        chartMockDestroy.mockClear();
+        resetChartInstance();
+    });
+
     test('should return undefined for wrong arguments', function () {
         const result1 = buildChart();
         const result2 = buildChart(100);
@@ -55,9 +67,20 @@ describe('chart-build', function () {
     });
 
     test('should return chart instance', function () {
-        const result = buildChart(datasets, options);
+        const chartInstance = buildChart(datasets, options);
+        chartInstance.labelCallback();
+        chartInstance.legendClick();
 
-        expect(isObject(result)).toBe(true);
+        expect(isObject(chartInstance)).toBe(true);
         expect(chartMockUpdate).toHaveBeenCalledTimes(1);
+        expect(chartMockDestroy).toHaveBeenCalledTimes(0);
+    });
+
+    test('should destroy existing chart instance', function () {
+        buildChart(datasets, options);
+        buildChart(datasets, options);
+        buildChart(datasets, options);
+
+        expect(chartMockDestroy).toHaveBeenCalledTimes(2);
     });
 });
