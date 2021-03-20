@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.1.1](https://github.com/timbilalov/financial-analytics/tree/v0.1.1) (2021-03-20)
+
+[Full Changelog](https://github.com/timbilalov/financial-analytics/compare/v0.1.0...v0.1.1)
+
+
+**Commits:**
+* travis triggers master branch only
+
 ## [v0.1.0](https://github.com/timbilalov/financial-analytics/tree/v0.1.0) (2021-03-20)
 
 [Full Changelog](https://github.com/timbilalov/financial-analytics/compare/f7d320497d2cff878b0997b5940711361b64bedd...v0.1.0)
