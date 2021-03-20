@@ -1,6 +1,12 @@
 language: node_js
+
 node_js:
   - 14
+
+branches:
+  only:
+    - master
+
 after_success:
   - npm run build
   - surge --project ./public --domain unfriend-financial-analytics.surge.sh
