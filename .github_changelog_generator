@@ -1,0 +1,6 @@
+user=timbilalov
+project=financial-analytics
+unreleased=false
+release_branch=dev
+# NOTE: Вообще, это не оч. хорошо. Но если включить, то будут дублироваться те PR, которые всего лишь закрывают Issues.
+pulls=false

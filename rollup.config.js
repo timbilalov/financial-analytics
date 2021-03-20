@@ -3,8 +3,11 @@ import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
+import alias from "@rollup/plugin-alias";
+import path from 'path';
 
 const production = !process.env.ROLLUP_WATCH;
+const projectRootDir = path.resolve(__dirname);
 
 function serve() {
 	let server;
@@ -55,6 +58,24 @@ export default {
 			browser: true,
 			dedupe: ['svelte']
 		}),
+
+		alias({
+			entries: {
+				'@constants': path.resolve(projectRootDir, './src/utils/constants'),
+				'@utils': path.resolve(projectRootDir, './src/utils'),
+				'@helpers': path.resolve(projectRootDir, './src/utils/helpers.js'),
+				'@presentation': path.resolve(projectRootDir, './src/presentation'),
+				'@logic': path.resolve(projectRootDir, './src/logic'),
+				'@data': path.resolve(projectRootDir, './src/data'),
+				'@fetch': path.resolve(projectRootDir, './src/data/fetch'),
+				'@parse': path.resolve(projectRootDir, './src/data/parse'),
+				'@app': path.resolve(projectRootDir, './src/app'),
+				'@components': path.resolve(projectRootDir, './src/app/components'),
+				'@containers': path.resolve(projectRootDir, './src/app/containers'),
+				'@store': path.resolve(projectRootDir, './src/store'),
+			}
+		}),
+
 		commonjs(),
 
 		// In dev mode, call `npm run start` once
