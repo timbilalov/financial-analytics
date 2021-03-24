@@ -1,5 +1,12 @@
 import {calcData} from "@logic";
-import {BANK_DEPOSIT_LABEL, CALC_METHODS, DATE_FORMATS, OWN_MONEY_LABEL, TOTAL_LABEL} from "@constants";
+import {
+    BANK_DEPOSIT_LABEL,
+    CALC_METHODS,
+    DATE_FORMATS,
+    INDEX_FUND_LABEL,
+    OWN_MONEY_LABEL,
+    TOTAL_LABEL
+} from "@constants";
 import moment from "moment";
 import {addDatasetColor, datasetsColorsStore} from "@store";
 import {isLabelCommon, isObject} from "@helpers";
@@ -36,6 +43,13 @@ export function prepareSingleDataset(options) {
         opacity = 0.7;
         borderWidth = 2;
         borderDash = [20, 20];
+    }
+
+    if (title === INDEX_FUND_LABEL) {
+        colorRGB = [20, 80, 150];
+        opacity = 0.7;
+        borderWidth = 2;
+        borderDash = [3, 3];
     }
 
     if (title === OWN_MONEY_LABEL) {
@@ -88,6 +102,7 @@ export function prepareSingleDataset(options) {
                 const date2 = moment(date, DATE_FORMATS.default);
                 const diff = date2.diff(date1, 'days');
 
+                // TODO: С этим бывают косяки. Поправить.
                 let hasFinished = diff > 0;
 
                 if (!hasBegun || hasFinished) {

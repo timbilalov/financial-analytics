@@ -26,6 +26,25 @@ export const usdData = [
     },
 ];
 
+export const indexFundData = [
+    {
+        date: dates[0],
+        value: 4000,
+    },
+    {
+        date: dates[1],
+        value: 4100,
+    },
+    {
+        date: dates[2],
+        value: 4200,
+    },
+    {
+        date: dates[3],
+        value: 4300,
+    },
+];
+
 export const valuesData = [
     {
         value: 4,
@@ -81,6 +100,7 @@ export const options = {
     datesFullArray: dates,
     calcCurrency: CALC_CURRENCIES.RUB,
     usdData,
+    indexFundData,
 };
 
 export const investcabResponseObject = {

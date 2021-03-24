@@ -51,6 +51,7 @@ export const DEFAULT_PORTFOLIO_NAME = 'default';
 export const TOTAL_LABEL = 'Total';
 export const BANK_DEPOSIT_LABEL = 'Bank depo';
 export const OWN_MONEY_LABEL = 'Own money';
+export const INDEX_FUND_LABEL = 'Index Fund';
 
 export const POSSIBLE_USES = [
     'taxes'

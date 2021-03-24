@@ -1,7 +1,7 @@
-import {fetchUsd} from '@data';
+import {fetchIndexFund} from '@data';
 import {dates, moexDataRows} from '../../constants';
 
-describe('fetch-usd', function () {
+describe('fetch-index-fund', function () {
     const dataRow1 = moexDataRows[0];
     const dataRow2 = moexDataRows[1];
     const dataRow3 = moexDataRows[2];
@@ -35,7 +35,7 @@ describe('fetch-usd', function () {
     });
 
     test('should return an array of values', async function () {
-        const result = await fetchUsd(dates);
+        const result = await fetchIndexFund(dates);
 
         expect(result).toEqual([
             dataRow1,

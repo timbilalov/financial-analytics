@@ -1,10 +1,18 @@
 <script>
     import Chart from '@containers/chart/Chart.svelte';
     import Controls from '@containers/controls/Controls.svelte';
-    import {portfoliosStore, calcStore, setUsdData, setDatesFullArray, datesStore, usdDataStore} from "@store";
+    import {
+        portfoliosStore,
+        calcStore,
+        setUsdData,
+        setDatesFullArray,
+        datesStore,
+        usdDataStore,
+        indexFundDataStore, setIndexFundData
+    } from "@store";
     import {buildChart, prepareDatasets} from "@presentation";
     import {checkImportUrl, debounce, deepClone} from "@helpers";
-    import {fetchUsd, getAllDatesInterval, getAssetsData, parseResponseDataUsd} from "@data";
+    import {fetchIndexFund, fetchUsd, getAllDatesInterval, getAssetsData, parseResponseDataUsd} from "@data";
 
     checkImportUrl();
 
@@ -12,12 +20,14 @@
         const calcState = calcStore.getState();
         const datesState = datesStore.getState();
         const usdDataState = usdDataStore.getState();
+        const indexFundDataState = indexFundDataStore.getState();
 
         const datesFullArray = datesState;
         const calcCurrency = calcState.currency;
         const calcMethod = calcState.method;
         const useTaxes = calcState.uses.taxes;
         const usdData = usdDataState;
+        const indexFundData = indexFundDataState;
 
         const options = {
             datesFullArray,
@@ -25,6 +35,7 @@
             calcMethod,
             useTaxes,
             usdData,
+            indexFundData,
         };
 
         return options;
@@ -43,8 +54,11 @@
         const datesFullArray = getAllDatesInterval(items);
         const usdDataRaw = await fetchUsd(datesFullArray);
         const usdData = parseResponseDataUsd(usdDataRaw, datesFullArray);
+        const indexFundDataRaw = await fetchIndexFund(datesFullArray);
+        const indexFundData = parseResponseDataUsd(indexFundDataRaw, datesFullArray, true);
 
         setUsdData(usdData);
+        setIndexFundData(indexFundData);
         setDatesFullArray(datesFullArray);
 
         const options = prepareOptions();

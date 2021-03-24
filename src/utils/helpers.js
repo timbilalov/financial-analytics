@@ -1,5 +1,12 @@
 import moment from "moment";
-import {BANK_DEPOSIT_LABEL, EXPORT_HREF_PARAM_NAME, OWN_MONEY_LABEL, STORAGE_KEYS, TOTAL_LABEL} from "@constants";
+import {
+    BANK_DEPOSIT_LABEL,
+    EXPORT_HREF_PARAM_NAME,
+    INDEX_FUND_LABEL,
+    OWN_MONEY_LABEL,
+    STORAGE_KEYS,
+    TOTAL_LABEL
+} from "@constants";
 import LocalStorage from '@utils/local-storage';
 
 export function dateFormat(dateUTC, format = 'YYYY.MM.DD') {
@@ -168,6 +175,7 @@ export function isLabelCommon(label) {
         TOTAL_LABEL.toLowerCase(),
         BANK_DEPOSIT_LABEL.toLowerCase(),
         OWN_MONEY_LABEL.toLowerCase(),
+        INDEX_FUND_LABEL.toLowerCase(),
     ];
 
     label = label.toLowerCase();
