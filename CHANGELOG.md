@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.2.1](https://github.com/timbilalov/financial-analytics/tree/v0.2.1) (2021-03-24)
+
+[Full Changelog](https://github.com/timbilalov/financial-analytics/compare/v0.2.0...v0.2.1)
+
+
+**Commits:**
+* hotfix: test suites
+
 ## [v0.2.0](https://github.com/timbilalov/financial-analytics/tree/v0.2.0) (2021-03-24)
 
 [Full Changelog](https://github.com/timbilalov/financial-analytics/compare/v0.1.1...v0.2.0)
