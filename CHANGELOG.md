@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.2.0](https://github.com/timbilalov/financial-analytics/tree/v0.2.0) (2021-03-24)
+
+[Full Changelog](https://github.com/timbilalov/financial-analytics/compare/v0.1.1...v0.2.0)
+
+**Implemented enhancements:**
+
+- Index fund benchmark [\#2](https://github.com/timbilalov/financial-analytics/issues/2)
+
 ## [v0.1.1](https://github.com/timbilalov/financial-analytics/tree/v0.1.1) (2021-03-20)
 
 [Full Changelog](https://github.com/timbilalov/financial-analytics/compare/v0.1.0...v0.1.1)
