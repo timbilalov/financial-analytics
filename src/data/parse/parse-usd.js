@@ -1,7 +1,8 @@
 import moment from "moment";
 import {DATE_FORMATS} from "@constants";
 
-export function parseResponseDataUsd(responseData, datesFullArray) {
+// TODO: Теперь эта функция не только для USD. Порефакторить так, чтобы было более универсально. Возможно, объединить с "обычным" parseMoex.
+export function parseResponseDataUsd(responseData, datesFullArray, isIndexFund = false) {
     if (!Array.isArray(responseData) || !Array.isArray(datesFullArray)) {
         return;
     }
@@ -16,12 +17,18 @@ export function parseResponseDataUsd(responseData, datesFullArray) {
         const marketType = item[0];
 
         // TODO: В дальнейшем, разобраться более детально с типами торгов.
-        if (marketType !== 'CETS') {
+        if ((!isIndexFund && marketType !== 'CETS') || (isIndexFund && marketType !== 'TQTF')) {
             continue;
         }
 
         const date = moment(item[1], DATE_FORMATS.moex).format(DATE_FORMATS.default);
-        const value = (item[4] + item[7]) / 2;
+        let value;
+
+        if (isIndexFund) {
+            value = item[14] || item[13] || (item[6] + item[11]) / 2;
+        } else {
+            value = item[10] || ((item[4] + item[7]) / 2);
+        }
 
         // TODO: Возможно, что для Moex первое условие никогда не выполняется. Проверить.
         if (date === prevDate) {

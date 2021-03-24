@@ -54,9 +54,10 @@ export async function fetchData(ticker, manualDateFrom, manualDateTo, isMoex = f
     };
 
     cachedDataArray.push(itemToCache);
+    // TODO: Недостаточно хорошо очищается. Как будто при попытке записать меньший объём в больший, не происходит перезапись. Проверить и поправить.
     LocalStorage.set(STORAGE_KEYS.fetchData, cachedDataArray);
 
-    console.log('fetched', ticker, manualDateFrom, manualDateTo, result)
+    console.log('fetched', ticker, manualDateFrom, manualDateTo, result.length)
 
     return result;
 }
