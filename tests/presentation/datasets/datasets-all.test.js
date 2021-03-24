@@ -1,6 +1,6 @@
 import {prepareDatasets} from "@presentation";
-import {dates, usdData} from "../../constants";
-import {BANK_DEPOSIT_LABEL, CALC_CURRENCIES, CALC_METHODS, OWN_MONEY_LABEL, TOTAL_LABEL} from "@constants";
+import {dates, options} from "../../constants";
+import {BANK_DEPOSIT_LABEL, CALC_METHODS, OWN_MONEY_LABEL, TOTAL_LABEL} from "@constants";
 
 describe('datasets-all', function () {
     const baseData = [
@@ -36,11 +36,9 @@ describe('datasets-all', function () {
         },
     ];
 
-    const baseOptions = {
-        datesFullArray: dates,
+    const baseOptions = Object.assign({}, options, {
         calcMethod: CALC_METHODS.RELATIVE,
-        usdData: usdData,
-    };
+    });
 
     test('should return an empty array for wrong arguments', async function () {
         const result1 = await prepareDatasets();

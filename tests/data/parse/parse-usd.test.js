@@ -26,15 +26,28 @@ describe('parse-usd', function () {
         expect(result.length).toBe(0);
     });
 
-    test('should return an array of data', function () {
-        const responseData = moexDataRows.map(item => ['CETS', ...item.slice(1)]);
-        const result = parseResponseDataUsd(responseData, dates);
+    describe('should return an array of data', function () {
+        test('usd', function () {
+            const responseData = moexDataRows.map(item => ['CETS', ...item.slice(1)]);
+            const result = parseResponseDataUsd(responseData, dates);
 
-        expect(result).toContainEqual({
-            date: expect.any(String),
-            value: expect.any(Number),
+            expect(result).toContainEqual({
+                date: expect.any(String),
+                value: expect.any(Number),
+            });
+            expect(result.length).toBe(4);
         });
-        expect(result.length).toBe(4);
+
+        test('index-fund', function () {
+            const responseData = moexDataRows.map(item => ['TQTF', ...item.slice(1)]);
+            const result = parseResponseDataUsd(responseData, dates, true);
+
+            expect(result).toContainEqual({
+                date: expect.any(String),
+                value: expect.any(Number),
+            });
+            expect(result.length).toBe(4);
+        });
     });
 
     test('should check for previous date values', function () {
