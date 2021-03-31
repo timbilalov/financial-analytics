@@ -1,5 +1,16 @@
 # Changelog
 
+## [v0.2.2](https://github.com/timbilalov/financial-analytics/tree/v0.2.2) (2021-03-31)
+
+[Full Changelog](https://github.com/timbilalov/financial-analytics/compare/v0.2.1...v0.2.2)
+
+**Fixed bugs:**
+
+- Refresh index fund dataset on chart label click [\#7](https://github.com/timbilalov/financial-analytics/issues/7)
+- Index fund wrong data for USD currency [\#6](https://github.com/timbilalov/financial-analytics/issues/6)
+- Local storage cleanup [\#4](https://github.com/timbilalov/financial-analytics/issues/4)
+- Continous data for assets [\#3](https://github.com/timbilalov/financial-analytics/issues/3)
+
 ## [v0.2.1](https://github.com/timbilalov/financial-analytics/tree/v0.2.1) (2021-03-24)
 
 [Full Changelog](https://github.com/timbilalov/financial-analytics/compare/v0.2.0...v0.2.1)
