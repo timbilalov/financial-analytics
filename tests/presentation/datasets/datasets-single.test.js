@@ -106,7 +106,6 @@ describe('datasets-single', function () {
         const result = prepareSingleDataset(options);
 
         expect(result.data.length).toBe(4);
-        console.log('result data', result.data)
         expect(result.data[0]).toBe(NaN);
         expect(result.data[1]).not.toBe(NaN);
         expect(result.data[2]).not.toBe(NaN);

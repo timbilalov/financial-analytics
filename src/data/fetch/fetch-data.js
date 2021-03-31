@@ -10,6 +10,7 @@ export async function fetchData(ticker, manualDateFrom, manualDateTo, isMoex = f
     }
 
     let result;
+    let manualDateToDefined = true;
 
     const yesterday = moment().add(-1, 'days').format(DATE_FORMATS.default);
 
@@ -17,12 +18,16 @@ export async function fetchData(ticker, manualDateFrom, manualDateTo, isMoex = f
         manualDateTo = yesterday;
     }
 
+    if (manualDateTo === yesterday) {
+        manualDateToDefined = false;
+    }
+
     let cachedDataArray = LocalStorage.get(STORAGE_KEYS.fetchData) || [];
 
     // Clean LS, because of size limits
     cachedDataArray = cachedDataArray.filter(item => {
-        if (item.manualDateFrom === yesterday) {
-            return item.ticker === ticker && item.manualDateFrom === manualDateFrom;
+        if (item.ticker === ticker && item.manualDateFrom === manualDateFrom && manualDateToDefined === false) {
+            return item.manualDateTo === yesterday;
         } else {
             return true;
         }
@@ -54,10 +59,9 @@ export async function fetchData(ticker, manualDateFrom, manualDateTo, isMoex = f
     };
 
     cachedDataArray.push(itemToCache);
-    // TODO: Недостаточно хорошо очищается. Как будто при попытке записать меньший объём в больший, не происходит перезапись. Проверить и поправить.
-    LocalStorage.set(STORAGE_KEYS.fetchData, cachedDataArray);
+    LocalStorage.set(STORAGE_KEYS.fetchData, cachedDataArray, true);
 
-    console.log('fetched', ticker, manualDateFrom, manualDateTo)
+    console.log('fetched', ticker, manualDateFrom, manualDateTo, 'manualDateToDefined', manualDateToDefined, 'cachedDataArray.length', cachedDataArray.length)
 
     return result;
 }

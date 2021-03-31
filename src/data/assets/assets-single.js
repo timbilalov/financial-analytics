@@ -1,6 +1,7 @@
 import {fetchData} from "@fetch";
 import {parseResponseData} from "@parse";
 import {isObject} from "@helpers";
+import {normalizeAssetData} from "./normalize-asset-data";
 
 export async function getSingleAssetData(asset) {
     if (!isObject(asset)) {
@@ -25,8 +26,9 @@ export async function getSingleAssetData(asset) {
 
     const dataRaw = await fetchData(ticker, buyDate, sellDate, isMoex, isBond);
     const dataParsed = parseResponseData(dataRaw, isMoex, isBond);
+    const dataNormalized = normalizeAssetData(dataParsed, buyDate, sellDate);
 
-    if (dataParsed === undefined || dataParsed.length === 0) {
+    if (dataNormalized === undefined || dataNormalized.length === 0) {
         return;
     }
 
