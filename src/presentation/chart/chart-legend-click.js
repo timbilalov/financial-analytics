@@ -1,5 +1,5 @@
-import {BANK_DEPOSIT_LABEL, OWN_MONEY_LABEL, TOTAL_LABEL} from "@constants";
-import {calcBankDeposit, calcOwnMoney, calcTotal} from "@logic";
+import {BANK_DEPOSIT_LABEL, INDEX_FUND_LABEL, OWN_MONEY_LABEL, TOTAL_LABEL} from "@constants";
+import {calcBankDeposit, calcIndexFund, calcOwnMoney, calcTotal} from "@logic";
 import {clearLegendItems, chartInstanceStore} from "@store";
 import {isLabelCommon, isObject} from "@helpers";
 
@@ -35,6 +35,13 @@ export function onLegendClick(legendItem, options) {
         const newOwn = calcOwnMoney(innerDatasets, options);
         currentOwnDataset.data = newOwn.map(item => item.value);
         currentOwnDataset.dates = newOwn.map(item => item.date);
+    }
+
+    const currentIndexFundDataset = datasets.filter(item => item.label === INDEX_FUND_LABEL)[0];
+    if (currentIndexFundDataset !== undefined) {
+        const newIndexFund = calcIndexFund(innerDatasets, options);
+        currentIndexFundDataset.data = newIndexFund.map(item => item.value);
+        currentIndexFundDataset.dates = newIndexFund.map(item => item.date);
     }
 
     clearLegendItems();

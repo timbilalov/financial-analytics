@@ -3,7 +3,7 @@ import lz from 'lz-string';
 export const LOCAL_STORAGE_KEY_PREFIX = 'fa-';
 
 class LocalStorage {
-    set(key, value) {
+    set(key, value, shouldClean = false) {
         if (typeof key !== 'string' || (typeof key === 'string' && key.trim() === '') || value === undefined) {
             return false;
         }
@@ -11,6 +11,10 @@ class LocalStorage {
         let result = false;
 
         try {
+            if (shouldClean) {
+                this.remove(key);
+            }
+
             const valueToSet = JSON.stringify(value);
             localStorage.setItem(LOCAL_STORAGE_KEY_PREFIX + key, valueToSet);
             result = true;

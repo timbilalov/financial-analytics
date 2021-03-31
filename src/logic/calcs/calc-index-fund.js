@@ -48,27 +48,30 @@ export function calcIndexFund(datasets, options) {
         datasets.forEach((dataset, index) => {
             const value = dataset.data[i];
             const initialValue = initialValues[index];
+            let indexFundValueByDateItem = indexFundValueByDate;
+            let indexFundValueInitial = initialValue.indexFundValue;
             let calcValue;
 
             if (isNaN(value) || value === null) {
                 return;
             }
 
+            if (calcCurrency === CALC_CURRENCIES.USD && (calcMethod === CALC_METHODS.ABSOLUTE || calcMethod === CALC_METHODS.ABSOLUTE_TOTAL)) {
+                indexFundValueByDateItem /= usdValueByDate;
+                indexFundValueInitial /= initialValue.usdValue;
+            }
+
             if (calcMethod === CALC_METHODS.ABSOLUTE) {
-                calcValue = (indexFundValueByDate - initialValue.indexFundValue) * initialValue.valueAbsTotal / initialValue.indexFundValue;
+                calcValue = (indexFundValueByDateItem - indexFundValueInitial) * initialValue.valueAbsTotal / indexFundValueInitial;
             } else if (calcMethod === CALC_METHODS.ABSOLUTE_TOTAL) {
-                calcValue = initialValue.valueAbsTotal / initialValue.indexFundValue * indexFundValueByDate;
+                calcValue = initialValue.valueAbsTotal / indexFundValueInitial * indexFundValueByDateItem;
             } else if (calcMethod === CALC_METHODS.RELATIVE || calcMethod === CALC_METHODS.RELATIVE_ANNUAL) {
-                calcValue = (indexFundValueByDate - initialValue.indexFundValue) / initialValue.indexFundValue;
+                calcValue = (indexFundValueByDateItem - indexFundValueInitial) / indexFundValueInitial;
                 calcValue *= 100;
             }
 
-            if (calcCurrency === CALC_CURRENCIES.USD) {
-                if (calcMethod === CALC_METHODS.ABSOLUTE || calcMethod === CALC_METHODS.ABSOLUTE_TOTAL) {
-                    calcValue /= usdValueByDate;
-                } else {
-                    calcValue *= initialValue.usdValue / usdValueByDate;
-                }
+            if (calcCurrency === CALC_CURRENCIES.USD && (calcMethod === CALC_METHODS.RELATIVE || calcMethod === CALC_METHODS.RELATIVE_ANNUAL)) {
+                calcValue *= initialValue.usdValue / usdValueByDate;
             }
 
             calcValues.push(calcValue);
