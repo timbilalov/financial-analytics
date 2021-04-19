@@ -1,11 +1,11 @@
 <script>
     import {CALC_METHODS} from "@constants";
     import {locales} from "@presentation";
-    import {calcStore, setCalcMethod} from "@store";
+    import {calcOptionsStore, setCalcMethod} from "@store";
 
     let calcMethod;
 
-    calcStore.watch(function (state) {
+    calcOptionsStore.watch(function (state) {
         calcMethod = state.method;
     });
 

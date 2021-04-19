@@ -1,10 +1,10 @@
 <script>
     import {locales} from "@presentation";
-    import {calcStore, setCalcUses} from "@store";
+    import {calcOptionsStore, setCalcUses} from "@store";
 
     let useTaxes;
 
-    calcStore.watch(function (state) {
+    calcOptionsStore.watch(function (state) {
         useTaxes = state.uses.taxes;
     });
 

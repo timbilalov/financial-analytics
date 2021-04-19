@@ -13,22 +13,17 @@
 
     splitsStore.watch(function (state) {
         splits = [];
-
         const splitsCurrentState = deepClone(state);
-
         for (const ticker in splitsCurrentState) {
             if (!splitsCurrentState.hasOwnProperty(ticker)) {
                 continue;
             }
-
             const tickerData = splitsCurrentState[ticker] || [];
-
             tickerData.forEach(item => {
                 item.ticker = ticker;
                 splits.push(item);
             });
         }
-
         splitsNotChanged = deepClone(splits);
     });
 
