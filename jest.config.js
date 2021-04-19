@@ -3,7 +3,7 @@ module.exports = {
     moduleNameMapper: {
         '@utils/(.*)': '<rootDir>/src/utils/$1',
         '@helpers': '<rootDir>/src/utils/helpers',
-        '@constants': '<rootDir>/src/utils/constants',
+        '@constants': '<rootDir>/src/constants',
         '@logic': '<rootDir>/src/logic',
         '@store': '<rootDir>/src/store',
         '@data': '<rootDir>/src/data',

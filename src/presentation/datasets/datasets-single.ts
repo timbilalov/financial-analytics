@@ -10,8 +10,15 @@ import {
 import moment from "moment";
 import {addDatasetColor, datasetsColorsStore} from "@store";
 import {isLabelCommon, isObject} from "@helpers";
+import type {dataset} from "@interfaces";
 
-export function prepareSingleDataset(options) {
+export function prepareSingleDataset(options): dataset {
+// export function prepareSingleDataset(
+//     title: string,
+//     data: any[],
+//     amount: number,
+//     isUsd: boolean,
+// ): dataset {
     if (!isObject(options)) {
         return;
     }
@@ -121,7 +128,7 @@ export function prepareSingleDataset(options) {
         values = calculatedData.map(item => item.value);
     }
 
-    const dataset = {
+    const dataset: dataset = {
         label: title,
         backgroundColor: `rgba(${colorRGB.join(', ')}, 0.2)`,
         borderColor: `rgba(${colorRGB.join(', ')}, ${opacity})`,

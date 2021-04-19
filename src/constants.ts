@@ -48,7 +48,7 @@ export const ASSET_DEFAULT_FIELDS = [
 export const EXPORT_HREF_PARAM_NAME = 'export';
 export const DEFAULT_PORTFOLIO_NAME = 'default';
 
-export const TOTAL_LABEL = 'Total';
+export const TOTAL_LABEL = 'Total3';
 export const BANK_DEPOSIT_LABEL = 'Bank depo';
 export const OWN_MONEY_LABEL = 'Own money';
 export const INDEX_FUND_LABEL = 'Index Fund';

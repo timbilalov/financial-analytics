@@ -3,13 +3,20 @@ import {calcBankDeposit, calcIndexFund, calcOwnMoney, calcTotal} from "@logic";
 import {prepareSingleDataset} from "./datasets-single";
 import {isObject} from "@helpers";
 import {getSingleAssetData} from "@data";
+import type {dataset} from "@interfaces";
 
-export async function prepareDatasets(items, options) {
+interface commonDatasetOptions {
+    title: string;
+    data: [];
+    // datasets: [];
+}
+
+export async function prepareDatasets(items, options): Promise<dataset[]> {
     if (!Array.isArray(items) || !isObject(options) || options.usdData === undefined) {
         return [];
     }
 
-    const datasets = [];
+    const datasets: dataset[] = [];
     const calcMethod = options.calcMethod || CALC_METHODS.RELATIVE;
 
     for (const item of items) {
@@ -25,7 +32,7 @@ export async function prepareDatasets(items, options) {
 
     // Total
     if (items.length > 1) {
-        const datasetTotalOptions = Object.assign({}, options, {
+        const datasetTotalOptions: commonDatasetOptions = Object.assign({}, options, {
             datasets,
             title: TOTAL_LABEL,
             data: calcTotal(innerDatasets, options),

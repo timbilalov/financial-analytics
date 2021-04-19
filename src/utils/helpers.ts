@@ -7,7 +7,11 @@ import {
     STORAGE_KEYS,
     TOTAL_LABEL
 } from "@constants";
-import LocalStorage from '@utils/local-storage';
+// import LocalStorage from "./local-storage";
+// import LocalStorage from "@local-storage";
+// import LocalStorage from '@utils/local-storage';
+import {LocalStorage} from '@utils';
+// import {LocalStorage} from '@utils/local-storage';
 
 export function dateFormat(dateUTC, format = 'YYYY.MM.DD') {
     if (typeof dateUTC !== 'number' || typeof format !== 'string') {

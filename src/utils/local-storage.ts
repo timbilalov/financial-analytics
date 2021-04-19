@@ -1,8 +1,14 @@
 import lz from 'lz-string';
 
-export const LOCAL_STORAGE_KEY_PREFIX = 'fa-';
+const LOCAL_STORAGE_KEY_PREFIX = 'fa-';
 
-class LocalStorage {
+export class LocalStorage {
+    private static _instance: LocalStorage;
+
+    public static get Instance() {
+        return this._instance || (this._instance = new this());
+    }
+
     set(key, value, shouldClean = false) {
         if (typeof key !== 'string' || (typeof key === 'string' && key.trim() === '') || value === undefined) {
             return false;
@@ -111,4 +117,5 @@ class LocalStorage {
     }
 }
 
-export default new LocalStorage();
+// export default new LocalStorage();
+// export LocalStorage;

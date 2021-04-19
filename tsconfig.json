@@ -1,0 +1,33 @@
+{
+  "extends": "@tsconfig/svelte/tsconfig.json",
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules/*",
+    "__sapper__/*",
+    "public/*"
+  ],
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./public/dist",
+    "baseUrl": ".",
+    "paths": {
+      "@types": ["./src/types"],
+      "@interfaces": ["./src/interfaces"],
+      "@constants": ["./src/constants"],
+      "@utils": ["./src/utils"],
+      "@helpers": ["./src/utils/helpers.js"],
+      "@presentation": ["./src/presentation"],
+      "@logic": ["./src/logic"],
+      "@data": ["./src/data"],
+      "@fetch": ["./src/data/fetch"],
+      "@parse": ["./src/data/parse"],
+      "@app": ["./src/app"],
+      "@components": ["./src/app/components"],
+      "@containers": ["./src/app/containers"],
+      "@store": ["./src/store"]
+    }
+  }
+}
