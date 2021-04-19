@@ -1,6 +1,5 @@
 <script>
-    import {locales} from "@presentation";
-    import {makeExportUrl} from "@helpers";
+    import {locales, makeExportUrl} from "@presentation";
 
     let exportUrl = '';
 </script>

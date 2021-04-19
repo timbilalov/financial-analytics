@@ -3,7 +3,7 @@
     import {portfoliosStore} from "@store";
     import AddNewAsset from "./components/AddNewAsset.svelte";
     import ManageAssets from "./components/ManageAssets.svelte";
-    import LocalStorage from "@utils/local-storage";
+    import {LocalStorage} from "@utils";
     import {STORAGE_KEYS, SUMMARY_PORTFOLIO_NAME} from "@constants";
 
     let assets = [];
@@ -46,10 +46,14 @@
     }
 
     function onClearCacheButtonClick() {
-        const removeStatus = LocalStorage.remove(STORAGE_KEYS.fetchData);
-        if (removeStatus === true) {
-            window.location.reload();
-        }
+        const keysToClear = [
+            STORAGE_KEYS.indexFund,
+            STORAGE_KEYS.usdData,
+            STORAGE_KEYS.assetsData,
+        ];
+
+        keysToClear.forEach(key => LocalStorage.remove(key));
+        window.location.reload();
     }
 </script>
 

@@ -5,13 +5,15 @@ import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 import alias from "@rollup/plugin-alias";
 import path from 'path';
+import autoPreprocess from 'svelte-preprocess';
+import typescript from '@rollup/plugin-typescript';
 
 const production = !process.env.ROLLUP_WATCH;
 const projectRootDir = path.resolve(__dirname);
 
 function serve() {
 	let server;
-	
+
 	function toExit() {
 		if (server) server.kill(0);
 	}
@@ -31,7 +33,7 @@ function serve() {
 }
 
 export default {
-	input: 'src/main.js',
+	input: 'src/main.ts',
 	output: {
 		sourcemap: true,
 		format: 'iife',
@@ -40,6 +42,7 @@ export default {
 	},
 	plugins: [
 		svelte({
+			preprocess: autoPreprocess(),
 			// enable run-time checks when not in production
 			dev: !production,
 			// we'll extract any component CSS out into
@@ -47,6 +50,14 @@ export default {
 			css: css => {
 				css.write('bundle.css');
 			}
+		}),
+
+		// TODO: Подумать, как тут лучше оставить.
+		typescript({
+			// sourceMap: !production,
+			// inlineSources: !production,
+			sourceMap: true,
+			inlineSources: true,
 		}),
 
 		// If you have external dependencies installed from
@@ -61,11 +72,10 @@ export default {
 
 		alias({
 			entries: {
-				'@constants': path.resolve(projectRootDir, './src/utils/constants'),
+				'@constants': path.resolve(projectRootDir, './src/constants'),
 				'@utils': path.resolve(projectRootDir, './src/utils'),
 				'@helpers': path.resolve(projectRootDir, './src/utils/helpers.js'),
 				'@presentation': path.resolve(projectRootDir, './src/presentation'),
-				'@logic': path.resolve(projectRootDir, './src/logic'),
 				'@data': path.resolve(projectRootDir, './src/data'),
 				'@fetch': path.resolve(projectRootDir, './src/data/fetch'),
 				'@parse': path.resolve(projectRootDir, './src/data/parse'),

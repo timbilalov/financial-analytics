@@ -17,7 +17,6 @@
     function handleNewSplitFieldInput(event) {
         const {target} = event;
         const {name, value} = target;
-
         newSplitValues[name] = value;
     }
 
