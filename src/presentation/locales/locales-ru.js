@@ -3,6 +3,7 @@ export const LOCALES_RU = {
         portfolio: 'Портфель',
         actions: 'Действия',
         assets: 'Покупки',
+        splits: 'Сплиты',
         calc: 'Метод расчёта',
         export: 'Поделиться ссылкой',
         calcCurrency: 'Валюта расчётов',
@@ -41,5 +42,11 @@ export const LOCALES_RU = {
         usd: 'В долларах',
         bond: 'Облигация',
         hide: 'Не учитывать',
+    },
+    splits: {
+        ticker: 'Тикер',
+        splitDate: 'Дата сплита',
+        amountBefore: 'Кол-во до сплита',
+        amountAfter: 'Кол-во после сплита',
     },
 };

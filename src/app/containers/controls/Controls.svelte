@@ -4,6 +4,7 @@
     import CalcCurrency from "./components/CalcCurrency.svelte";
     import Consider from "./components/Consider.svelte";
     import Assets from "./components/assets/Assets.svelte";
+    import Splits from "./components/splits/Splits.svelte";
     import Export from "./components/Export.svelte";
 </script>
 
@@ -37,6 +38,8 @@
     <Consider />
     <hr>
     <Assets />
+    <hr>
+    <Splits />
     <hr>
     <Export />
 </div>
