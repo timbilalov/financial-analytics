@@ -24,6 +24,7 @@ export const STORAGE_KEYS = {
     calc: 'calc',
     lang: 'lang',
     fetchData: 'fetchData',
+    splits: 'splits',
 };
 
 export const LANGUAGES = {
@@ -43,6 +44,13 @@ export const ASSET_DEFAULT_FIELDS = [
     'usd',
     'bond',
     'hide',
+];
+
+export const SPLIT_DEFAULT_FIELDS = [
+    'ticker',
+    'splitDate',
+    'amountBefore',
+    'amountAfter',
 ];
 
 export const EXPORT_HREF_PARAM_NAME = 'export';
