@@ -2,6 +2,8 @@ import {fetchData} from "@fetch";
 import {parseResponseData} from "@parse";
 import {isObject} from "@helpers";
 import {normalizeAssetData} from "./normalize-asset-data";
+import {splitsStore} from "@store";
+import {checkForSplits} from "./check-for-splits";
 
 export async function getSingleAssetData(asset) {
     if (!isObject(asset)) {
@@ -32,13 +34,19 @@ export async function getSingleAssetData(asset) {
         return;
     }
 
-    const data = {
-        title: title || ticker.toUpperCase(),
+    // Check for splits
+    const dataToCheck = {
+        ticker: ticker,
         data: dataParsed,
+    };
+    const splits = splitsStore.getState();
+    const dataChecked = checkForSplits(dataToCheck, splits);
+
+    return {
+        title: title || ticker.toUpperCase(),
+        data: dataChecked.data,
         amount: amount,
         isUsd: isUsd,
     };
-
-    return data;
 }
 

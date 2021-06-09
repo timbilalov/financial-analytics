@@ -8,7 +8,7 @@ import {
     isLabelCommon,
     isObject,
     isObjectsEqual,
-    makeExportUrl
+    makeExportUrl, toFractionDigits
 } from "@helpers";
 import {BANK_DEPOSIT_LABEL, EXPORT_HREF_PARAM_NAME, OWN_MONEY_LABEL, TOTAL_LABEL} from "@constants";
 
@@ -253,5 +253,20 @@ describe('helpers', function () {
 
         expect(isObject({ a: 1 })).toBe(true);
         expect(isObject({ a: 1, b: { c: 'str' } })).toBe(true);
+    });
+
+    test('toFractionDigits', function () {
+        expect(toFractionDigits(28.846153846)).toBe(28.8462);
+
+        expect(toFractionDigits(28.846153846, 4)).toBe(28.8462);
+        expect(toFractionDigits(23.076923077, 4)).toBe(23.0769);
+        expect(toFractionDigits(6.923076923, 4)).toBe(6.9231);
+
+        expect(toFractionDigits(28.846153846, 5)).toBe(28.84615);
+        expect(toFractionDigits(23.076923077, 5)).toBe(23.07692);
+        expect(toFractionDigits(6.923076923, 5)).toBe(6.92308);
+
+        expect(toFractionDigits('str', 2)).toBe(NaN);
+        expect(toFractionDigits(NaN, 4)).toBe(NaN);
     });
 });
