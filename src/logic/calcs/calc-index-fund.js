@@ -48,33 +48,45 @@ export function calcIndexFund(datasets, options) {
         datasets.forEach((dataset, index) => {
             const value = dataset.data[i];
             const initialValue = initialValues[index];
+
+            const hasNullValue = isNaN(value) || value === null;
+            const hasLastIndexFundValue = initialValue.lastIndexFundValue !== undefined;
+
             let indexFundValueByDateItem = indexFundValueByDate;
             let indexFundValueInitial = initialValue.indexFundValue;
             let calcValue;
 
-            if (isNaN(value) || value === null) {
+            if (hasNullValue && !hasLastIndexFundValue) {
                 return;
             }
 
-            if (calcCurrency === CALC_CURRENCIES.USD && (calcMethod === CALC_METHODS.ABSOLUTE || calcMethod === CALC_METHODS.ABSOLUTE_TOTAL)) {
-                indexFundValueByDateItem /= usdValueByDate;
-                indexFundValueInitial /= initialValue.usdValue;
-            }
+            if (hasNullValue && hasLastIndexFundValue) {
+                calcValue = initialValue.lastIndexFundValue;
+            } else {
+                if (calcCurrency === CALC_CURRENCIES.USD && (calcMethod === CALC_METHODS.ABSOLUTE || calcMethod === CALC_METHODS.ABSOLUTE_TOTAL)) {
+                    indexFundValueByDateItem /= usdValueByDate;
+                    indexFundValueInitial /= initialValue.usdValue;
+                }
 
-            if (calcMethod === CALC_METHODS.ABSOLUTE) {
-                calcValue = (indexFundValueByDateItem - indexFundValueInitial) * initialValue.valueAbsTotal / indexFundValueInitial;
-            } else if (calcMethod === CALC_METHODS.ABSOLUTE_TOTAL) {
-                calcValue = initialValue.valueAbsTotal / indexFundValueInitial * indexFundValueByDateItem;
-            } else if (calcMethod === CALC_METHODS.RELATIVE || calcMethod === CALC_METHODS.RELATIVE_ANNUAL) {
-                calcValue = (indexFundValueByDateItem - indexFundValueInitial) / indexFundValueInitial;
-                calcValue *= 100;
-            }
+                if (calcMethod === CALC_METHODS.ABSOLUTE) {
+                    calcValue = (indexFundValueByDateItem - indexFundValueInitial) * initialValue.valueAbsTotal / indexFundValueInitial;
+                } else if (calcMethod === CALC_METHODS.ABSOLUTE_TOTAL) {
+                    calcValue = initialValue.valueAbsTotal / indexFundValueInitial * indexFundValueByDateItem;
+                } else if (calcMethod === CALC_METHODS.RELATIVE || calcMethod === CALC_METHODS.RELATIVE_ANNUAL) {
+                    calcValue = (indexFundValueByDateItem - indexFundValueInitial) / indexFundValueInitial;
+                    calcValue *= 100;
+                }
 
-            if (calcCurrency === CALC_CURRENCIES.USD && (calcMethod === CALC_METHODS.RELATIVE || calcMethod === CALC_METHODS.RELATIVE_ANNUAL)) {
-                calcValue *= initialValue.usdValue / usdValueByDate;
+                if (calcCurrency === CALC_CURRENCIES.USD && (calcMethod === CALC_METHODS.RELATIVE || calcMethod === CALC_METHODS.RELATIVE_ANNUAL)) {
+                    calcValue *= initialValue.usdValue / usdValueByDate;
+                }
             }
 
             calcValues.push(calcValue);
+
+            if (!hasNullValue) {
+                initialValue.lastIndexFundValue = calcValue;
+            }
         });
 
         let value;

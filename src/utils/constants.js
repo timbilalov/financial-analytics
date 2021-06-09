@@ -24,6 +24,7 @@ export const STORAGE_KEYS = {
     calc: 'calc',
     lang: 'lang',
     fetchData: 'fetchData',
+    splits: 'splits',
 };
 
 export const LANGUAGES = {
@@ -45,6 +46,13 @@ export const ASSET_DEFAULT_FIELDS = [
     'hide',
 ];
 
+export const SPLIT_DEFAULT_FIELDS = [
+    'ticker',
+    'splitDate',
+    'amountBefore',
+    'amountAfter',
+];
+
 export const EXPORT_HREF_PARAM_NAME = 'export';
 export const DEFAULT_PORTFOLIO_NAME = 'default';
 
@@ -61,3 +69,6 @@ export const DAYS_IN_YEAR = 365;
 export const SUMMARY_PORTFOLIO_NAME = 'summary';
 
 export const LOCALES_TEXT_FALLBACK = '...';
+
+// TODO: Глянуть, есть ли более подходящий тикер, для сравнения.
+export const INDEX_FUND_TICKER = 'vtba';
