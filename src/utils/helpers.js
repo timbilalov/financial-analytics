@@ -34,6 +34,7 @@ export async function makeExportUrl() {
     const namesArray = [
         STORAGE_KEYS.portfolios,
         STORAGE_KEYS.calc,
+        STORAGE_KEYS.splits,
     ];
     const encodedString = LocalStorage.export(namesArray);
 
@@ -186,4 +187,15 @@ export function isLabelCommon(label) {
 // See: https://stackoverflow.com/a/46663081/11902026
 export function isObject(value) {
     return value instanceof Object && value.constructor === Object;
+}
+
+// TODO: Перевести остальные toFixed на эту функцию
+export function toFractionDigits(num, digitsCount = 4) {
+    if (typeof num !== 'number' || isNaN(num)) {
+        return NaN;
+    }
+
+    const multiplier = Math.pow(10, digitsCount);
+
+    return Math.round(num * multiplier) / multiplier;
 }

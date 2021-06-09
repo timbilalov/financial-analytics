@@ -8,11 +8,19 @@
         setDatesFullArray,
         datesStore,
         usdDataStore,
-        indexFundDataStore, setIndexFundData
+        indexFundDataStore, setIndexFundData, splitsStore
     } from "@store";
     import {buildChart, prepareDatasets} from "@presentation";
     import {checkImportUrl, debounce, deepClone} from "@helpers";
-    import {fetchIndexFund, fetchUsd, getAllDatesInterval, getAssetsData, parseResponseDataUsd} from "@data";
+    import {
+        checkForSplits,
+        fetchIndexFund,
+        fetchUsd,
+        getAllDatesInterval,
+        getAssetsData,
+        parseResponseDataUsd
+    } from "@data";
+    import {INDEX_FUND_TICKER} from "@constants";
 
     checkImportUrl();
 
@@ -57,8 +65,17 @@
         const indexFundDataRaw = await fetchIndexFund(datesFullArray);
         const indexFundData = parseResponseDataUsd(indexFundDataRaw, datesFullArray, true);
 
+        // Check for splits
+        const indexFundDataToCheck = {
+            ticker: INDEX_FUND_TICKER,
+            data: indexFundData,
+        };
+        const splits = splitsStore.getState();
+        const checkedResult = checkForSplits(indexFundDataToCheck, splits);
+        const indexFundDataChecked = checkedResult.data;
+
         setUsdData(usdData);
-        setIndexFundData(indexFundData);
+        setIndexFundData(indexFundDataChecked);
         setDatesFullArray(datesFullArray);
 
         const options = prepareOptions();
@@ -71,6 +88,7 @@
 
     portfoliosStore.watch(debouncedUpdate);
     calcStore.watch(debouncedUpdate);
+    splitsStore.watch(debouncedUpdate);
 </script>
 
 <Controls />
