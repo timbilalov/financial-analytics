@@ -1,5 +1,15 @@
 # Changelog
 
+## [v0.2.4](https://github.com/timbilalov/financial-analytics/tree/v0.2.4) (2021-06-10)
+
+[Full Changelog](https://github.com/timbilalov/financial-analytics/compare/v0.2.3...v0.2.4)
+
+**Implemented enhancements:**
+
+- Add .gitconfig file [\#18](https://github.com/timbilalov/financial-analytics/issues/18)
+- NPM registry [\#16](https://github.com/timbilalov/financial-analytics/issues/16)
+- Stock splits [\#15](https://github.com/timbilalov/financial-analytics/issues/15)
+
 ## [v0.2.3](https://github.com/timbilalov/financial-analytics/tree/v0.2.3) (2021-06-09)
 
 [Full Changelog](https://github.com/timbilalov/financial-analytics/compare/v0.2.2...v0.2.3)
