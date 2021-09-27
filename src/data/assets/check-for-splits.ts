@@ -1,13 +1,13 @@
-import moment from "moment";
-import {deepClone, toFractionDigits} from "@helpers";
-import type {TAsset, TAssetData, TSplits} from "@types";
-import {DATE_FORMATS} from "@constants";
+import moment from 'moment';
+import { deepClone, hasOwnProperty, toFractionDigits } from '@helpers';
+import type { TAsset, TAssetData, TSplits } from '@types';
+import { DATE_FORMATS } from '@constants';
 
 export function checkForSplits(ticker: TAsset['ticker'], assetData: TAssetData, splits: TSplits): TAssetData {
     let splitDataFound = false;
 
     for (const splitTicker in splits) {
-        if (!splits.hasOwnProperty(splitTicker)) {
+        if (!hasOwnProperty(splits, splitTicker)) {
             continue;
         }
 

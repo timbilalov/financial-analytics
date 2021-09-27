@@ -1,6 +1,6 @@
-import {labelsFilter} from "@presentation";
-import {addLegendItem} from "@store";
-import type {TLabelItem} from "@types";
+import { labelsFilter } from '@presentation';
+import { addLegendItem } from '@store';
+import type { TLabelItem } from '@types';
 
 describe('chart-labels-filter', function () {
     test('should return true, if label doesnt exists', function () {

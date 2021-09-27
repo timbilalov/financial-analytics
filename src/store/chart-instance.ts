@@ -1,10 +1,12 @@
-import {createStore, createEvent} from 'effector';
-import type {TChartInstance} from "@types";
+import { createStore, createEvent } from 'effector';
+import type { TChartInstance } from '@types';
 
 export type TChartStoreState = TChartInstance;
 
 const initialState: TChartStoreState = {
-    update: () => {},
+    update: () => {
+        // do nothing
+    },
     config: {
         data: {
             datasets: [],

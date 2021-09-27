@@ -1,14 +1,14 @@
-import Chart from "chart.js";
-import {buildChart} from "@presentation";
-import {calcOptionsDefault, datasets, dates, indexFundData, options, usdData} from "@test-constants";
-import {isObject} from "@helpers";
-import {resetChartInstance} from "@store";
+import Chart from 'chart.js';
+import { buildChart } from '@presentation';
+import { calcOptionsDefault, datasets } from '@test-constants';
+import { isObject } from '@helpers';
+import { resetChartInstance } from '@store';
 
-jest.mock("chart.js");
+jest.mock('chart.js');
 
 const chartMockUpdate = jest.fn();
 const chartMockDestroy = jest.fn();
-const chartMock = (ctx, config) => {
+const chartMock = () => {
     return {
         config: {
             options: {

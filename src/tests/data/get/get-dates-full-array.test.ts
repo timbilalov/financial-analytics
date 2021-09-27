@@ -1,6 +1,6 @@
-import type {TAsset} from "@types";
-import {assetBase} from "@test-constants";
-import {getDatesFullArray} from "@data";
+import type { TAsset } from '@types';
+import { assetBase } from '@test-constants';
+import { getDatesFullArray } from '@data';
 
 // TODO: Добавить проверку на воспроизводимость (мемоизация?)
 describe('get-dates-full-array', function () {

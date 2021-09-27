@@ -1,7 +1,7 @@
-import {CALC_CURRENCIES, CALC_METHODS} from "@constants";
-import type {TAssetData, TAssetDataItem, TCalcOptions, TDatasets, TDate} from "@types";
-import {getAssetsFromDatasets, getDatesFullArray, getUsdData} from "../get";
-import {toFractionDigits} from "@helpers";
+import { CALC_CURRENCIES, CALC_METHODS } from '@constants';
+import type { TAssetData, TCalcOptions, TDatasets, TDate } from '@types';
+import { getAssetsFromDatasets, getDatesFullArray, getUsdData } from '../get';
+import { toFractionDigits } from '@helpers';
 
 type TInitialValueItem = {
     date: TDate,
@@ -13,7 +13,7 @@ export async function calcOwnMoney(datasets: TDatasets, calcOptions: TCalcOption
     const assets = getAssetsFromDatasets(datasets);
     const usdData = await getUsdData(assets);
     const datesFullArray = getDatesFullArray(assets);
-    const {currency, method} = calcOptions;
+    const { currency, method } = calcOptions;
 
     const data: TAssetData = [];
 
@@ -23,8 +23,8 @@ export async function calcOwnMoney(datasets: TDatasets, calcOptions: TCalcOption
 
     datasets = datasets.filter(dataset => dataset.hidden !== true);
 
-    let initialValues: TInitialValueItem[] = [];
-    let prevUsdValue: TAssetDataItem = usdData[0];
+    const initialValues: TInitialValueItem[] = [];
+    // let prevUsdValue: TAssetDataItem = usdData[0];
 
     for (let i = 0; i < datesFullArray.length; i++) {
         const date = datesFullArray[i];

@@ -1,4 +1,4 @@
-import {LOCAL_STORAGE_KEY_PREFIX, LocalStorage} from "@utils";
+import { LocalStorage } from '@utils';
 
 describe('local-storage', function () {
     describe('set', function () {

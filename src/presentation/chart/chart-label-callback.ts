@@ -1,13 +1,13 @@
-import {CALC_METHODS} from "@constants";
-import type {TCalcOptions, TDatasets, TTooltipItem} from "@types";
-import {isEmptyString} from "@helpers";
+import { CALC_METHODS } from '@constants';
+import type { TCalcOptions, TDatasets, TTooltipItem } from '@types';
+import { isEmptyString } from '@helpers';
 
 type TData = {
     datasets: TDatasets,
 };
 
 export function labelCallback(tooltipItem: TTooltipItem, data: TData, calcOptions: TCalcOptions): string {
-    const {method} = calcOptions;
+    const { method } = calcOptions;
     const dataset = data.datasets[tooltipItem.datasetIndex];
     const label = dataset.label;
     let labelText = '';

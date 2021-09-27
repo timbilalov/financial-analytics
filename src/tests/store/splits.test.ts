@@ -1,6 +1,6 @@
-import {addNewSplit, removeSplit, resetSplitsStore, setSplits, splitsStore} from "@store";
-import {deepClone, isObjectsEqual} from "@helpers";
-import type {TSplitItem} from "@types";
+import { addNewSplit, removeSplit, resetSplitsStore, setSplits, splitsStore } from '@store';
+import { deepClone, isObjectsEqual } from '@helpers';
+import type { TSplitItem } from '@types';
 
 describe('splits store', function () {
     const ticker = 'tst';

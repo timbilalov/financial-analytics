@@ -1,6 +1,6 @@
-import {CALC_METHODS} from "@constants";
-import type {TAssetData, TCalcOptions, TDatasets, TDate} from "@types";
-import {getAssetsFromDatasets, getDatesFullArray} from "../get";
+import { CALC_METHODS } from '@constants';
+import type { TAssetData, TCalcOptions, TDatasets } from '@types';
+import { getAssetsFromDatasets, getDatesFullArray } from '../get';
 
 // TODO: Как минимум, отрефакторить. Как максимум, ещё раз проанализировать верность расчётов.
 export function calcTotal(datasets: TDatasets, calcOptions: TCalcOptions): TAssetData {
@@ -9,14 +9,14 @@ export function calcTotal(datasets: TDatasets, calcOptions: TCalcOptions): TAsse
     const assets = getAssetsFromDatasets(datasets);
     const datesFullArray = getDatesFullArray(assets);
 
-    const {method} = calcOptions;
+    const { method } = calcOptions;
     const total: TAssetData = [];
 
 
     let prevTotal = 0;
     let prevSavedTotal = 0;
     let currentNonZeroCount = 0;
-    let prevSavedValues: {
+    const prevSavedValues: {
         [key: number]: number,
     } = [];
 
@@ -24,7 +24,7 @@ export function calcTotal(datasets: TDatasets, calcOptions: TCalcOptions): TAsse
         let totalValue = 0;
         let totalValue2 = 0;
         let nonZeroCount = 0;
-        let nonZeroCount2 = 0;
+        // let nonZeroCount2 = 0;
 
         for (let j = 0; j < datasets.length; j++) {
             const dataset = datasets[j];
@@ -32,9 +32,9 @@ export function calcTotal(datasets: TDatasets, calcOptions: TCalcOptions): TAsse
 
             if (!isNaN(value) && value !== null) {
                 nonZeroCount += 1;
-                if (value !== 0 || (value === 0 && !!prevSavedValues[j])) {
-                    nonZeroCount2 += 1;
-                }
+                // if (value !== 0 || (value === 0 && !!prevSavedValues[j])) {
+                //     nonZeroCount2 += 1;
+                // }
             }
         }
 

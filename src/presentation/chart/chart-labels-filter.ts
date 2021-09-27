@@ -1,5 +1,5 @@
-import {legendItemsStore, addLegendItem} from "@store";
-import type {TLabelItem} from "@types";
+import { legendItemsStore, addLegendItem } from '@store';
+import type { TLabelItem } from '@types';
 
 export function labelsFilter(item: TLabelItem): boolean {
     const title = item.text.toLowerCase();

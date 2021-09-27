@@ -1,6 +1,6 @@
-import {parseResponseDataUsd} from "@parse";
-import {dates, moexDataRows} from "@test-constants";
-import type {TFetchDataItemMoex} from "@types";
+import { parseResponseDataUsd } from '@parse';
+import { dates, moexDataRows } from '@test-constants';
+import type { TFetchDataItemMoex } from '@types';
 
 // TODO: Добавить в логику тестов расчёты значений
 describe('parse-usd', function () {

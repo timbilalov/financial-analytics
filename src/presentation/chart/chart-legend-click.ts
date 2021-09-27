@@ -1,8 +1,8 @@
-import {BANK_DEPOSIT_LABEL, INDEX_FUND_LABEL, OWN_MONEY_LABEL, TOTAL_LABEL} from "@constants";
-import {calcBankDeposit, calcIndexFund, calcOwnMoney, calcTotal} from "@data";
-import {clearLegendItems, chartInstanceStore} from "@store";
-import {isLabelCommon, isObject} from "@helpers";
-import type {TAssetData, TCalcOptions, TDate, TLegendItem} from "@types";
+import { BANK_DEPOSIT_LABEL, INDEX_FUND_LABEL, OWN_MONEY_LABEL, TOTAL_LABEL } from '@constants';
+import { calcBankDeposit, calcIndexFund, calcOwnMoney, calcTotal } from '@data';
+import { clearLegendItems, chartInstanceStore } from '@store';
+import { isLabelCommon } from '@helpers';
+import type { TCalcOptions, TLegendItem } from '@types';
 
 // TODO: Здесь такая же логика, как и при первичном формировании датасетов. Можно вынести в общую функцию.
 export async function onLegendClick(legendItem: TLegendItem, calcOptions: TCalcOptions): Promise<void> {

@@ -1,4 +1,4 @@
-import type {TDatasets} from "./datasets";
+import type { TDatasets } from './datasets';
 
 export type TChartInstance = {
     config: {

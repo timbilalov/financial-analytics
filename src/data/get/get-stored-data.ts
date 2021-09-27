@@ -1,9 +1,9 @@
-import type {TAssetData, TAssetOptions, TDate, TFetchDataMoex, TStoreOptions} from "@types";
-import {assetsDataStore, indexFundDataStore, setUsdData, splitsStore, usdDataStore} from "@store";
-import {fetchData, fetchIndexFund, fetchInvestcab, fetchMoex, fetchUsd} from "@fetch";
-import {parseResponseData, parseResponseDataUsd} from "@parse";
-import {normalizeAssetData} from "../assets/normalize-asset-data";
-import {checkForSplits} from "../assets/check-for-splits";
+import type { TAssetData, TAssetOptions, TDate, TFetchDataMoex, TObject, TStoreOptions } from '@types';
+import { assetsDataStore, indexFundDataStore, splitsStore, usdDataStore } from '@store';
+import { fetchData, fetchIndexFund, fetchUsd } from '@fetch';
+import { parseResponseData, parseResponseDataUsd } from '@parse';
+import { normalizeAssetData } from '../assets/normalize-asset-data';
+import { checkForSplits } from '../assets/check-for-splits';
 
 const FALLBACK_RESULT = [];
 
@@ -17,7 +17,9 @@ export async function getStoredData(dates: TDate[], storeOptions: TStoreOptions,
 
     const splits = splitsStore.getState();
 
+    // eslint-disable-next-line @typescript-eslint/ban-types
     let fetchFunction: Function | null = null;
+    // eslint-disable-next-line @typescript-eslint/ban-types
     let parseFunction: Function | null = null;
     let storedDataArray: TAssetData = storedData as TAssetData;
 
@@ -39,7 +41,7 @@ export async function getStoredData(dates: TDate[], storeOptions: TStoreOptions,
 
             fetchFunction = (dates) => fetchData(ticker as string, dates[0], dates[dates.length - 1], isMoex, isBond);
             parseFunction = (responseData) => parseResponseData(responseData, isMoex, isBond);
-            storedDataArray = (storedData as object)[ticker as string] || [];
+            storedDataArray = ((storedData as TObject)[ticker as string] as TAssetData) || [];
             break;
     }
 
@@ -53,7 +55,7 @@ export async function getStoredData(dates: TDate[], storeOptions: TStoreOptions,
     let indexTo = -1;
 
     storedDataArray.forEach((item, index) => {
-        const {date} = item;
+        const { date } = item;
 
         if (date === dateFrom) {
             indexFrom = index;
@@ -141,6 +143,7 @@ export async function getStoredData(dates: TDate[], storeOptions: TStoreOptions,
                 setStateFunction(dataToStoreAssets);
             }
         } else {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             store.setState(dataToStore);
         }

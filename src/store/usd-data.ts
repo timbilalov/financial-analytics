@@ -1,8 +1,8 @@
-import {createStore, createEvent} from 'effector';
-import {deepClone, isArraysSimilar} from "@helpers";
-import type {TAssetData} from "@types";
-import {LocalStorage} from "@utils";
-import {STORAGE_KEYS} from "@constants";
+import { createStore, createEvent } from 'effector';
+import { deepClone, isArraysSimilar } from '@helpers';
+import type { TAssetData } from '@types';
+import { LocalStorage } from '@utils';
+import { STORAGE_KEYS } from '@constants';
 
 type TUsdDataState = TAssetData;
 

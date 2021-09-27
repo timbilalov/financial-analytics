@@ -1,4 +1,4 @@
-import {addDatasetColor, addLegendItem, clearLegendItems, datasetsColorsStore, TColorsStoreItem} from "@store";
+import { addDatasetColor, datasetsColorsStore, TColorsStoreItem } from '@store';
 
 describe('datasets-colors store', function () {
     test('store should exist', function () {

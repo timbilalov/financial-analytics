@@ -1,8 +1,5 @@
-import {dates, investcabResponseObject, moexDataRows} from '@test-constants';
-import {fetchData} from "@data";
-import {LocalStorage} from "@utils";
-import {DATE_FORMATS, STORAGE_KEYS} from "@constants";
-import moment from "moment";
+import { dates, investcabResponseObject, moexDataRows } from '@test-constants';
+import { fetchData } from '@data';
 
 declare const global: {
     fetch: unknown,

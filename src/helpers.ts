@@ -1,12 +1,11 @@
-import moment from "moment";
+import moment from 'moment';
 import {
     BANK_DEPOSIT_LABEL,
-    EXPORT_HREF_PARAM_NAME,
     INDEX_FUND_LABEL,
     OWN_MONEY_LABEL,
-    STORAGE_KEYS,
-    TOTAL_LABEL
-} from "@constants";
+    TOTAL_LABEL,
+} from '@constants';
+import type { TObject } from '@types';
 
 export function dateFormat(dateUTC: number, format = 'YYYY.MM.DD'): string {
     if (String(dateUTC).length <= 10) {
@@ -18,21 +17,23 @@ export function dateFormat(dateUTC: number, format = 'YYYY.MM.DD'): string {
 
 // TODO: Подумать насчёт того, чтобы сделать более осмысленный обработчик ошибок.
 export function errorHandler(message = 'unknown'): void {
-    console.log("Ошибка: " + message);
+    console.log('Ошибка: ' + message);
 }
 
 // NOTE: Сериализация и десериализация — очень простой и понятный способ глубокого клонирования.
 // У него есть свои минусы, но, пока что, в данном приложении, на них можно закрыть глаза.
+// eslint-disable-next-line @typescript-eslint/ban-types
 export function deepClone<T extends object>(obj: T): T {
     return JSON.parse(JSON.stringify(obj));
 }
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 export function isObjectsEqual(object1: object, object2: object): boolean {
     if (typeof object1 !== 'object' || typeof object2 !== 'object') {
         return object1 === object2;
     }
 
-    let result: boolean = true;
+    let result = true;
 
     const object1KeysCount = Object.keys(object1).length;
     const object2KeysCount = Object.keys(object2).length;
@@ -59,7 +60,7 @@ export function isObjectsEqual(object1: object, object2: object): boolean {
 }
 
 export function isArraysSimilar(array1: unknown[], array2: unknown[]): boolean {
-    let result: boolean = true;
+    let result = true;
 
     const array1Length = array1.length;
     const array2Length = array2.length;
@@ -84,6 +85,7 @@ export function isArraysSimilar(array1: unknown[], array2: unknown[]): boolean {
             const value1 = array1[index];
             const value2 = array2[index];
 
+            // eslint-disable-next-line @typescript-eslint/ban-types
             if (!isObjectsEqual(value1 as object, value2 as object)) {
                 result = false;
                 break;
@@ -94,16 +96,14 @@ export function isArraysSimilar(array1: unknown[], array2: unknown[]): boolean {
     return result;
 }
 
-export function debounce(func: Function, wait: number = 200): () => void {
+// eslint-disable-next-line @typescript-eslint/ban-types
+export function debounce(func: Function, wait = 200): () => void {
     let timeout: number | undefined;
 
-    return function executedFunction() {
-        const context = this;
-        const args = arguments;
-
+    return function executedFunction(...rest) {
         const later = function() {
             timeout = undefined;
-            func.apply(context, args);
+            func.apply(this, rest);
         };
 
         clearTimeout(timeout);
@@ -125,11 +125,11 @@ export function isLabelCommon(label: string): boolean {
 }
 
 // See: https://stackoverflow.com/a/46663081/11902026
-export function isObject(value: unknown) {
+export function isObject(value: unknown): boolean {
     return value instanceof Object && value.constructor === Object;
 }
 
-export function isEmptyString(value: string) {
+export function isEmptyString(value: string): boolean {
     return value.trim() === '';
 }
 
@@ -138,7 +138,7 @@ export function extendObject<T, S>(object1: T, object2: S): T {
 }
 
 // TODO: Перевести остальные toFixed на эту функцию
-export function toFractionDigits(num: number | string, digitsCount = 4) {
+export function toFractionDigits(num: number | string, digitsCount = 4): number {
     if (typeof num !== 'number' || isNaN(num)) {
         return NaN;
     }
@@ -146,4 +146,9 @@ export function toFractionDigits(num: number | string, digitsCount = 4) {
     const multiplier = Math.pow(10, digitsCount);
 
     return Math.round(num * multiplier) / multiplier;
+}
+
+// TODO: Добавить тесты
+export function hasOwnProperty(object: TObject, property: string): boolean {
+    return Object.prototype.hasOwnProperty.call(object, property);
 }

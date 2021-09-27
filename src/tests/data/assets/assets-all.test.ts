@@ -1,6 +1,6 @@
-import {getAssetsData} from "@data";
-import {investcabResponseObject} from "@test-constants";
-import type {TAssetRaw} from "@types";
+import { getAssetsData } from '@data';
+import { investcabResponseObject } from '@test-constants';
+import type { TAssetRaw } from '@types';
 
 declare const global: {
     fetch: unknown,

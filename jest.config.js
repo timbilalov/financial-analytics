@@ -3,7 +3,7 @@ module.exports = {
     verbose: true,
     moduleNameMapper: {
         '@utils': '<rootDir>/src/utils',
-        '@helpers': '<rootDir>/src/utils/helpers',
+        '@helpers': '<rootDir>/src/helpers',
         '@constants': '<rootDir>/src/constants',
         '@test-constants': '<rootDir>/src/tests/test-constants',
         '@store': '<rootDir>/src/store',
@@ -22,7 +22,7 @@ module.exports = {
     globals: {
         'ts-jest': {
             babel: true,
-            tsConfig: "tsconfig.json",
-        }
-    }
+            tsConfig: 'tsconfig.json',
+        },
+    },
 };

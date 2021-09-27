@@ -1,7 +1,7 @@
-import {prepareSingleDataset} from "@presentation";
-import {assetBase, calcOptionsDefault, dates, moexDataRowsUsd, usdData} from "@test-constants";
-import {BANK_DEPOSIT_LABEL, CALC_CURRENCIES, CALC_METHODS, OWN_MONEY_LABEL, TOTAL_LABEL} from "@constants";
-import {extendObject} from "@helpers";
+import { prepareSingleDataset } from '@presentation';
+import { assetBase, calcOptionsDefault, dates, moexDataRowsUsd } from '@test-constants';
+import { BANK_DEPOSIT_LABEL, OWN_MONEY_LABEL, TOTAL_LABEL } from '@constants';
+import { extendObject } from '@helpers';
 
 declare const global: {
     fetch: unknown,
@@ -39,20 +39,8 @@ describe('datasets-single', function () {
                     ],
                 },
             }),
-        })
+        }),
     );
-
-    const baseOptions = {
-        title: 'tst',
-        data: baseData,
-        amount: 2,
-        isUsd: false,
-        datesFullArray: dates,
-        calcMethod: CALC_METHODS.ABSOLUTE,
-        calcCurrency: CALC_CURRENCIES.RUB,
-        usdData: usdData,
-        useTaxes: false,
-    };
 
     test('should return an object with data', async function () {
         const result = await prepareSingleDataset(assetBase, calcOptionsDefault, dates);
@@ -124,18 +112,6 @@ describe('datasets-single', function () {
     });
 
     test('should fill empty values (by date) with NaN', async function () {
-        const options = Object.assign({}, baseOptions, {
-            data: [
-                {
-                    date: dates[1],
-                    value: 100,
-                },
-                {
-                    date: dates[2],
-                    value: 200,
-                },
-            ],
-        });
         const asset = extendObject(assetBase, {
             data: [
                 {

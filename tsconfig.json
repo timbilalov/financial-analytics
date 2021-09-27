@@ -19,7 +19,7 @@
       "@constants": ["./src/constants.ts"],
       "@test-constants": ["./src/tests/test-constants.ts"],
       "@utils": ["./src/utils"],
-      "@helpers": ["./src/utils/helpers.ts"],
+      "@helpers": ["./src/helpers.ts"],
       "@presentation": ["./src/presentation"],
       "@data": ["./src/data"],
       "@fetch": ["./src/data/fetch"],

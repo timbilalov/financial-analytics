@@ -1,5 +1,5 @@
-import {fetchUsd} from '@data';
-import {dates, moexDataRows} from '@test-constants';
+import { fetchUsd } from '@data';
+import { dates, moexDataRows } from '@test-constants';
 
 declare const global: {
     fetch: unknown,
@@ -31,7 +31,7 @@ describe('fetch-usd', function () {
                     ],
                 },
             }),
-        })
+        }),
     );
 
     test('should return an array of values', async function () {

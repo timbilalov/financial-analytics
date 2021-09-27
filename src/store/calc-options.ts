@@ -1,8 +1,8 @@
-import {createStore, createEvent} from 'effector';
-import {LocalStorage} from "@utils";
-import {CALC_CURRENCIES, CALC_METHODS, STORAGE_KEYS} from "@constants";
-import {deepClone, isObjectsEqual} from "@helpers";
-import type {TCalcOptions, TCalcUses} from "@types";
+import { createStore, createEvent } from 'effector';
+import { LocalStorage } from '@utils';
+import { CALC_CURRENCIES, CALC_METHODS, STORAGE_KEYS } from '@constants';
+import { deepClone, isObjectsEqual } from '@helpers';
+import type { TCalcOptions, TCalcUses } from '@types';
 
 const defaultState: TCalcOptions = {
     method: CALC_METHODS.RELATIVE,

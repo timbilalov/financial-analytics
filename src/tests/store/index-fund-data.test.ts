@@ -1,5 +1,5 @@
-import {setIndexFundData, indexFundDataStore} from "@store";
-import type {TAssetData} from "@types";
+import { setIndexFundData, indexFundDataStore } from '@store';
+import type { TAssetData } from '@types';
 
 describe('index-fund-data store', function () {
     test('store should exist', function () {

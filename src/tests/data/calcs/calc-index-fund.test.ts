@@ -1,15 +1,11 @@
-import {calcIndexFund} from "@data";
+import { calcIndexFund } from '@data';
 import {
     calcOptionsDefault,
     datasets,
     dates,
-    indexFundData,
-    moexDataRows,
-    moexDataRowsBonds, moexDataRowsUsd,
-    options,
-    usdData
-} from "@test-constants";
-import {CALC_CURRENCIES, CALC_METHODS} from "@constants";
+    moexDataRowsUsd,
+} from '@test-constants';
+import { CALC_CURRENCIES, CALC_METHODS } from '@constants';
 
 declare const global: {
     fetch: unknown,
@@ -36,7 +32,7 @@ describe('calc-index-fund', function () {
                     ],
                 },
             }),
-        })
+        }),
     );
 
     describe('rub currency', function () {

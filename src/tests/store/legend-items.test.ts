@@ -1,4 +1,4 @@
-import {addLegendItem, clearLegendItems, legendItemsStore} from "@store";
+import { addLegendItem, clearLegendItems, legendItemsStore } from '@store';
 
 describe('legend-items store', function () {
     test('store should exist', function () {

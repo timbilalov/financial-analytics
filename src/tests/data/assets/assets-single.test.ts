@@ -1,8 +1,8 @@
-import {getSingleAssetData} from "@data";
-import {isObject} from "@helpers";
-import {investcabResponseObject, moexDataRows} from "@test-constants";
-import type {TAsset, TAssetRaw} from "@types";
-import {assetsDataStore, resetAssetsData} from "@store";
+import { getSingleAssetData } from '@data';
+import { isObject } from '@helpers';
+import { investcabResponseObject } from '@test-constants';
+import type { TAsset, TAssetRaw } from '@types';
+import { resetAssetsData } from '@store';
 
 declare const global: {
     fetch: unknown,
@@ -89,11 +89,11 @@ describe('assets-single', function () {
                         },
                         'history.cursor': {
                             data: [
-                                []
+                                [],
                             ],
                         },
                     }),
-                })
+                }),
             );
 
             const assetRaw: TAssetRaw = {

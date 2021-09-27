@@ -1,8 +1,8 @@
-import {createStore, createEvent} from 'effector';
-import {deepClone, isArraysSimilar, isObjectsEqual} from "@helpers";
-import type {TAssetData} from "@types";
-import {LocalStorage} from "@utils";
-import {STORAGE_KEYS} from "@constants";
+import { createStore, createEvent } from 'effector';
+import { deepClone, hasOwnProperty, isObjectsEqual } from '@helpers';
+import type { TAssetData } from '@types';
+import { LocalStorage } from '@utils';
+import { STORAGE_KEYS } from '@constants';
 
 type TAssetsDataState = {
     [key: string]: TAssetData,
@@ -30,7 +30,7 @@ assetsDataStore.on(setAssetsData, function (state: TAssetsDataState, payload: TA
     const newState = deepClone(state);
 
     for (const ticker in payload) {
-        if (!payload.hasOwnProperty(ticker)) {
+        if (!hasOwnProperty(payload, ticker)) {
             continue;
         }
 

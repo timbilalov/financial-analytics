@@ -1,8 +1,8 @@
-import moment from "moment";
-import {DATE_FORMATS} from "@constants";
-import type {TAssetData, TAssetDataItem, TDate, TFetchDataMoex} from "@types";
+import moment from 'moment';
+import { DATE_FORMATS } from '@constants';
+import type { TAssetData, TAssetDataItem, TDate, TFetchDataMoex } from '@types';
 
-export function parseResponseDataMoex(responseData: TFetchDataMoex, isBond: boolean = false): TAssetData {
+export function parseResponseDataMoex(responseData: TFetchDataMoex, isBond = false): TAssetData {
     const data: TAssetData = [];
 
     let prevDate: TDate | undefined = undefined;
@@ -11,7 +11,7 @@ export function parseResponseDataMoex(responseData: TFetchDataMoex, isBond: bool
         value: 0,
     };
     let initialDate: TDate | undefined = undefined;
-    let initialBondNkd: number = 0;
+    let initialBondNkd = 0;
 
     for (let i = 0; i < responseData.length; i++) {
         const item = responseData[i];

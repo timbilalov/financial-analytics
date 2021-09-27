@@ -1,11 +1,11 @@
-import moment from "moment";
-import {DATE_FORMATS} from "@constants";
-import type {TAsset, TAssets, TDataset, TDatasets, TDate} from "@types";
+import moment from 'moment';
+import { DATE_FORMATS } from '@constants';
+import type { TAssets, TDate } from '@types';
 
 export function getDatesFullArray(assets: TAssets): TDate[] {
     const dates: TDate[] = [];
 
-    for (const {data} of assets) {
+    for (const { data } of assets) {
         const assetDates = data.map(item => item.date);
 
         for (const date of assetDates) {

@@ -1,5 +1,5 @@
-import {CALC_CURRENCIES, CALC_METHODS} from "@constants";
-import type {TAsset, TAssetData, TCalcOptions, TDatasets, TDate, TFetchDataItemMoex, TFetchDataMoex} from "@types";
+import { CALC_CURRENCIES, CALC_METHODS } from '@constants';
+import type { TAsset, TAssetData, TCalcOptions, TDatasets, TDate, TFetchDataItemMoex, TFetchDataMoex } from '@types';
 
 export const dates: TDate[] = [
     '2020.01.01',

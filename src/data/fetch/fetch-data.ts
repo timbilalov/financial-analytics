@@ -1,11 +1,11 @@
-import moment from "moment";
-import {fetchMoex} from "./fetch-moex";
-import {fetchInvestcab} from "./fetch-investcab";
-import {isEmptyString, LocalStorage} from "@utils";
-import {DATE_FORMATS, STORAGE_KEYS} from "@constants";
-import type {TDate, TFetchDataInvestcab, TFetchDataMoex} from "@types";
+import moment from 'moment';
+import { fetchMoex } from './fetch-moex';
+import { fetchInvestcab } from './fetch-investcab';
+import { DATE_FORMATS } from '@constants';
+import type { TFetchDataInvestcab, TFetchDataMoex } from '@types';
+import { isEmptyString } from '@helpers';
 
-export async function fetchData(ticker: string, manualDateFrom: string, manualDateTo?: string, isMoex: boolean = false, isBond: boolean = false, isCurrency: boolean = false): Promise<TFetchDataInvestcab | TFetchDataMoex | undefined> {
+export async function fetchData(ticker: string, manualDateFrom: string, manualDateTo?: string, isMoex = false, isBond = false, isCurrency = false): Promise<TFetchDataInvestcab | TFetchDataMoex | undefined> {
     if (isEmptyString(ticker) || isEmptyString(manualDateFrom)) {
         return;
     }

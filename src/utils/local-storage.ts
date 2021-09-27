@@ -1,6 +1,6 @@
 import lz from 'lz-string';
-import type {TObject} from "@types";
-import {isEmptyString} from "@helpers";
+import type { TObject } from '@types';
+import { hasOwnProperty, isEmptyString } from '@helpers';
 
 export const LOCAL_STORAGE_KEY_PREFIX = 'fa-';
 
@@ -93,12 +93,12 @@ class LocalStorageClass {
         }
 
         if (hasError || !decodedObject) {
-            console.warn(`Wrong string to import from`);
+            console.warn('Wrong string to import from');
             return;
         }
 
         for (const name in decodedObject) {
-            if (!decodedObject.hasOwnProperty(name)) {
+            if (!hasOwnProperty(decodedObject, name)) {
                 continue;
             }
 
@@ -114,13 +114,13 @@ class LocalStorageClass {
         const lines: string[] = [];
 
         for (const prop in localStorage) {
-            if (!localStorage.hasOwnProperty(prop)) {
+            if (!hasOwnProperty(localStorage, prop)) {
                 continue;
             }
 
             const size = ((localStorage[prop].length + prop.length) * 2);
             total += size;
-            lines.push(prop + " = " + (size / 1024).toFixed(2) + " KB");
+            lines.push(prop + ' = ' + (size / 1024).toFixed(2) + ' KB');
         }
 
         console.groupCollapsed(`LocalStorage size = ${(total / 1024).toFixed(2)} KB`);

@@ -1,6 +1,6 @@
-import {fetchData} from "./fetch-data";
-import type {TDate, TFetchDataMoex} from "@types";
-import {USD_TICKER} from "@constants";
+import { fetchData } from './fetch-data';
+import type { TDate, TFetchDataMoex } from '@types';
+import { USD_TICKER } from '@constants';
 
 export async function fetchUsd(dates: TDate[]): Promise<TFetchDataMoex | undefined> {
     const ticker = USD_TICKER;

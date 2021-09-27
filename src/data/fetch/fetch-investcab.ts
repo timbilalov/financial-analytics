@@ -1,7 +1,7 @@
-import moment from "moment";
-import {DATE_FORMATS} from "@constants";
-import {errorHandler, isEmptyString} from "@helpers";
-import type {TFetchDataInvestcab} from "@types";
+import moment from 'moment';
+import { DATE_FORMATS } from '@constants';
+import { errorHandler, isEmptyString } from '@helpers';
+import type { TFetchDataInvestcab } from '@types';
 
 export async function fetchInvestcab(ticker: string, enteredDateFrom: string, enteredDateTo?: string): Promise<TFetchDataInvestcab | undefined> {
     if (isEmptyString(ticker) || isEmptyString(enteredDateFrom)) {

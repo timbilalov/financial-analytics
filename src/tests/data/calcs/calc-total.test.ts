@@ -1,7 +1,7 @@
-import {calcTotal} from "@data";
-import {calcOptionsDefault, datasets, dates, options} from "@test-constants";
-import {CALC_CURRENCIES, CALC_METHODS} from "@constants";
-import {extendObject} from "@helpers";
+import { calcTotal } from '@data';
+import { calcOptionsDefault, datasets, dates } from '@test-constants';
+import { CALC_METHODS } from '@constants';
+import { extendObject } from '@helpers';
 
 describe('calc-total', function () {
     test('relative method', function () {

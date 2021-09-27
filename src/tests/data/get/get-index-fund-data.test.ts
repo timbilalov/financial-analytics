@@ -1,5 +1,5 @@
-import {getIndexFundData, getUsdData} from "@data";
-import {assets, datasets, moexDataRows} from "@test-constants";
+import { getIndexFundData } from '@data';
+import { assets, moexDataRows } from '@test-constants';
 
 declare const global: {
     fetch: unknown,
@@ -26,7 +26,7 @@ describe('get-index-fund-data', function () {
                     ],
                 },
             }),
-        })
+        }),
     );
 
     it('should return an array of values', async function () {
