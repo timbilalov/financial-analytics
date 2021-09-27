@@ -1,7 +1,7 @@
-import {isEmptyString, LocalStorage} from '@utils';
-import {DEFAULT_LANGUAGE, LANGUAGES, LOCALES_TEXT_FALLBACK, STORAGE_KEYS} from "@constants";
-import {LOCALES_RU} from "./locales-ru";
-import {deepClone} from "@helpers";
+import { LocalStorage } from '@utils';
+import { DEFAULT_LANGUAGE, LANGUAGES, LOCALES_TEXT_FALLBACK, STORAGE_KEYS } from '@constants';
+import { LOCALES_RU } from './locales-ru';
+import { deepClone, isEmptyString } from '@helpers';
 
 export function locales(namespace: string): string {
     const messageFallback = LOCALES_TEXT_FALLBACK;

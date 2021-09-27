@@ -1,5 +1,5 @@
-import {resetUsdData, setUsdData, usdDataStore} from "@store";
-import type {TAssetData} from "@types";
+import { resetUsdData, setUsdData, usdDataStore } from '@store';
+import type { TAssetData } from '@types';
 
 describe('usd-data store', function () {
     beforeEach(function () {

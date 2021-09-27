@@ -1,7 +1,7 @@
-import {calcBankDeposit} from "@data";
-import {calcOptionsDefault, datasets, dates, moexDataRows, moexDataRowsUsd, options, usdData} from "@test-constants";
-import {CALC_CURRENCIES, CALC_METHODS} from "@constants";
-import {extendObject} from "@helpers";
+import { calcBankDeposit } from '@data';
+import { calcOptionsDefault, datasets, dates, moexDataRowsUsd } from '@test-constants';
+import { CALC_CURRENCIES, CALC_METHODS } from '@constants';
+import { extendObject } from '@helpers';
 
 declare const global: {
     fetch: unknown,
@@ -28,7 +28,7 @@ describe('calc-bank-deposit', function () {
                     ],
                 },
             }),
-        })
+        }),
     );
 
     describe('rub currency', function () {

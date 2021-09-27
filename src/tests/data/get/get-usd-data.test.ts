@@ -1,6 +1,6 @@
-import {getUsdData} from "@data";
-import {assets, datasets, moexDataRows} from "@test-constants";
-import type {TFetchDataItemMoex} from "@types";
+import { getUsdData } from '@data';
+import { assets, moexDataRows } from '@test-constants';
+import type { TFetchDataItemMoex } from '@types';
 
 declare const global: {
     fetch: unknown,
@@ -29,7 +29,7 @@ describe('get-usd-data', function () {
                     ],
                 },
             }),
-        })
+        }),
     );
 
     it('should return an array of values', async function () {

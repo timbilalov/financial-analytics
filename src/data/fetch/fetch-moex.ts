@@ -1,9 +1,9 @@
-import moment from "moment";
-import {DATE_FORMATS} from "@constants";
-import {errorHandler, isEmptyString} from "@helpers";
-import type {TFetchDataMoex, TFetchResponseMoex} from "@types";
+import moment from 'moment';
+import { DATE_FORMATS } from '@constants';
+import { errorHandler, isEmptyString } from '@helpers';
+import type { TFetchDataMoex, TFetchResponseMoex } from '@types';
 
-export async function fetchMoex(ticker: string, enteredDateFrom: string, enteredDateTo?: string, isBond: boolean = false, isCurrency: boolean = false): Promise<TFetchDataMoex | undefined> {
+export async function fetchMoex(ticker: string, enteredDateFrom: string, enteredDateTo?: string, isBond = false, isCurrency = false): Promise<TFetchDataMoex | undefined> {
     if (isEmptyString(ticker) || isEmptyString(enteredDateFrom)) {
         return;
     }

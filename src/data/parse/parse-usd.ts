@@ -1,9 +1,9 @@
-import moment from "moment";
-import {DATE_FORMATS} from "@constants";
-import type {TAssetData, TDate, TFetchDataItemMoex, TFetchDataMoex} from "@types";
+import moment from 'moment';
+import { DATE_FORMATS } from '@constants';
+import type { TAssetData, TDate, TFetchDataItemMoex, TFetchDataMoex } from '@types';
 
 // TODO: Теперь эта функция не только для USD. Порефакторить так, чтобы было более универсально. Возможно, объединить с "обычным" parseMoex.
-export function parseResponseDataUsd(responseData: TFetchDataMoex, datesFullArray: TDate[], isIndexFund: boolean = false) {
+export function parseResponseDataUsd(responseData: TFetchDataMoex, datesFullArray: TDate[], isIndexFund = false): TAssetData {
     const data1: TAssetData = [];
 
     let prevDate;

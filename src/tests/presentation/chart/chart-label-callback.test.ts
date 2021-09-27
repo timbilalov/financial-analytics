@@ -1,8 +1,8 @@
-import {labelCallback} from "@presentation";
-import {calcOptionsDefault, datasets, options} from "@test-constants";
-import {CALC_METHODS} from "@constants";
-import type {TTooltipItem} from "@types";
-import {deepClone, extendObject} from "@helpers";
+import { labelCallback } from '@presentation';
+import { calcOptionsDefault, datasets } from '@test-constants';
+import { CALC_METHODS } from '@constants';
+import type { TTooltipItem } from '@types';
+import { deepClone, extendObject } from '@helpers';
 
 describe('chart-label-callback', function () {
     const valueToCheck = '110';

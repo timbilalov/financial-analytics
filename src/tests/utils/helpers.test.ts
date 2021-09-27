@@ -8,8 +8,8 @@ import {
     isObject,
     isObjectsEqual,
     toFractionDigits,
-} from "@helpers";
-import {BANK_DEPOSIT_LABEL, EXPORT_HREF_PARAM_NAME, OWN_MONEY_LABEL, TOTAL_LABEL} from "@constants";
+} from '@helpers';
+import { BANK_DEPOSIT_LABEL, OWN_MONEY_LABEL, TOTAL_LABEL } from '@constants';
 
 describe('helpers', function () {
     test('dateFormat', function () {
@@ -159,7 +159,7 @@ describe('helpers', function () {
         expect(isArraysSimilar(array3, array4)).toEqual(false);
     });
 
-    test('debounce', function (done) {
+    test('debounce', function () {
         const func = jest.fn();
         const debouncedFunc = debounce(func, 300);
         const timeoutFunc = jest.fn(debouncedFunc);
@@ -169,11 +169,13 @@ describe('helpers', function () {
             setTimeout(timeoutFunc, i * 20);
         }
 
-        setTimeout(function () {
-            expect(timeoutFunc).toHaveBeenCalledTimes(times);
-            expect(func).toHaveBeenCalledTimes(1);
-            done();
-        }, 500);
+        return new Promise(resolve => {
+            setTimeout(function () {
+                expect(timeoutFunc).toHaveBeenCalledTimes(times);
+                expect(func).toHaveBeenCalledTimes(1);
+                resolve(void 0);
+            }, 500);
+        });
     });
 
     test('isLabelCommon', function () {

@@ -1,6 +1,6 @@
-import {setUsdData, assetsDataStore, setAssetsData, resetAssetsData} from "@store";
-import type {TAssetData} from "@types";
-import {deepClone, isObject} from "@helpers";
+import { assetsDataStore, setAssetsData, resetAssetsData } from '@store';
+import type { TAssetData } from '@types';
+import { deepClone, isObject } from '@helpers';
 
 type TAssetsDataState = {
     [key: string]: TAssetData,

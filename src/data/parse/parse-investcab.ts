@@ -1,5 +1,5 @@
-import {dateFormat, isObject} from "@helpers";
-import type {TAssetData, TAssetDataItem, TDate, TFetchResponseInvestCab} from "@types";
+import { dateFormat } from '@helpers';
+import type { TAssetData, TAssetDataItem, TDate, TFetchResponseInvestCab } from '@types';
 
 type TDataObject = {
     date: TDate,

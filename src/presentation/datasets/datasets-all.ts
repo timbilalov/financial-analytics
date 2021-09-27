@@ -1,11 +1,11 @@
-import {BANK_DEPOSIT_LABEL, CALC_METHODS, INDEX_FUND_LABEL, OWN_MONEY_LABEL, TOTAL_LABEL} from "@constants";
-import {prepareSingleDataset} from "./datasets-single";
-import {getDatesFullArray, getSingleAssetData, calcBankDeposit, calcIndexFund, calcOwnMoney, calcTotal} from "@data";
-import type {TAsset, TAssetCommon, TAssetData, TAssets, TCalcOptions, TDatasets, TDate} from "@types";
+import { BANK_DEPOSIT_LABEL, CALC_METHODS, INDEX_FUND_LABEL, OWN_MONEY_LABEL, TOTAL_LABEL } from '@constants';
+import { prepareSingleDataset } from './datasets-single';
+import { getDatesFullArray, calcBankDeposit, calcIndexFund, calcOwnMoney, calcTotal } from '@data';
+import type { TAssetCommon, TAssets, TCalcOptions, TDatasets } from '@types';
 
 export async function prepareDatasets(assets: TAssets, calcOptions: TCalcOptions): Promise<TDatasets> {
     const datasets: TDatasets = [];
-    const {method} = calcOptions;
+    const { method } = calcOptions;
     const datesFullArray = getDatesFullArray(assets);
 
     for (const asset of assets) {

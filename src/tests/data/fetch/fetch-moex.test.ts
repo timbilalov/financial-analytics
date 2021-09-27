@@ -1,6 +1,6 @@
-import {dates, moexDataRows} from '@test-constants';
-import {fetchMoex} from "@fetch";
-import type {TFetchResponseMoex} from "@types";
+import { dates, moexDataRows } from '@test-constants';
+import { fetchMoex } from '@fetch';
+import type { TFetchResponseMoex } from '@types';
 
 declare const global: {
     fetch: unknown,
@@ -35,7 +35,7 @@ describe('fetch-moex', function () {
             Promise.resolve({
                 ok: 1,
                 json: () => Promise.resolve(responseValue),
-            })
+            }),
         );
     });
 
@@ -44,7 +44,7 @@ describe('fetch-moex', function () {
             Promise.resolve({
                 ok: 0,
                 status: 'test error',
-            })
+            }),
         );
 
         const result = await fetchMoex('tst', dates[0]);

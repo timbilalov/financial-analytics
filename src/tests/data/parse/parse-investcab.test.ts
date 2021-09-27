@@ -1,6 +1,6 @@
-import {parseResponseDataInvestcab} from "@parse";
-import {investcabResponseObject} from "@test-constants";
-import type {TAssetData} from "@types";
+import { parseResponseDataInvestcab } from '@parse';
+import { investcabResponseObject } from '@test-constants';
+import type { TAssetData } from '@types';
 
 // TODO: Добавить в логику тестов расчёты значений
 describe('parse-investcab', function () {

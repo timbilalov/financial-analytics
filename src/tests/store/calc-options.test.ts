@@ -1,5 +1,5 @@
-import {calcOptionsStore, setCalcMethod, setCalcUses, setCurrency, setDatesFullArray} from "@store";
-import {CALC_CURRENCIES, CALC_METHODS} from "@constants";
+import { calcOptionsStore, setCalcMethod, setCalcUses, setCurrency } from '@store';
+import { CALC_CURRENCIES, CALC_METHODS } from '@constants';
 
 describe('calc options store', function () {
     test('store should exist', function () {

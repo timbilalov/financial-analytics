@@ -5,15 +5,15 @@ export const DATE_FORMATS = {
 };
 
 export enum CALC_METHODS {
-    RELATIVE = 'relative',
-    RELATIVE_ANNUAL = 'relative-annual',
-    ABSOLUTE = 'absolute',
-    ABSOLUTE_TOTAL = 'absolute-total',
+    RELATIVE,
+    RELATIVE_ANNUAL,
+    ABSOLUTE,
+    ABSOLUTE_TOTAL,
 }
 
 export enum CALC_CURRENCIES {
-    RUB = 'rub',
-    USD = 'usd',
+    RUB,
+    USD,
 }
 
 export const BANK_DEPOSIT = 0.05;

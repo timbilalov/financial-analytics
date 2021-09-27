@@ -5,11 +5,11 @@ import {
     removeAsset,
     removePortfolio, resetPortfoliosStore,
     setAssets,
-    setCurrentPortfolio
-} from "@store";
-import {DEFAULT_PORTFOLIO_NAME, SUMMARY_PORTFOLIO_NAME} from "@constants";
-import {deepClone, isArraysSimilar, isObjectsEqual} from "@helpers";
-import type {TAsset} from "@types";
+    setCurrentPortfolio,
+} from '@store';
+import { DEFAULT_PORTFOLIO_NAME, SUMMARY_PORTFOLIO_NAME } from '@constants';
+import { deepClone, isArraysSimilar, isObjectsEqual } from '@helpers';
+import type { TAsset } from '@types';
 
 describe('portfolios store', function () {
     const newPortfolioName = 'some-portfolio';
@@ -21,7 +21,7 @@ describe('portfolios store', function () {
             {
                 date: '2020.01.01',
                 value: 100,
-            }
+            },
         ],
         amount: 1,
         isUsd: true,
@@ -32,7 +32,7 @@ describe('portfolios store', function () {
             {
                 date: '2020.01.01',
                 value: 100,
-            }
+            },
         ],
         amount: 11,
         isUsd: true,
@@ -43,7 +43,7 @@ describe('portfolios store', function () {
             {
                 date: '2020.01.01',
                 value: 100,
-            }
+            },
         ],
         amount: 2,
         isUsd: true,
@@ -54,7 +54,7 @@ describe('portfolios store', function () {
             {
                 date: '2020.01.01',
                 value: 100,
-            }
+            },
         ],
         amount: 20,
         isUsd: true,
@@ -262,7 +262,7 @@ describe('portfolios store', function () {
                     {
                         date: '2022.01.01',
                         value: 50,
-                    }
+                    },
                 ],
                 amount: 2,
                 isUsd: false,

@@ -1,4 +1,4 @@
-import type {TBooleanByInput, TDate} from "@types";
+import type { TBooleanByInput, TDate } from '@types';
 
 export type TAssetRaw = {
     ticker: string,

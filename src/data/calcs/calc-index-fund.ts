@@ -1,7 +1,7 @@
-import {CALC_CURRENCIES, CALC_METHODS} from "@constants";
-import type {TAssetData, TAssetDataItem, TCalcOptions, TDatasets, TDate} from "@types";
-import {getAssetsFromDatasets, getDatesFullArray, getIndexFundData, getUsdData} from "../get";
-import {toFractionDigits} from "@helpers";
+import { CALC_CURRENCIES, CALC_METHODS } from '@constants';
+import type { TAssetData, TAssetDataItem, TCalcOptions, TDatasets, TDate } from '@types';
+import { getAssetsFromDatasets, getDatesFullArray, getIndexFundData, getUsdData } from '../get';
+import { toFractionDigits } from '@helpers';
 
 type TInitialValueItem = {
     date: TDate,
@@ -18,7 +18,7 @@ export async function calcIndexFund(datasets: TDatasets, calcOptions: TCalcOptio
     const usdData = await getUsdData(assets);
     const datesFullArray = getDatesFullArray(assets);
     const indexFundData = await getIndexFundData(assets);
-    const {currency, method} = calcOptions;
+    const { currency, method } = calcOptions;
     const indexFundValues: TAssetData = [];
 
     datasets = datasets.filter(dataset => dataset.hidden !== true);
@@ -67,7 +67,7 @@ export async function calcIndexFund(datasets: TDatasets, calcOptions: TCalcOptio
             const initialValue = initialValues[index];
             let indexFundValueByDateItem = indexFundValueByDate;
             let indexFundValueInitial = initialValue.indexFundValue;
-            let indexFundValueLast = initialValue.indexFundValueLast;
+            const indexFundValueLast = initialValue.indexFundValueLast;
             let calcValue = 0;
 
             if (isNaN(value) || value === null) {

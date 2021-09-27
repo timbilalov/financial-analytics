@@ -1,20 +1,20 @@
-import {calcAssetData} from "@data";
+import { calcAssetData } from '@data';
 import {
     BANK_DEPOSIT_LABEL,
     CALC_METHODS,
     DATE_FORMATS,
     INDEX_FUND_LABEL,
     OWN_MONEY_LABEL,
-    TOTAL_LABEL
-} from "@constants";
-import moment from "moment";
-import {addDatasetColor, datasetsColorsStore} from "@store";
-import {extendObject, isLabelCommon, isObject} from "@helpers";
-import type {TAsset, TAssetCommon, TAssetData, TCalcOptions, TDataset, TDate} from "@types";
+    TOTAL_LABEL,
+} from '@constants';
+import moment from 'moment';
+import { addDatasetColor, datasetsColorsStore } from '@store';
+import { extendObject, isLabelCommon } from '@helpers';
+import type { TAsset, TAssetCommon, TCalcOptions, TDataset, TDate } from '@types';
 
 export async function prepareSingleDataset(asset: TAsset | TAssetCommon, calcOptions: TCalcOptions, datesFullArray: TDate[]): Promise<TDataset> {
-    const {data} = asset;
-    const {amount, isUsd} = asset as TAsset;
+    const { data } = asset;
+    const { amount, isUsd } = asset as TAsset;
     const ticker = (asset as TAsset).ticker;
     const title = (asset as TAssetCommon).title || ticker.toUpperCase();
 
@@ -63,9 +63,6 @@ export async function prepareSingleDataset(asset: TAsset | TAssetCommon, calcOpt
         color: colorRGB,
     });
 
-    let values;
-    let valuesAbsTotal;
-    let dates;
     let hasBegun = false;
     let prevValue;
     let prevValueAbsTotal;
@@ -84,13 +81,13 @@ export async function prepareSingleDataset(asset: TAsset | TAssetCommon, calcOpt
         calculatedDataAbsTotal = await calcAssetData(asset as TAsset, calcOptionsAbsoluteTotal);
     }
 
-    dates = datesFullArray.slice(0);
-    values = [];
-    valuesAbsTotal = [];
+    const dates: TDate[] = datesFullArray.slice(0);
+    const values: number[] = [];
+    const valuesAbsTotal: number[] = [];
 
-    for (const [index, date] of dates.entries()) {
-        let valueByDate;
-        let valueByDateAbsTotal;
+    for (const date of dates.values()) {
+        let valueByDate: number;
+        let valueByDateAbsTotal: number;
         const itemFilteredByDate = calculatedData.filter(item => item.date === date)[0];
         const itemFilteredByDateAbsTotal = shouldStoreAbsTotal && calculatedDataAbsTotal.filter(item => item.date === date)[0];
         if (itemFilteredByDate !== undefined) {
@@ -105,7 +102,7 @@ export async function prepareSingleDataset(asset: TAsset | TAssetCommon, calcOpt
             const diff = date2.diff(date1, 'days');
 
             // TODO: С этим бывают косяки. Поправить.
-            let hasFinished = diff > 0;
+            const hasFinished = diff > 0;
 
             if (!hasBegun || hasFinished) {
                 valueByDate = NaN;

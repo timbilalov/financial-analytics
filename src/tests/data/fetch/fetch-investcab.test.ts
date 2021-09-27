@@ -1,5 +1,5 @@
-import {dates, investcabResponseObject} from '@test-constants';
-import {fetchInvestcab} from "@data";
+import { dates, investcabResponseObject } from '@test-constants';
+import { fetchInvestcab } from '@data';
 
 declare const global: {
     fetch: unknown,

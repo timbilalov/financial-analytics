@@ -1,6 +1,6 @@
-import {createStore, createEvent} from 'effector';
-import {isArraysSimilar} from "@helpers";
-import type {TAssetData, TDate} from "@types";
+import { createStore, createEvent } from 'effector';
+import { isArraysSimilar } from '@helpers';
+import type { TDate } from '@types';
 
 type TDatesFullArrayStore = TDate[];
 

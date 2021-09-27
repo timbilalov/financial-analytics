@@ -1,16 +1,16 @@
-import {makeExportUrl} from "@presentation";
-import {EXPORT_HREF_PARAM_NAME} from "@constants";
+import { makeExportUrl } from '@presentation';
+import { EXPORT_HREF_PARAM_NAME } from '@constants';
 
 describe('makeExportUrl', function () {
     test('properly exports', function () {
-        const {href, hash} = window.location;
+        const { href, hash } = window.location;
 
         Object.defineProperty(window, 'navigator', {
             value: {
                 clipboard: {
                     writeText: () => true,
                 },
-            }
+            },
         });
 
         const url = makeExportUrl();

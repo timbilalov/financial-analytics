@@ -1,5 +1,5 @@
-import {getSingleAssetData} from "./assets-single";
-import type {TAsset, TAssetRaw} from "@types";
+import { getSingleAssetData } from './assets-single';
+import type { TAsset, TAssetRaw } from '@types';
 
 export async function getAssetsData(assetsRaw: TAssetRaw[]): Promise<TAsset[]> {
     const assets: TAsset[] = [];

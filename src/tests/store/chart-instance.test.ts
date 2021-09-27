@@ -1,6 +1,6 @@
-import {chartInstanceStore, setChartInstance} from "@store";
-import type {TChartInstance} from "@types";
-import {datasets} from "@test-constants";
+import { chartInstanceStore, setChartInstance } from '@store';
+import type { TChartInstance } from '@types';
+import { datasets } from '@test-constants';
 
 describe('chart-instance store', function () {
     test('store should exist', function () {
@@ -18,10 +18,18 @@ describe('chart-instance store', function () {
                         datasets,
                     },
                 },
-                update: () => {},
-                destroy: () => {},
-                labelCallback: () => {},
-                legendClick: () => {},
+                update: () => {
+                    // do nothing
+                },
+                destroy: () => {
+                    // do nothing
+                },
+                labelCallback: () => {
+                    // do nothing
+                },
+                legendClick: () => {
+                    // do nothing
+                },
             };
 
             setChartInstance(newValue);

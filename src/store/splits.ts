@@ -1,8 +1,8 @@
-import {createStore, createEvent} from 'effector';
-import {LocalStorage} from "@utils";
-import {STORAGE_KEYS} from "@constants";
-import {deepClone, isObject, isObjectsEqual} from "@helpers";
-import type {TSplitItem, TSplits} from "@types";
+import { createStore, createEvent } from 'effector';
+import { LocalStorage } from '@utils';
+import { STORAGE_KEYS } from '@constants';
+import { deepClone, hasOwnProperty, isObjectsEqual } from '@helpers';
+import type { TSplitItem, TSplits } from '@types';
 
 type TSplitsStoreState = TSplits & {
     length?: number,
@@ -27,7 +27,7 @@ splitsStore.watch(function (state) {
                 let splitsCount = 0;
 
                 for (const ticker in this) {
-                    if (!this.hasOwnProperty(ticker)) {
+                    if (!hasOwnProperty(this, ticker)) {
                         continue;
                     }
 
@@ -52,9 +52,9 @@ splitsStore.on(addNewSplit, function (state: TSplitsStoreState, payload: TSplitI
     }
 
     const newState = deepClone(state);
-    const {ticker, ...rest} = payload;
+    const { ticker, ...rest } = payload;
     const tickerData = newState[ticker] || [];
-    const dataToAdd = {...rest};
+    const dataToAdd = { ...rest };
 
     if (tickerData.find(item => isObjectsEqual(item, dataToAdd)) !== undefined) {
         return state;
@@ -72,9 +72,9 @@ splitsStore.on(removeSplit, function (state: TSplitsStoreState, payload: TSplitI
     }
 
     const newState = deepClone(state);
-    const {ticker, ...rest} = payload;
+    const { ticker, ...rest } = payload;
     const tickerData = newState[ticker] || [];
-    const dataToAdd = {...rest};
+    const dataToAdd = { ...rest };
     let index = -1;
 
     for (let i = 0; i < tickerData.length; i++) {
@@ -104,14 +104,14 @@ splitsStore.on(setSplits, function (state: TSplitsStoreState, payload: TSplitIte
     const newState = {};
 
     payload.forEach(splitData => {
-        const {ticker, ...rest} = splitData;
+        const { ticker, ...rest } = splitData;
 
         if (!ticker) {
             return;
         }
 
         const tickerData = newState[ticker] || [];
-        const dataToAdd = {...rest};
+        const dataToAdd = { ...rest };
 
         if (tickerData.find(item => isObjectsEqual(item, dataToAdd)) !== undefined) {
             return;

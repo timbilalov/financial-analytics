@@ -1,7 +1,7 @@
-import moment from "moment";
-import {DATE_FORMATS} from "@constants";
-import {deepClone, isObject} from "@helpers";
-import type {TAsset, TAssetData, TDate} from "@types";
+import moment from 'moment';
+import { DATE_FORMATS } from '@constants';
+import { deepClone } from '@helpers';
+import type { TAssetData, TDate } from '@types';
 
 export function normalizeAssetData(data: TAssetData, sellDate?: TDate): TAssetData {
     if (data.length === 0) {

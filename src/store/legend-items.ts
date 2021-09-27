@@ -1,5 +1,5 @@
-import {createStore, createEvent} from 'effector';
-import {isEmptyString} from "@helpers";
+import { createStore, createEvent } from 'effector';
+import { isEmptyString } from '@helpers';
 
 type TLegendItemStore = string[];
 

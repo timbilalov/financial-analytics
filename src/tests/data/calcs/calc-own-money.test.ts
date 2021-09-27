@@ -1,8 +1,8 @@
-import {calcOwnMoney} from "@data";
-import {datasets, dates, moexDataRowsUsd, options, usdData} from "@test-constants";
-import {CALC_CURRENCIES, CALC_METHODS} from "@constants";
-import {deepClone} from "@helpers";
-import type {TCalcOptions, TDatasets} from "@types";
+import { calcOwnMoney } from '@data';
+import { datasets, dates, moexDataRowsUsd } from '@test-constants';
+import { CALC_CURRENCIES, CALC_METHODS } from '@constants';
+import { deepClone } from '@helpers';
+import type { TCalcOptions } from '@types';
 
 declare const global: {
     fetch: unknown,
@@ -32,7 +32,7 @@ describe('calc-own-money', function () {
                     ],
                 },
             }),
-        })
+        }),
     );
 
     const calcOptionsBase: TCalcOptions = {

@@ -1,8 +1,8 @@
-import {prepareDatasets} from "@presentation";
-import {calcOptionsDefault, dates, indexFundData, moexDataRowsUsd, options, usdData} from "@test-constants";
-import {BANK_DEPOSIT_LABEL, CALC_METHODS, OWN_MONEY_LABEL, TOTAL_LABEL} from "@constants";
-import type {TAsset} from "@types";
-import {extendObject} from "@helpers";
+import { prepareDatasets } from '@presentation';
+import { calcOptionsDefault, dates, moexDataRowsUsd } from '@test-constants';
+import { BANK_DEPOSIT_LABEL, CALC_METHODS, OWN_MONEY_LABEL, TOTAL_LABEL } from '@constants';
+import type { TAsset } from '@types';
+import { extendObject } from '@helpers';
 
 declare const global: {
     fetch: unknown,
@@ -29,7 +29,7 @@ describe('datasets-all', function () {
                     ],
                 },
             }),
-        })
+        }),
     );
 
     const baseData: TAsset[] = [

@@ -1,5 +1,5 @@
-import {locales} from "@presentation";
-import {LOCALES_TEXT_FALLBACK} from "@constants";
+import { locales } from '@presentation';
+import { LOCALES_TEXT_FALLBACK } from '@constants';
 
 describe('locales', function () {
     const textFallback = LOCALES_TEXT_FALLBACK;

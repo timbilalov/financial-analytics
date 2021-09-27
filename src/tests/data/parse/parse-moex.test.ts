@@ -1,6 +1,6 @@
-import {parseResponseDataMoex} from "@parse";
-import {dates, moexDataRows} from "@test-constants";
-import type {TFetchDataItemMoex, TFetchDataMoex} from "@types";
+import { parseResponseDataMoex } from '@parse';
+import { dates, moexDataRows } from '@test-constants';
+import type { TFetchDataItemMoex, TFetchDataMoex } from '@types';
 
 // TODO: Добавить в логику тестов расчёты значений
 describe('parse-moex', function () {

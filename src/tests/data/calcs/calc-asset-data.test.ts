@@ -1,15 +1,12 @@
-import {calcAssetData} from "@data";
+import { calcAssetData } from '@data';
 import {
     assetBase,
     calcOptionsDefault,
     dates,
-    moexDataRows,
     moexDataRowsUsd,
-    usdData,
-    valuesData
-} from "@test-constants";
-import {CALC_CURRENCIES, CALC_METHODS} from "@constants";
-import {extendObject} from "@helpers";
+} from '@test-constants';
+import { CALC_CURRENCIES, CALC_METHODS } from '@constants';
+import { extendObject } from '@helpers';
 
 declare const global: {
     fetch: unknown,
@@ -36,7 +33,7 @@ describe('calc-asset-data', function () {
                     ],
                 },
             }),
-        })
+        }),
     );
 
     const calcOptionsTaxes = extendObject(calcOptionsDefault, {

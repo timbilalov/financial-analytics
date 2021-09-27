@@ -1,6 +1,6 @@
-import {checkForSplits} from "@data";
-import type {TAsset, TAssetData, TSplits} from "@types";
-import {deepClone} from "@helpers";
+import { checkForSplits } from '@data';
+import type { TAssetData, TSplits } from '@types';
+import { deepClone } from '@helpers';
 
 describe('check-for-splits', function () {
     const ticker = 'ticker';

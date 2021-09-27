@@ -1,8 +1,8 @@
-import {onLegendClick} from "@presentation";
-import {calcOptionsDefault, datasets, dates, moexDataRowsUsd, options} from "@test-constants";
-import {clearLegendItems, setChartInstance} from "@store";
-import {BANK_DEPOSIT_LABEL, INDEX_FUND_LABEL, OWN_MONEY_LABEL, TOTAL_LABEL} from "@constants";
-import type {TDataset, TLegendItem} from "@types";
+import { onLegendClick } from '@presentation';
+import { calcOptionsDefault, datasets, dates, moexDataRowsUsd } from '@test-constants';
+import { clearLegendItems, setChartInstance } from '@store';
+import { BANK_DEPOSIT_LABEL, INDEX_FUND_LABEL, OWN_MONEY_LABEL, TOTAL_LABEL } from '@constants';
+import type { TDataset, TLegendItem } from '@types';
 
 declare const global: {
     fetch: unknown,
@@ -34,7 +34,7 @@ describe('chart-legend-click', function () {
                     ],
                 },
             }),
-        })
+        }),
     );
 
     const chart = {
@@ -43,7 +43,9 @@ describe('chart-legend-click', function () {
                 datasets: datasets,
             },
         },
-        update: jest.fn(() => {}),
+        update: jest.fn(() => {
+            // do nothing
+        }),
     };
     setChartInstance(chart);
 
@@ -103,7 +105,7 @@ describe('chart-legend-click', function () {
             amount: 1,
             borderWidth: 1,
             borderColor: 'red',
-            type: "line",
+            type: 'line',
         };
         const datasetBankDepo: TDataset = {
             label: BANK_DEPOSIT_LABEL,
@@ -113,7 +115,7 @@ describe('chart-legend-click', function () {
             amount: 1,
             borderWidth: 1,
             borderColor: 'red',
-            type: "line",
+            type: 'line',
         };
         const datasetOwnMoney: TDataset = {
             label: OWN_MONEY_LABEL,
@@ -123,7 +125,7 @@ describe('chart-legend-click', function () {
             amount: 1,
             borderWidth: 1,
             borderColor: 'red',
-            type: "line",
+            type: 'line',
         };
         const datasetIndexFund: TDataset = {
             label: INDEX_FUND_LABEL,
@@ -133,7 +135,7 @@ describe('chart-legend-click', function () {
             amount: 1,
             borderWidth: 1,
             borderColor: 'red',
-            type: "line",
+            type: 'line',
         };
 
         chart2.config.data.datasets.push(datasetTotal);

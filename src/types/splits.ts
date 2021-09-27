@@ -1,4 +1,4 @@
-import type {TDate} from "./common";
+import type { TDate } from './common';
 
 export type TSplitItem = {
     ticker?: string,

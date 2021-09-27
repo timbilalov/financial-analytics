@@ -1,8 +1,8 @@
-import moment from "moment";
-import {BANK_DEPOSIT, CALC_CURRENCIES, CALC_METHODS, DATE_FORMATS, DAYS_IN_YEAR} from "@constants";
-import type {TAssetData, TCalcOptions, TDataset, TDatasets, TDate} from "@types";
-import {getAssetsFromDatasets, getDatesFullArray, getUsdData} from "../get";
-import {toFractionDigits} from "@helpers";
+import moment from 'moment';
+import { BANK_DEPOSIT, CALC_CURRENCIES, CALC_METHODS, DATE_FORMATS, DAYS_IN_YEAR } from '@constants';
+import type { TAssetData, TCalcOptions, TDataset, TDatasets, TDate } from '@types';
+import { getAssetsFromDatasets, getDatesFullArray, getUsdData } from '../get';
+import { toFractionDigits } from '@helpers';
 
 type TInitialValueItem = {
     date: TDate,
@@ -14,7 +14,7 @@ export async function calcBankDeposit(datasets: TDatasets, calcOptions: TCalcOpt
     datasets = datasets.filter(dataset => dataset.hidden !== true);
 
     const assets = getAssetsFromDatasets(datasets);
-    const {method, currency} = calcOptions;
+    const { method, currency } = calcOptions;
     const usdData = await getUsdData(assets);
     const data: TAssetData = [];
     const usdValueInitial = usdData[0].value;

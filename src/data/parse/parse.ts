@@ -1,11 +1,15 @@
-import {parseResponseDataMoex} from "./parse-moex";
-import {parseResponseDataInvestcab} from "./parse-investcab";
-import type {TAssetData} from "@types";
+import { parseResponseDataMoex } from './parse-moex';
+import { parseResponseDataInvestcab } from './parse-investcab';
+import type {
+    TAssetData,
+    TFetchDataInvestcab,
+    TFetchDataMoex,
+} from '@types';
 
-export function parseResponseData(responseData, useMoex = false, isBond = false): TAssetData | undefined {
+export function parseResponseData(responseData: TFetchDataMoex | TFetchDataInvestcab, useMoex = false, isBond = false): TAssetData | undefined {
     if (useMoex) {
-        return parseResponseDataMoex(responseData, isBond);
+        return parseResponseDataMoex(responseData as TFetchDataMoex, isBond);
     } else {
-        return parseResponseDataInvestcab(responseData);
+        return parseResponseDataInvestcab(responseData as TFetchDataInvestcab);
     }
 }

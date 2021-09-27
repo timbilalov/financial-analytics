@@ -1,5 +1,5 @@
-import {datesStore, setDatesFullArray} from "@store";
-import type {TDate} from "@types";
+import { datesStore, setDatesFullArray } from '@store';
+import type { TDate } from '@types';
 
 describe('dates store', function () {
     test('store should exist', function () {

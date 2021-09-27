@@ -1,5 +1,5 @@
-import {EXPORT_HREF_PARAM_NAME, STORAGE_KEYS} from "@constants";
-import {LocalStorage} from "@utils";
+import { EXPORT_HREF_PARAM_NAME, STORAGE_KEYS } from '@constants';
+import { LocalStorage } from '@utils';
 
 export function makeExportUrl(): string {
     const namesArray = [

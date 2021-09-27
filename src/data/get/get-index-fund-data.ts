@@ -1,8 +1,8 @@
-import type {TAsset, TAssetData, TAssetOptions, TAssets, TDatasets, TDate, TFetchDataMoex, TStoreOptions} from "@types";
-import {getDatesFullArray} from "./get-dates-full-array";
-import {getStoredData} from "./get-stored-data";
-import {indexFundDataStore} from "@store";
-import {INDEX_FUND_TICKER} from "@constants";
+import type { TAssetData, TAssetOptions, TAssets, TStoreOptions } from '@types';
+import { getDatesFullArray } from './get-dates-full-array';
+import { getStoredData } from './get-stored-data';
+import { indexFundDataStore } from '@store';
+import { INDEX_FUND_TICKER } from '@constants';
 
 export async function getIndexFundData(assets: TAssets): Promise<TAssetData> {
     const dates = getDatesFullArray(assets);

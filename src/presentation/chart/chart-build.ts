@@ -1,9 +1,9 @@
-import Chart from "chart.js";
-import {onLegendClick} from "./chart-legend-click";
-import {labelCallback} from "./chart-label-callback";
-import {labelsFilter} from "./chart-labels-filter";
-import {chartInstanceStore, clearLegendItems, setChartInstance} from "@store";
-import type {TAssetData, TCalcOptions, TChartInstance, TDatasets, TDate} from "@types";
+import Chart from 'chart.js';
+import { onLegendClick } from './chart-legend-click';
+import { labelCallback } from './chart-label-callback';
+import { labelsFilter } from './chart-labels-filter';
+import { chartInstanceStore, clearLegendItems, setChartInstance } from '@store';
+import type { TCalcOptions, TChartInstance, TDatasets } from '@types';
 
 export async function buildChart(datasets: TDatasets, calcOptions: TCalcOptions): Promise<TChartInstance | undefined> {
     console.log('buildChart', datasets);
@@ -44,9 +44,9 @@ export async function buildChart(datasets: TDatasets, calcOptions: TCalcOptions)
                 onClick: function(e, legendItem) {
                     Chart.defaults.global.legend.onClick.call(this, e, legendItem);
                     onLegendClick.call(this, legendItem, calcOptions);
-                }
+                },
             },
-        }
+        },
     });
 
     const optionsYAxes = chart.config.options.scales.yAxes[0];

@@ -1,4 +1,4 @@
-import type {TAsset} from "./assets";
+import type { TAsset } from './assets';
 
 export type TPortfolioItem = {
     name: string,

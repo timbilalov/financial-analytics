@@ -1,4 +1,4 @@
-import type {CALC_CURRENCIES, CALC_METHODS} from "@constants";
+import type { CALC_CURRENCIES, CALC_METHODS } from '@constants';
 
 export type TCalcUses = {
     taxes: boolean,

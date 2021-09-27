@@ -1,5 +1,5 @@
-import {getAssetsFromDatasets} from "@data";
-import {assets, datasets} from "@test-constants";
+import { getAssetsFromDatasets } from '@data';
+import { assets, datasets } from '@test-constants';
 
 describe('get-assets-from-datasets', function () {
     it('should return an array of assets', function () {

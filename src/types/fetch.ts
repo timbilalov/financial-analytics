@@ -18,7 +18,7 @@ export type TFetchResponseMoex = {
         columns: string[],
         data: TFetchDataItemMoex[],
     },
-    "history.cursor": {
+    'history.cursor': {
         metadata?: {
             [key: string]: string,
         },

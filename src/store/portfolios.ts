@@ -1,8 +1,8 @@
-import {createStore, createEvent} from 'effector';
-import {isEmptyString, LocalStorage} from "@utils";
-import {DEFAULT_PORTFOLIO_NAME, STORAGE_KEYS, SUMMARY_PORTFOLIO_NAME} from "@constants";
-import {deepClone, isObjectsEqual} from "@helpers";
-import type {TAsset, TPortfolioItem, TPortfoliosState} from "@types";
+import { createStore, createEvent } from 'effector';
+import { LocalStorage } from '@utils';
+import { DEFAULT_PORTFOLIO_NAME, STORAGE_KEYS, SUMMARY_PORTFOLIO_NAME } from '@constants';
+import { deepClone, isEmptyString, isObjectsEqual } from '@helpers';
+import type { TAsset, TPortfolioItem, TPortfoliosState } from '@types';
 
 const defaultState: TPortfoliosState = {
     current: DEFAULT_PORTFOLIO_NAME,
@@ -10,7 +10,7 @@ const defaultState: TPortfoliosState = {
         {
             name: DEFAULT_PORTFOLIO_NAME,
             assets: [],
-        }
+        },
     ],
 };
 const initialState = Object.assign({}, defaultState, LocalStorage.get(STORAGE_KEYS.portfolios));

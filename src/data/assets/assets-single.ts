@@ -1,9 +1,9 @@
-import {isArraysSimilar, isEmptyString, isObject} from "@helpers";
-import type {TAsset, TAssetOptions, TAssetRaw, TDate, TStoreOptions} from "@types";
-import {getStoredData} from "../get";
-import {assetsDataStore, setAssetsData} from "@store";
-import moment from "moment";
-import {DATE_FORMATS} from "@constants";
+import { isEmptyString } from '@helpers';
+import type { TAsset, TAssetOptions, TAssetRaw, TStoreOptions } from '@types';
+import { getStoredData } from '../get';
+import { assetsDataStore, setAssetsData } from '@store';
+import moment from 'moment';
+import { DATE_FORMATS } from '@constants';
 
 export async function getSingleAssetData(assetRaw: TAssetRaw): Promise<TAsset | undefined> {
     const { ticker, buyDate, moex, usd, bond, hide } = assetRaw;

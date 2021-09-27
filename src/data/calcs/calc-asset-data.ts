@@ -1,11 +1,11 @@
-import {CALC_CURRENCIES, CALC_METHODS, DEFAULT_TAX} from "@constants";
-import {deepClone, toFractionDigits} from "@helpers";
-import type {TAsset, TAssetData, TCalcOptions} from "@types";
-import {getUsdData} from "../get";
+import { CALC_CURRENCIES, CALC_METHODS, DEFAULT_TAX } from '@constants';
+import { deepClone, toFractionDigits } from '@helpers';
+import type { TAsset, TAssetData, TCalcOptions } from '@types';
+import { getUsdData } from '../get';
 
 export async function calcAssetData(asset: TAsset, calcOptions: TCalcOptions): Promise<TAssetData> {
-    const {data, amount, isUsd} = asset;
-    const {method, currency, uses} = calcOptions;
+    const { data, amount, isUsd } = asset;
+    const { method, currency, uses } = calcOptions;
     const usdData = await getUsdData(asset);
 
     const calculated: TAssetData = data.slice(0).map(item => deepClone(item));

@@ -1,4 +1,4 @@
-import {normalizeAssetData} from "@data";
+import { normalizeAssetData } from '@data';
 
 describe('normalize-asset-data', function () {
     const parsedData = [
