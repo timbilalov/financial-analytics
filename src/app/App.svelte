@@ -1,6 +1,8 @@
 <script>
     import Chart from '@containers/chart/Chart.svelte';
     import Controls from '@containers/controls/Controls.svelte';
+    import Overlay from '@containers/overlay/Overlay.svelte';
+
     import {
         portfoliosStore,
         calcOptionsStore,
@@ -16,6 +18,21 @@
 
     checkImportUrl();
 
+    let isLoading = true;
+
+    const setLoadingState = () => {
+        isLoading = true;
+    };
+
+    const unsetLoadingState = () => {
+        isLoading = false;
+    };
+
+    const update = () => {
+        setLoadingState();
+        debouncedUpdate();
+    };
+
     const debouncedUpdate = debounce(async function () {
         const portfolios = portfoliosStore.getState();
         const currentPortfolio = portfolios.list.filter(item => item.name === portfolios.current)[0];
@@ -23,6 +40,7 @@
         const assets = await getAssetsData(assetsRaw);
 
         if (assets === undefined || assets.length === 0) {
+            unsetLoadingState();
             return;
         }
 
@@ -31,12 +49,14 @@
 
         setTimeout(() => {
             buildChart(datasets, calcOptions);
+            unsetLoadingState();
         }, 200);
     });
 
-    portfoliosStore.watch(debouncedUpdate);
-    calcOptionsStore.watch(debouncedUpdate);
+    portfoliosStore.watch(update);
+    calcOptionsStore.watch(update);
 </script>
 
 <Controls />
 <Chart />
+<Overlay loading="{isLoading}" />
