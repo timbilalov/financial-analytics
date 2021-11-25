@@ -46,7 +46,13 @@ describe('datasets-single', function () {
         const result = await prepareSingleDataset(assetBase, calcOptionsDefault, dates);
 
         expect(result).toEqual({
-            ticker: expect.any(String),
+            asset: {
+                ticker: expect.any(String),
+                amount: expect.any(Number),
+                isUsd: expect.any(Boolean),
+                buyDate: expect.any(String),
+                data: expect.any(Array),
+            },
             label: expect.any(String),
             backgroundColor: expect.any(String),
             borderColor: expect.any(String),
@@ -55,11 +61,10 @@ describe('datasets-single', function () {
             dates: expect.any(Array),
             type: 'line',
             pointRadius: expect.any(Number),
+            showLine: expect.any(Boolean),
             fill: false,
             lineTension: 0,
             borderWidth: expect.any(Number),
-            amount: expect.any(Number),
-            isUsd: expect.any(Boolean),
         });
     });
 
@@ -67,6 +72,9 @@ describe('datasets-single', function () {
         const values = [
             baseData[0].value,
             baseData[1].value,
+            NaN,
+            NaN,
+            NaN,
             NaN,
             NaN,
         ];
@@ -127,11 +135,14 @@ describe('datasets-single', function () {
 
         const result = await prepareSingleDataset(asset, calcOptionsDefault, dates);
 
-        expect(result.data.length).toBe(4);
+        expect(result.data.length).toBe(dates.length);
         expect(result.data[0]).toBe(NaN);
         expect(result.data[1]).not.toBe(NaN);
         expect(result.data[2]).not.toBe(NaN);
         expect(result.data[3]).toBe(NaN);
+        expect(result.data[4]).toBe(NaN);
+        expect(result.data[5]).toBe(NaN);
+        expect(result.data[6]).toBe(NaN);
     });
 
     test('should use previous values if some data missed', async function () {
@@ -154,11 +165,14 @@ describe('datasets-single', function () {
 
         const result = await prepareSingleDataset(asset, calcOptionsDefault, dates);
 
-        expect(result.data.length).toBe(4);
+        expect(result.data.length).toBe(dates.length);
         expect(result.data[0]).not.toBe(NaN);
         expect(result.data[1]).not.toBe(NaN);
         expect(result.data[2]).not.toBe(NaN);
         expect(result.data[3]).not.toBe(NaN);
         expect(result.data[2]).toEqual(result.data[1]);
+        expect(result.data[4]).toBe(NaN);
+        expect(result.data[5]).toBe(NaN);
+        expect(result.data[6]).toBe(NaN);
     });
 });

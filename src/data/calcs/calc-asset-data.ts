@@ -49,10 +49,12 @@ export async function calcAssetData(asset: TAsset, calcOptions: TCalcOptions): P
                     value *= usdValue;
                 }
 
-                if (method === CALC_METHODS.RELATIVE || method === CALC_METHODS.RELATIVE_ANNUAL) {
-                    value = (value - initialValue) / initialValue * 100;
-                } else if (method === CALC_METHODS.ABSOLUTE || method === CALC_METHODS.ABSOLUTE_TOTAL) {
-                    value = value * amount - initialValue;
+                switch (method) {
+                    case CALC_METHODS.ABSOLUTE:
+                    case CALC_METHODS.ABSOLUTE_TOTAL:
+                    default:
+                        value = value * amount - initialValue;
+                        break;
                 }
             }
 

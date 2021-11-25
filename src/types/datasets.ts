@@ -1,7 +1,10 @@
+import type { TAsset } from './assets';
+import type { TDate } from './common';
+
 type TDatasetType = 'line' | 'bar';
 
 export type TDataset = {
-    ticker?: string;
+    asset: TAsset;
     label: string;
     backgroundColor?: string; // TODO: TColor
     borderColor: string; // TODO: TColor
@@ -14,10 +17,25 @@ export type TDataset = {
     lineTension?: number;
     borderWidth: number;
     borderDash?: number;
-    amount: number;
-    isUsd: boolean;
     hidden?: boolean;
-    _tooltipSameIndexes?: number[],
+    _tooltipSameIndexes?: number[];
+    showLine?: boolean;
+    stack?: string;
 };
 
 export type TDatasets = TDataset[];
+
+export type TDatasetsDataItem = {
+    date: TDate,
+    values: {
+        absolute: number,
+        free: number,
+        own: number,
+        earned: number,
+        bankDeposit: number,
+        indexFund: number,
+        total: number,
+    },
+};
+
+export type TDatasetsData = TDatasetsDataItem[];

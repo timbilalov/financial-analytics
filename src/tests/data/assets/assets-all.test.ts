@@ -48,6 +48,8 @@ describe('assets-all', function () {
             data: expect.any(Array),
             amount: expect.any(Number),
             isUsd: expect.any(Boolean),
+            buyDate: expect.any(String),
+            sellDate: expect.any(String),
         });
         expect(result.length).toBe(2);
         for (const item of result) {

@@ -14,20 +14,45 @@ describe('parse-usd', function () {
     describe('should return an array of data', function () {
         test('usd', function () {
             const responseData = moexDataRows.map(item => ['CETS', ...item.slice(1)] as TFetchDataItemMoex);
-            const result = parseResponseDataUsd(responseData, dates);
+            const actual = parseResponseDataUsd(responseData, dates);
+            const expected = [
+                {
+                    date: '2020.01.01',
+                    value: 70,
+                },
+                {
+                    date: '2020.01.02',
+                    value: 71,
+                },
+                {
+                    date: '2020.01.03',
+                    value: 72,
+                },
+                {
+                    date: '2020.01.04',
+                    value: 73,
+                },
+                {
+                    date: '2020.01.05',
+                    value: 74,
+                },
+                {
+                    date: '2020.01.06',
+                    value: 75,
+                },
+                {
+                    date: '2020.01.07',
+                    value: 76,
+                },
+            ];
 
-            expect(result).toContainEqual({
-                date: expect.any(String),
-                value: expect.any(Number),
-            });
-            expect(result.length).toBe(4);
+            expect(actual).toEqual(expected);
         });
 
         test('index-fund', function () {
             const responseData = moexDataRows.map(item => ['TQTF', ...item.slice(1)] as TFetchDataItemMoex);
-            const result = parseResponseDataUsd(responseData, dates, true);
-
-            expect(result).toEqual([
+            const actual = parseResponseDataUsd(responseData, dates, true);
+            const expected = [
                 {
                     date: '2020.01.01',
                     value: 55, // (30 + 80) / 2
@@ -44,8 +69,21 @@ describe('parse-usd', function () {
                     date: '2020.01.04',
                     value: 58, // (33 + 83) / 2
                 },
-            ]);
-            expect(result.length).toBe(4);
+                {
+                    date: '2020.01.05',
+                    value: 59, // (34 + 84) / 2
+                },
+                {
+                    date: '2020.01.06',
+                    value: 60, // (35 + 85) / 2
+                },
+                {
+                    date: '2020.01.07',
+                    value: 61, // (36 + 86) / 2
+                },
+            ];
+
+            expect(actual).toEqual(expected);
         });
     });
 
@@ -61,7 +99,7 @@ describe('parse-usd', function () {
             date: expect.any(String),
             value: expect.any(Number),
         });
-        expect(result.length).toBe(4);
+        expect(result.length).toBe(dates.length);
         expect(result[1].value).toBe(result[2].value);
         expect(result[1].date).not.toBe(result[2].date);
     });

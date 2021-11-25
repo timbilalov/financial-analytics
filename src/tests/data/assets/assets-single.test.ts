@@ -1,8 +1,10 @@
+import moment from 'moment';
 import { getSingleAssetData } from '@data';
 import { isObject } from '@helpers';
 import { investcabResponseObject } from '@test-constants';
 import type { TAsset, TAssetRaw } from '@types';
 import { resetAssetsData } from '@store';
+import { DATE_FORMATS } from '@constants';
 
 declare const global: {
     fetch: unknown,
@@ -68,15 +70,18 @@ describe('assets-single', function () {
                 amount: 3,
             };
 
-            const result = await getSingleAssetData(assetRaw);
-
-            expect(result).toEqual({
+            const actual = await getSingleAssetData(assetRaw);
+            const expected: TAsset = {
                 ticker: 'tst',
                 title: 'TST',
                 data: [],
                 amount: 3,
                 isUsd: false,
-            });
+                buyDate: '2020.01.01',
+                sellDate: moment().add(-1, 'days').format(DATE_FORMATS.default),
+            };
+
+            expect(actual).toEqual(expected);
         });
 
         test('moex', async function () {
@@ -103,15 +108,18 @@ describe('assets-single', function () {
                 moex: true,
             };
 
-            const result = await getSingleAssetData(assetRaw);
-
-            expect(result).toEqual({
+            const actual = await getSingleAssetData(assetRaw);
+            const expected: TAsset = {
                 ticker: 'tst4',
                 title: 'TST4',
                 data: [],
                 amount: 3,
                 isUsd: false,
-            });
+                buyDate: '2020.01.01',
+                sellDate: moment().add(-1, 'days').format(DATE_FORMATS.default),
+            };
+
+            expect(actual).toEqual(expected);
         });
     });
 
@@ -141,6 +149,8 @@ describe('assets-single', function () {
             data: expect.any(Array),
             amount: expect.any(Number),
             isUsd: expect.any(Boolean),
+            buyDate: expect.any(String),
+            sellDate: expect.any(String),
         });
         expect(result.data).toContainEqual({
             date: expect.any(String),
