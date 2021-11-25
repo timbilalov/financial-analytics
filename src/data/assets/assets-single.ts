@@ -44,6 +44,8 @@ export async function getSingleAssetData(assetRaw: TAssetRaw): Promise<TAsset | 
         data,
         amount,
         isUsd,
+        buyDate,
+        sellDate,
     };
 }
 

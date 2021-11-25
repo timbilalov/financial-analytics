@@ -9,7 +9,7 @@ import {
     isObjectsEqual,
     toFractionDigits,
 } from '@helpers';
-import { BANK_DEPOSIT_LABEL, OWN_MONEY_LABEL, TOTAL_LABEL } from '@constants';
+import { BANK_DEPOSIT_LABEL, EARNED_MONEY_LABEL, OWN_MONEY_LABEL, TOTAL_LABEL } from '@constants';
 
 describe('helpers', function () {
     test('dateFormat', function () {
@@ -182,6 +182,7 @@ describe('helpers', function () {
         expect(isLabelCommon(TOTAL_LABEL)).toEqual(true);
         expect(isLabelCommon(BANK_DEPOSIT_LABEL)).toEqual(true);
         expect(isLabelCommon(OWN_MONEY_LABEL)).toEqual(true);
+        expect(isLabelCommon(EARNED_MONEY_LABEL)).toEqual(true);
         expect(isLabelCommon(TOTAL_LABEL.toUpperCase())).toEqual(true);
         expect(isLabelCommon(TOTAL_LABEL.toLowerCase())).toEqual(true);
         expect(isLabelCommon('some-label')).toEqual(false);

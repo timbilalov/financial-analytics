@@ -1,6 +1,7 @@
 import moment from 'moment';
 import {
     BANK_DEPOSIT_LABEL,
+    EARNED_MONEY_LABEL,
     INDEX_FUND_LABEL,
     OWN_MONEY_LABEL,
     TOTAL_LABEL,
@@ -117,6 +118,7 @@ export function isLabelCommon(label: string): boolean {
         BANK_DEPOSIT_LABEL.toLowerCase(),
         OWN_MONEY_LABEL.toLowerCase(),
         INDEX_FUND_LABEL.toLowerCase(),
+        EARNED_MONEY_LABEL.toLowerCase(),
     ];
 
     label = label.toLowerCase();
@@ -151,4 +153,9 @@ export function toFractionDigits(num: number | string, digitsCount = 4): number 
 // TODO: Добавить тесты
 export function hasOwnProperty(object: TObject, property: string): boolean {
     return Object.prototype.hasOwnProperty.call(object, property);
+}
+
+// TODO: Добавить тесты
+export function isNullNumber(value: unknown): boolean {
+    return value !== undefined && isNaN(value as number) || value === null;
 }

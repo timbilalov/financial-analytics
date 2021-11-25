@@ -38,10 +38,12 @@ export function labelCallback(tooltipItem: TTooltipItem, data: TData, calcOption
         } else {
             labelText = `${label}: [${nonZeroLabelValues.map(item => item.toFixed(2)).join(',')}]`;
 
-            if (method === CALC_METHODS.RELATIVE) {
-                labelText += `, avg ${(nonZeroLabelValues.reduce((p, c) => p + c) / nonZeroLabelValues.length).toFixed(2)}`;
-            } else if (method === CALC_METHODS.ABSOLUTE || method === CALC_METHODS.ABSOLUTE_TOTAL) {
-                labelText += `, total ${(nonZeroLabelValues.reduce((p, c) => p + c)).toFixed(2)}`;
+            switch (method) {
+                case CALC_METHODS.ABSOLUTE:
+                case CALC_METHODS.ABSOLUTE_TOTAL:
+                default:
+                    labelText += `, total ${(nonZeroLabelValues.reduce((p, c) => p + c)).toFixed(2)}`;
+                    break;
             }
         }
     }

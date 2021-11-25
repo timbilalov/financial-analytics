@@ -5,8 +5,6 @@ export const DATE_FORMATS = {
 };
 
 export enum CALC_METHODS {
-    RELATIVE,
-    RELATIVE_ANNUAL,
     ABSOLUTE,
     ABSOLUTE_TOTAL,
 }
@@ -62,6 +60,7 @@ export const DEFAULT_PORTFOLIO_NAME = 'default';
 export const TOTAL_LABEL = 'Total';
 export const BANK_DEPOSIT_LABEL = 'Bank depo';
 export const OWN_MONEY_LABEL = 'Own money';
+export const EARNED_MONEY_LABEL = 'Earned money';
 export const INDEX_FUND_LABEL = 'Index Fund';
 
 export const DAYS_IN_YEAR = 365;
