@@ -13,7 +13,7 @@ export function dateFormat(dateUTC: number, format = 'YYYY.MM.DD'): string {
         dateUTC *= 1000;
     }
 
-    return moment(dateUTC).format(format);
+    return moment.utc(dateUTC).format(format);
 }
 
 // TODO: Подумать насчёт того, чтобы сделать более осмысленный обработчик ошибок.
