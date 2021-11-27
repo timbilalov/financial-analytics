@@ -1,0 +1,34 @@
+{
+  "extends": "@tsconfig/svelte/tsconfig.json",
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules/*",
+    "__sapper__/*",
+    "public/*"
+  ],
+  "compilerOptions": {
+    "types": ["jest"],
+    "rootDir": "./src",
+    "outDir": "./public/dist",
+    "baseUrl": ".",
+    "paths": {
+      "@types": ["./src/types"],
+      "@constants": ["./src/constants.ts"],
+      "@test-constants": ["./src/tests/test-constants.ts"],
+      "@utils": ["./src/utils"],
+      "@helpers": ["./src/helpers.ts"],
+      "@presentation": ["./src/presentation"],
+      "@data": ["./src/data"],
+      "@fetch": ["./src/data/fetch"],
+      "@parse": ["./src/data/parse"],
+      "@app": ["./src/app"],
+      "@components": ["./src/app/components"],
+      "@containers": ["./src/app/containers"],
+      "@store": ["./src/store"]
+    },
+    "strictNullChecks": true
+  }
+}

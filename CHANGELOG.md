@@ -1,14 +1,23 @@
 # Changelog
 
+## [v0.3.0](https://github.com/timbilalov/financial-analytics/tree/v0.3.0) (2021-11-27)
+
+[Full Changelog](https://github.com/timbilalov/financial-analytics/compare/v0.2.4...v0.3.0)
+
+**Implemented enhancements:**
+
+- ESLint [\#12](https://github.com/timbilalov/financial-analytics/issues/12)
+- Add project-specific README file [\#11](https://github.com/timbilalov/financial-analytics/issues/11)
+- Improve file and folder structure [\#10](https://github.com/timbilalov/financial-analytics/issues/10)
+- Move code from JavaScript to TypeScript [\#9](https://github.com/timbilalov/financial-analytics/issues/9)
+
 ## [v0.2.4](https://github.com/timbilalov/financial-analytics/tree/v0.2.4) (2021-06-10)
 
 [Full Changelog](https://github.com/timbilalov/financial-analytics/compare/v0.2.3...v0.2.4)
 
-**Implemented enhancements:**
 
-- Add .gitconfig file [\#18](https://github.com/timbilalov/financial-analytics/issues/18)
-- NPM registry [\#16](https://github.com/timbilalov/financial-analytics/issues/16)
-- Stock splits [\#15](https://github.com/timbilalov/financial-analytics/issues/15)
+**Commits:**
+* Installed github_changelog_generator (on new machine) to update changelog
 
 ## [v0.2.3](https://github.com/timbilalov/financial-analytics/tree/v0.2.3) (2021-06-09)
 

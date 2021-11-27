@@ -1,10 +1,11 @@
 module.exports = {
+    testEnvironment: 'jsdom',
     verbose: true,
     moduleNameMapper: {
-        '@utils/(.*)': '<rootDir>/src/utils/$1',
-        '@helpers': '<rootDir>/src/utils/helpers',
-        '@constants': '<rootDir>/src/utils/constants',
-        '@logic': '<rootDir>/src/logic',
+        '@utils': '<rootDir>/src/utils',
+        '@helpers': '<rootDir>/src/helpers',
+        '@constants': '<rootDir>/src/constants',
+        '@test-constants': '<rootDir>/src/tests/test-constants',
         '@store': '<rootDir>/src/store',
         '@data': '<rootDir>/src/data',
         '@fetch': '<rootDir>/src/data/fetch',
@@ -14,4 +15,14 @@ module.exports = {
     coverageReporters: [
         'text',
     ],
+    moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx'],
+    transform: {
+        '^.+\\.(ts)$': 'ts-jest',
+    },
+    globals: {
+        'ts-jest': {
+            babel: true,
+            tsConfig: 'tsconfig.json',
+        },
+    },
 };

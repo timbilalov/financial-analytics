@@ -1,11 +1,11 @@
 <script>
     import {locales} from "@presentation";
     import {CALC_CURRENCIES} from "@constants";
-    import {calcStore, setCurrency} from "@store";
+    import {calcOptionsStore, setCurrency} from "@store";
 
     let calcCurrency;
 
-    calcStore.watch(function (state) {
+    calcOptionsStore.watch(function (state) {
         calcCurrency = state.currency;
     });
 
