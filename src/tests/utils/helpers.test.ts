@@ -13,7 +13,7 @@ import { BANK_DEPOSIT_LABEL, EARNED_MONEY_LABEL, OWN_MONEY_LABEL, TOTAL_LABEL } 
 
 describe('helpers', function () {
     test('dateFormat', function () {
-        const dateUTC1 = 1577836800000; // 2020.01.01
+        const dateUTC1 = 1577894400000; // 2020.01.01
         const dateUTC2 = 1607525676469; // 2020.12.09
         const wrongDateNumber = 2145;
         const wrongDateFormat = 'bla bla bla';
