@@ -14,6 +14,7 @@ mkdir -p "${BASEDIR}/../temp"
 branchNameCurrent=`git rev-parse --abbrev-ref HEAD`
 branchNameReleaseFrom=dev
 branchNameReleaseTo=master
+branchNameMergeTemp=mergeTemp
 if [[ $branchNameCurrent != $branchNameReleaseFrom ]]; then
 	echo "Current branch is '${branchNameCurrent}', but you need to be on '${branchNameReleaseFrom}' to make a release"
 	exit 1
@@ -78,8 +79,15 @@ fi
 echo "Starting a new release: $enteredVersion"
 git checkout "${branchNameReleaseTo}" && git pull origin "${branchNameReleaseTo}"
 
-# Merge changes
-git merge --squash --no-commit -X theirs "${branchNameReleaseFrom}"
+# Merge changes.
+# This is a simulation of "git merge -s theirs" strategy (which doesn't exists).
+# Method described here: https://stackoverflow.com/a/4969679.
+git merge --squash --no-commit -s ours "${branchNameReleaseFrom}"
+git commit -a -m "tmp"
+git branch "${branchNameMergeTemp}"
+git reset --hard "${branchNameReleaseFrom}"
+git reset --soft "${branchNameMergeTemp}"
+git branch -D "${branchNameMergeTemp}"
 
 # Delete files that can't be deleted automatically during merge
 git diff --name-status "${branchNameReleaseTo}" "${branchNameReleaseFrom}" | grep '^D' | sed 's/D[[:space:]]//' > "${filePathFilesToDelete}"
