@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.3.2](https://github.com/timbilalov/financial-analytics/tree/v0.3.2) (2021-11-27)
+
+[Full Changelog](https://github.com/timbilalov/financial-analytics/compare/v0.3.1...v0.3.2)
+
+
+**Commits:**
+* hotfix for utc dates, due to bug in parse investcab function
+
 ## [v0.3.1](https://github.com/timbilalov/financial-analytics/tree/v0.3.1) (2021-11-27)
 
 [Full Changelog](https://github.com/timbilalov/financial-analytics/compare/v0.3.0...v0.3.1)
