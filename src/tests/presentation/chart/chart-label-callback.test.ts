@@ -50,15 +50,6 @@ describe('chart-label-callback', function () {
             expect(result.includes(String(data2.datasets[2].data[1]))).toBe(true);
         });
 
-        test('should contain average value for relative method', function () {
-            const result = labelCallback(tooltipItem2, data2, calcOptionsDefault);
-            const averageValue = ((data2.datasets[0].data[1] + data2.datasets[2].data[1]) / 2).toFixed(2);
-
-            expect(typeof result).toBe('string');
-            expect(result.includes(nameToCheck)).toBe(true);
-            expect(result.includes(averageValue)).toBe(true);
-        });
-
         test('should contain total value for absolute methods', function () {
             const calcOptions = extendObject(calcOptionsDefault, {
                 method: CALC_METHODS.ABSOLUTE,

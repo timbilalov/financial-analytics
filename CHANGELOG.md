@@ -1,5 +1,15 @@
 # Changelog
 
+## [v0.3.1](https://github.com/timbilalov/financial-analytics/tree/v0.3.1) (2021-11-27)
+
+[Full Changelog](https://github.com/timbilalov/financial-analytics/compare/v0.3.0...v0.3.1)
+
+**Implemented enhancements:**
+
+- Remove relative and relative-annual calc methods [\#32](https://github.com/timbilalov/financial-analytics/issues/32)
+- Earned money [\#24](https://github.com/timbilalov/financial-analytics/issues/24)
+- Loading state \(spinner\) [\#13](https://github.com/timbilalov/financial-analytics/issues/13)
+
 ## [v0.3.0](https://github.com/timbilalov/financial-analytics/tree/v0.3.0) (2021-11-27)
 
 [Full Changelog](https://github.com/timbilalov/financial-analytics/compare/v0.2.4...v0.3.0)

@@ -9,9 +9,7 @@ describe('parse-moex', function () {
         const result2 = parseResponseDataMoex([['foo', dates[0], '', '', 10, 20, 30, 40, 50, 60, 70]], true);
 
         expect(result1).toEqual([]);
-        expect(result1.length).toBe(0);
         expect(result2).toEqual([]);
-        expect(result2.length).toBe(0);
     });
 
     describe('should return an array of data', function () {
@@ -22,7 +20,7 @@ describe('parse-moex', function () {
                 date: expect.any(String),
                 value: expect.any(Number),
             });
-            expect(result.length).toBe(4);
+            expect(result.length).toBe(moexDataRows.length);
         });
 
         test('bonds', function () {
@@ -33,7 +31,7 @@ describe('parse-moex', function () {
                 date: expect.any(String),
                 value: expect.any(Number),
             });
-            expect(result.length).toBe(4);
+            expect(result.length).toBe(moexDataRows.length);
         });
     });
 

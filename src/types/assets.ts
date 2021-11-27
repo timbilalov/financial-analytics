@@ -23,6 +23,8 @@ export type TAsset = {
     ticker: string,
     title?: string,
     data: TAssetData,
+    buyDate: TAssetRaw['buyDate'],
+    sellDate?: TAssetRaw['sellDate'],
     amount: number,
     isUsd: boolean,
 };
@@ -32,4 +34,6 @@ export type TAssets = TAsset[];
 export type TAssetCommon = {
     title: string,
     data: TAsset['data'],
+    buyDate: TAsset['buyDate'],
+    sellDate?: TAsset['sellDate'],
 };

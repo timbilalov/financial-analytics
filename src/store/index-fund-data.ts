@@ -1,5 +1,5 @@
 import { createStore, createEvent } from 'effector';
-import { deepClone, isArraysSimilar } from '@helpers';
+import { deepClone } from '@helpers';
 import type { TAssetData } from '@types';
 import { LocalStorage } from '@utils';
 import { STORAGE_KEYS } from '@constants';
@@ -10,16 +10,15 @@ const initialState = LocalStorage.get(STORAGE_KEYS.indexFund) as TIndexFundState
 
 export const indexFundDataStore = createStore(initialState);
 export const setIndexFundData = createEvent<TAssetData>();
+export const resetIndexFundData = createEvent();
 
 indexFundDataStore.watch((state) => {
     console.log('indexFundDataStore changed', deepClone(state))
     LocalStorage.set(STORAGE_KEYS.indexFund, state);
 });
 
-indexFundDataStore.on(setIndexFundData,  (state: TIndexFundState, payload: TAssetData) => {
-    if (isArraysSimilar(state, payload)) {
-        return state;
-    }
+indexFundDataStore.reset(resetIndexFundData);
 
+indexFundDataStore.on(setIndexFundData,  (state: TIndexFundState, payload: TAssetData) => {
     return payload;
 });

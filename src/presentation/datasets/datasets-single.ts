@@ -3,6 +3,7 @@ import {
     BANK_DEPOSIT_LABEL,
     CALC_METHODS,
     DATE_FORMATS,
+    EARNED_MONEY_LABEL,
     INDEX_FUND_LABEL,
     OWN_MONEY_LABEL,
     TOTAL_LABEL,
@@ -14,7 +15,6 @@ import type { TAsset, TAssetCommon, TCalcOptions, TDataset, TDate } from '@types
 
 export async function prepareSingleDataset(asset: TAsset | TAssetCommon, calcOptions: TCalcOptions, datesFullArray: TDate[]): Promise<TDataset> {
     const { data } = asset;
-    const { amount, isUsd } = asset as TAsset;
     const ticker = (asset as TAsset).ticker;
     const title = (asset as TAssetCommon).title || ticker.toUpperCase();
 
@@ -22,9 +22,11 @@ export async function prepareSingleDataset(asset: TAsset | TAssetCommon, calcOpt
     const getRandomNumber = () => Math.round(Math.random() * 255);
 
     let colorRGB;
-    let opacity = 0.6;
+    let opacityBorder = 0.6;
+    let opacityBackground = 0.2;
     let borderWidth = 1;
     let borderDash;
+    let type: TDataset['type'] = 'line';
 
     if (datasetsColors[title] !== undefined) {
         colorRGB = datasetsColors[title];
@@ -34,28 +36,35 @@ export async function prepareSingleDataset(asset: TAsset | TAssetCommon, calcOpt
 
     if (title === TOTAL_LABEL) {
         colorRGB = [0, 0, 0];
-        opacity = 1;
+        opacityBorder = 1;
         borderWidth = 2;
     }
 
     if (title === BANK_DEPOSIT_LABEL) {
         colorRGB = [160, 160, 160];
-        opacity = 0.7;
+        opacityBorder = 0.7;
         borderWidth = 2;
         borderDash = [20, 20];
     }
 
     if (title === INDEX_FUND_LABEL) {
         colorRGB = [20, 80, 150];
-        opacity = 0.7;
+        opacityBorder = 0.7;
         borderWidth = 2;
         borderDash = [3, 3];
     }
 
     if (title === OWN_MONEY_LABEL) {
         colorRGB = [20, 160, 20];
-        opacity = 0.15;
         borderWidth = 0;
+        type = 'bar';
+    }
+
+    if (title === EARNED_MONEY_LABEL) {
+        colorRGB = [0, 100, 40];
+        opacityBackground = 0.4;
+        borderWidth = 0;
+        type = 'bar';
     }
 
     addDatasetColor({
@@ -69,6 +78,7 @@ export async function prepareSingleDataset(asset: TAsset | TAssetCommon, calcOpt
     let calculatedData;
     let calculatedDataAbsTotal;
     let shouldStoreAbsTotal = false;
+    let showLine = true;
 
     if (isLabelCommon(title)) {
         calculatedData = data;
@@ -116,20 +126,23 @@ export async function prepareSingleDataset(asset: TAsset | TAssetCommon, calcOpt
         shouldStoreAbsTotal && valuesAbsTotal.push(valueByDateAbsTotal);
     }
 
+    if (calcOptions.method === CALC_METHODS.ABSOLUTE_TOTAL && !isLabelCommon(title)) {
+        showLine = false;
+    }
+
     const dataset: TDataset = {
-        ticker,
+        asset: asset as TAsset,
         label: title,
-        backgroundColor: `rgba(${colorRGB.join(', ')}, 0.2)`,
-        borderColor: `rgba(${colorRGB.join(', ')}, ${opacity})`,
+        backgroundColor: `rgba(${colorRGB.join(', ')}, ${opacityBackground})`,
+        borderColor: `rgba(${colorRGB.join(', ')}, ${opacityBorder})`,
         data: values,
         dates: dates,
-        type: 'line',
+        type,
         pointRadius: 0,
         fill: false,
         lineTension: 0,
         borderWidth,
-        amount,
-        isUsd,
+        showLine,
     };
 
     if (shouldStoreAbsTotal) {
@@ -138,10 +151,6 @@ export async function prepareSingleDataset(asset: TAsset | TAssetCommon, calcOpt
 
     if (borderDash !== undefined) {
         dataset.borderDash = borderDash;
-    }
-
-    if (title === OWN_MONEY_LABEL) {
-        dataset.type = 'bar';
     }
 
     return dataset;

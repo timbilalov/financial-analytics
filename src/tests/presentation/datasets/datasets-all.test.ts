@@ -47,6 +47,7 @@ describe('datasets-all', function () {
             ],
             amount: 2,
             isUsd: true,
+            buyDate: dates[0],
         },
         {
             ticker: 'tst2',
@@ -62,6 +63,7 @@ describe('datasets-all', function () {
             ],
             amount: 1,
             isUsd: false,
+            buyDate: dates[0],
         },
     ];
 

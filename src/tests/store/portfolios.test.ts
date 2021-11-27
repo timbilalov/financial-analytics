@@ -25,6 +25,7 @@ describe('portfolios store', function () {
         ],
         amount: 1,
         isUsd: true,
+        buyDate: '2020.01.01',
     };
     const newAsset2: TAsset = {
         ticker: 'bac2',
@@ -36,6 +37,7 @@ describe('portfolios store', function () {
         ],
         amount: 11,
         isUsd: true,
+        buyDate: '2020.01.01',
     };
     const newAsset3: TAsset = {
         ticker: 't',
@@ -47,6 +49,7 @@ describe('portfolios store', function () {
         ],
         amount: 2,
         isUsd: true,
+        buyDate: '2020.01.01',
     };
     const newAsset4: TAsset = {
         ticker: 'pfe',
@@ -58,6 +61,7 @@ describe('portfolios store', function () {
         ],
         amount: 20,
         isUsd: true,
+        buyDate: '2020.01.01',
     };
 
     beforeEach(function () {
@@ -266,6 +270,7 @@ describe('portfolios store', function () {
                 ],
                 amount: 2,
                 isUsd: false,
+                buyDate: '2022.01.01',
             };
 
             removeAsset(missedAsset);

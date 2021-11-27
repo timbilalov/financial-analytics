@@ -14,8 +14,6 @@ export const LOCALES_RU = {
         taxes: 'Налоги',
     },
     calcMethod: {
-        relative: 'Процентный',
-        relativeAnnual: 'Доходность',
         absolute: 'Абсолютный',
         absoluteTotal: 'Общий капитал',
     },

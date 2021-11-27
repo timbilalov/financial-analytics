@@ -1,11 +1,24 @@
 import { CALC_CURRENCIES, CALC_METHODS } from '@constants';
-import type { TAsset, TAssetData, TCalcOptions, TDatasets, TDate, TFetchDataItemMoex, TFetchDataMoex } from '@types';
+import type {
+    TAsset,
+    TAssetData,
+    TAssets,
+    TCalcOptions,
+    TDatasets,
+    TDate,
+    TFetchDataItemMoex,
+    TFetchDataMoex,
+} from '@types';
+import { extendObject } from '@helpers';
 
 export const dates: TDate[] = [
     '2020.01.01',
     '2020.01.02',
     '2020.01.03',
     '2020.01.04',
+    '2020.01.05',
+    '2020.01.06',
+    '2020.01.07',
 ];
 
 export const usdData: TAssetData = [
@@ -24,6 +37,18 @@ export const usdData: TAssetData = [
     {
         date: dates[3],
         value: 53,
+    },
+    {
+        date: dates[4],
+        value: 54,
+    },
+    {
+        date: dates[5],
+        value: 55,
+    },
+    {
+        date: dates[6],
+        value: 56,
     },
 ];
 
@@ -70,6 +95,7 @@ export const assetBase: TAsset = {
     data: valuesData,
     amount: 1,
     isUsd: false,
+    buyDate: '2020.01.01',
 };
 
 export const valuesDataWithMissingItem: TAssetData = [
@@ -87,59 +113,64 @@ export const valuesDataWithMissingItem: TAssetData = [
     },
 ];
 
-export const assets: TAsset[] = [
-    {
-        ticker: 'asset1',
-        data: [
-            {
-                date: dates[0],
-                value: 0,
-            },
-            {
-                date: dates[1],
-                value: 10,
-            },
-            {
-                date: dates[2],
-                value: 20,
-            },
-            {
-                date: dates[3],
-                value: 30,
-            },
-        ],
-        amount: 2,
-        isUsd: false,
-    },
-    {
-        ticker: 'asset2',
-        data: [
-            {
-                date: dates[0],
-                value: NaN,
-            },
-            {
-                date: dates[1],
-                value: 0,
-            },
-            {
-                date: dates[2],
-                value: -2,
-            },
-            {
-                date: dates[3],
-                value: 4,
-            },
-        ],
-        amount: 3,
-        isUsd: false,
-    },
-];
+export const asset1: TAsset = extendObject(assetBase, {
+    ticker: 'ticker1',
+    data: [
+        {
+            date: dates[0],
+            value: 0,
+        },
+        {
+            date: dates[1],
+            value: 10,
+        },
+        {
+            date: dates[2],
+            value: 20,
+        },
+        {
+            date: dates[3],
+            value: 30,
+        },
+    ],
+    amount: 2,
+    isUsd: false,
+    buyDate: dates[0],
+});
 
-// TODO: assets
+export const asset2: TAsset = extendObject(assetBase, {
+    ticker: 'ticker2',
+    data: [
+        {
+            date: dates[0],
+            value: NaN,
+        },
+        {
+            date: dates[1],
+            value: 0,
+        },
+        {
+            date: dates[2],
+            value: -2,
+        },
+        {
+            date: dates[3],
+            value: 4,
+        },
+    ],
+    amount: 3,
+    isUsd: false,
+    buyDate: dates[0],
+});
+
+export const assets: TAssets = [
+    asset1,
+    asset2,
+]
+
 export const datasets: TDatasets = [
     {
-        ticker: 'asset1',
+        asset: asset1,
         label: 'asset1',
         borderColor: 'red',
         type: 'line',
@@ -147,11 +178,9 @@ export const datasets: TDatasets = [
         data: [0, 10, 20, 30],
         dataAbsTotal: [100, 110, 120, 130],
         dates,
-        amount: 2,
-        isUsd: false,
     },
     {
-        ticker: 'asset2',
+        asset: asset2,
         label: 'asset2',
         borderColor: 'green',
         type: 'line',
@@ -159,8 +188,6 @@ export const datasets: TDatasets = [
         data: [NaN, 0, -2, 4],
         dataAbsTotal: [NaN, 50, 48, 54],
         dates,
-        amount: 3,
-        isUsd: false,
     },
 ];
 
@@ -172,7 +199,7 @@ export const options = {
 };
 
 export const calcOptionsDefault: TCalcOptions = {
-    method: CALC_METHODS.RELATIVE,
+    method: CALC_METHODS.ABSOLUTE_TOTAL,
     currency: CALC_CURRENCIES.RUB,
     uses: {
         taxes: false,
@@ -194,6 +221,9 @@ export const moexDataRows: TFetchDataMoex = [
     ['TQTF', dates[1], '', '', 11, 21, 31, 41, 51, 61, 71, 81, 91],
     ['TQTF', dates[2], '', '', 12, 22, 32, 42, 52, 62, 72, 82, 92],
     ['TQTF', dates[3], '', '', 13, 23, 33, 43, 53, 63, 73, 83, 93],
+    ['TQTF', dates[4], '', '', 14, 24, 34, 44, 54, 64, 74, 84, 94],
+    ['TQTF', dates[5], '', '', 15, 25, 35, 45, 55, 65, 75, 85, 95],
+    ['TQTF', dates[6], '', '', 16, 26, 36, 46, 56, 66, 76, 86, 96],
 ];
 
 export const moexDataRowsUsd = moexDataRows.map(item => ['CETS', ...item.slice(1)] as TFetchDataItemMoex);
