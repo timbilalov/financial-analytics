@@ -23,9 +23,22 @@ export function errorHandler(message = 'unknown'): void {
 
 // NOTE: Сериализация и десериализация — очень простой и понятный способ глубокого клонирования.
 // У него есть свои минусы, но, пока что, в данном приложении, на них можно закрыть глаза.
+// UPD: С сериализацией есть проблемы NaN/Infinity:
+// https://stackoverflow.com/questions/21896792/force-json-stringify-to-emit-nan-infinity-or-js-json-lib-that-does-so
+// TODO: tests
 // eslint-disable-next-line @typescript-eslint/ban-types
 export function deepClone<T extends object>(obj: T): T {
-    return JSON.parse(JSON.stringify(obj));
+    return JSON.parse(JSON.stringify(obj, function (key, value) {
+        if (value !== value) {
+            return 'NaN';
+        }
+        return value;
+    }), function (key, value) {
+        if (value === 'NaN') {
+            return NaN;
+        }
+        return value;
+    });
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-types
