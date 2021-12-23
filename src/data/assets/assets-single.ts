@@ -48,4 +48,3 @@ export async function getSingleAssetData(assetRaw: TAssetRaw): Promise<TAsset | 
         sellDate,
     };
 }
-

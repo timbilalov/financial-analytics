@@ -1,9 +1,13 @@
+import moment from 'moment';
+
 import type { TAssetData, TAssetOptions, TDate, TFetchDataMoex, TObject, TStoreOptions } from '@types';
 import { assetsDataStore, indexFundDataStore, splitsStore, usdDataStore } from '@store';
 import { fetchData, fetchIndexFund, fetchUsd } from '@fetch';
 import { parseResponseData, parseResponseDataUsd } from '@parse';
 import { normalizeAssetData } from '../assets/normalize-asset-data';
 import { checkForSplits } from '../assets/check-for-splits';
+import { DATE_FORMATS } from '@constants';
+import { normalizeDatesArray } from './normalize-dates-array';
 
 const FALLBACK_RESULT = [];
 
@@ -12,8 +16,8 @@ export async function getStoredData(dates: TDate[], storeOptions: TStoreOptions,
     const { ticker, isMoex, isBond } = assetOptions || {};
 
     const storedData = store.getState();
-    const dateFrom = dates[0];
-    const dateTo = dates[dates.length - 1];
+    let dateFrom = dates[0];
+    let dateTo = dates[dates.length - 1];
 
     const splits = splitsStore.getState();
 
@@ -51,6 +55,7 @@ export async function getStoredData(dates: TDate[], storeOptions: TStoreOptions,
 
     let data: TAssetData;
     let dataToStore: TAssetData | null = null;
+    let dataToStorePart: TAssetData = [];
     let indexFrom = -1;
     let indexTo = -1;
 
@@ -65,6 +70,23 @@ export async function getStoredData(dates: TDate[], storeOptions: TStoreOptions,
         }
     });
 
+    let hasExtrapolation = false;
+
+    if (indexFrom === -1 && indexTo === -1 && storedDataArray.length > 0) {
+        hasExtrapolation = true;
+
+        const diff1 = moment(dateFrom, DATE_FORMATS.default).diff(moment(storedDataArray[storedDataArray.length - 1].date, DATE_FORMATS.default), 'days');
+        const diff2 = moment(storedDataArray[0].date, DATE_FORMATS.default).diff(moment(dateTo, DATE_FORMATS.default), 'days');
+
+        if (diff1 > 0) {
+            indexFrom = 0;
+            dateFrom = moment(storedDataArray[storedDataArray.length - 1].date, DATE_FORMATS.default).add(1, 'days').format(DATE_FORMATS.default);
+        } else if (diff2 > 0) {
+            indexTo = 0;
+            dateTo = moment(storedDataArray[0].date, DATE_FORMATS.default).add(-1, 'days').format(DATE_FORMATS.default);
+        }
+    }
+
     if (indexFrom !== -1 && indexTo !== -1) {
         data = storedDataArray.slice(indexFrom, indexTo + 1);
     } else if (indexFrom !== -1 || indexTo !== -1) {
@@ -72,7 +94,8 @@ export async function getStoredData(dates: TDate[], storeOptions: TStoreOptions,
 
         if (indexFrom !== -1) {
             const existingData = storedDataArray.slice(indexFrom);
-            const newDatesToFetch = dates.slice(dates.indexOf(existingDates[existingDates.length - 1]) + 1);
+            dataToStorePart = hasExtrapolation ? existingData.slice() : storedDataArray.slice(0, indexFrom);
+            const newDatesToFetch = hasExtrapolation ? normalizeDatesArray([dateFrom, dateTo]) : dates.slice(dates.indexOf(existingDates[existingDates.length - 1]) + 1);
             const newDataFetched = await fetchFunction(newDatesToFetch) as TFetchDataMoex;
             const newData = parseFunction(newDataFetched, newDatesToFetch);
             if (!newDataFetched || !newData) {
@@ -87,7 +110,8 @@ export async function getStoredData(dates: TDate[], storeOptions: TStoreOptions,
             }
         } else {
             const existingData = storedDataArray.slice(0, indexTo + 1);
-            const newDatesToFetch = dates.slice(0, dates.indexOf(existingDates[0]));
+            dataToStorePart = hasExtrapolation ? storedDataArray.slice() : storedDataArray.slice(indexTo + 1);
+            const newDatesToFetch = hasExtrapolation ? normalizeDatesArray([dateFrom, dateTo]) : dates.slice(0, dates.indexOf(existingDates[0]));
             const newDataFetched = await fetchFunction(newDatesToFetch) as TFetchDataMoex;
             const newData = parseFunction(newDataFetched, newDatesToFetch);
             if (!newDataFetched || !newData) {
@@ -102,7 +126,7 @@ export async function getStoredData(dates: TDate[], storeOptions: TStoreOptions,
             }
         }
 
-        const dataNormalized = normalizeAssetData(data, dates[dates.length - 1]);
+        const dataNormalized = normalizeAssetData(data, dateTo, dateFrom);
         let normalizedDataIndexFrom = 0;
         let normalizedDataIndexTo = dataNormalized.length - 1;
         dataNormalized.forEach((item, index) => {
@@ -113,7 +137,12 @@ export async function getStoredData(dates: TDate[], storeOptions: TStoreOptions,
             }
         });
         data = dataNormalized.slice(normalizedDataIndexFrom, normalizedDataIndexTo + 1);
-        dataToStore = dataNormalized;
+
+        if (indexFrom !== -1) {
+            dataToStore = dataToStorePart.concat(dataNormalized);
+        } else {
+            dataToStore = dataNormalized.concat(dataToStorePart);
+        }
     } else {
         const dataRaw = await fetchFunction(dates) as TFetchDataMoex;
         data = parseFunction(dataRaw, dates);

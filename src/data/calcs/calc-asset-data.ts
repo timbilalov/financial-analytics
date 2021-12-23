@@ -8,28 +8,20 @@ export async function calcAssetData(asset: TAsset, calcOptions: TCalcOptions): P
     const { method, currency, uses } = calcOptions;
     const usdData = await getUsdData(asset);
 
-    const calculated: TAssetData = data.slice(0).map(item => deepClone(item));
+    const calculated: TAssetData = deepClone(data);
 
     // TODO: Прикрутить привязку к дате покупке, так как есть правило отмены налогов, если владеешь бумагой более 3 лет.
     const taxesKoef: number = uses.taxes ? (1 - DEFAULT_TAX) : 1;
 
     if (calculated.length !== 0) {
-        let k = 0;
-        let m = 10000;
-        let usdDataValue: TAssetData = [];
-
-        // TODO: Здесь какая-то хрень творится... ))
-        while (usdDataValue.length === 0 && m-- > 0) {
-            usdDataValue = usdData.filter(item => item.date === calculated[k].date);
-            k++;
-        }
+        const initialUsdValue = usdData[0].value;
 
         let initialValue = calculated[0].value;
 
         if (!isUsd && currency === CALC_CURRENCIES.USD) {
-            initialValue /= usdDataValue[0].value;
+            initialValue /= initialUsdValue;
         } else if (isUsd && currency === CALC_CURRENCIES.RUB) {
-            initialValue *= usdDataValue[0].value;
+            initialValue *= initialUsdValue;
         }
 
         if (method === CALC_METHODS.ABSOLUTE || method === CALC_METHODS.ABSOLUTE_TOTAL) {
@@ -38,7 +30,8 @@ export async function calcAssetData(asset: TAsset, calcOptions: TCalcOptions): P
 
         for (let i = 0; i < calculated.length; i++) {
             let value = calculated[i].value;
-            const usdValue = usdData.filter(item => item.date === calculated[i].date)[0].value;
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const usdValue = usdData.find(item => item.date === calculated[i].date)!.value;
 
             if (i === 0) {
                 value = 0;

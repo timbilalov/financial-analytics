@@ -37,7 +37,10 @@
         const portfolios = portfoliosStore.getState();
         const currentPortfolio = portfolios.list.filter(item => item.name === portfolios.current)[0];
         const assetsRaw = deepClone(currentPortfolio.assets);
+
+        console.time('Time to execute: assets-all');
         const assets = await getAssetsData(assetsRaw);
+        console.timeEnd('Time to execute: assets-all');
 
         if (assets === undefined || assets.length === 0) {
             unsetLoadingState();
@@ -45,7 +48,9 @@
         }
 
         const calcOptions = calcOptionsStore.getState();
+        console.time('Time to execute: prepareDatasets');
         const datasets = await prepareDatasets(assets, calcOptions);
+        console.timeEnd('Time to execute: prepareDatasets');
 
         setTimeout(() => {
             buildChart(datasets, calcOptions);

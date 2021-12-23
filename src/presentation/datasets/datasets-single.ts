@@ -1,20 +1,19 @@
-import { calcAssetData } from '@data';
+import { calcAssetData, normalizeAssetData } from '@data';
 import {
     BANK_DEPOSIT_LABEL,
     CALC_METHODS,
-    DATE_FORMATS,
     EARNED_MONEY_LABEL,
     INDEX_FUND_LABEL,
     OWN_MONEY_LABEL,
     TOTAL_LABEL,
 } from '@constants';
-import moment from 'moment';
 import { addDatasetColor, datasetsColorsStore } from '@store';
 import { extendObject, isLabelCommon } from '@helpers';
 import type { TAsset, TAssetCommon, TCalcOptions, TDataset, TDate } from '@types';
 
 export async function prepareSingleDataset(asset: TAsset | TAssetCommon, calcOptions: TCalcOptions, datesFullArray: TDate[]): Promise<TDataset> {
-    const { data } = asset;
+    const dataNormalized = normalizeAssetData(asset.data, asset.data[asset.data.length - 1].date);
+    asset.data = dataNormalized;
     const ticker = (asset as TAsset).ticker;
     const title = (asset as TAssetCommon).title || ticker.toUpperCase();
 
@@ -72,16 +71,13 @@ export async function prepareSingleDataset(asset: TAsset | TAssetCommon, calcOpt
         color: colorRGB,
     });
 
-    let hasBegun = false;
-    let prevValue;
-    let prevValueAbsTotal;
     let calculatedData;
     let calculatedDataAbsTotal;
     let shouldStoreAbsTotal = false;
     let showLine = true;
 
     if (isLabelCommon(title)) {
-        calculatedData = data;
+        calculatedData = dataNormalized;
     } else {
         calculatedData = await calcAssetData(asset as TAsset, calcOptions);
         shouldStoreAbsTotal = true;
@@ -92,38 +88,38 @@ export async function prepareSingleDataset(asset: TAsset | TAssetCommon, calcOpt
     }
 
     const dates: TDate[] = datesFullArray.slice(0);
-    const values: number[] = [];
-    const valuesAbsTotal: number[] = [];
+    let values: number[] = [];
+    let valuesAbsTotal: number[] = [];
 
-    for (const date of dates.values()) {
-        let valueByDate: number;
-        let valueByDateAbsTotal: number;
-        const itemFilteredByDate = calculatedData.filter(item => item.date === date)[0];
-        const itemFilteredByDateAbsTotal = shouldStoreAbsTotal && calculatedDataAbsTotal.filter(item => item.date === date)[0];
-        if (itemFilteredByDate !== undefined) {
-            valueByDate = itemFilteredByDate.value;
-            valueByDateAbsTotal = shouldStoreAbsTotal && itemFilteredByDateAbsTotal.value;
-            hasBegun = true;
-            prevValue = valueByDate;
-            prevValueAbsTotal = shouldStoreAbsTotal && valueByDateAbsTotal;
-        } else {
-            const date1 = moment(calculatedData[calculatedData.length - 1].date, DATE_FORMATS.default);
-            const date2 = moment(date, DATE_FORMATS.default);
-            const diff = date2.diff(date1, 'days');
-
-            // TODO: С этим бывают косяки. Поправить.
-            const hasFinished = diff > 0;
-
-            if (!hasBegun || hasFinished) {
-                valueByDate = NaN;
-                valueByDateAbsTotal = NaN;
-            } else {
-                valueByDate = prevValue;
-                valueByDateAbsTotal = prevValueAbsTotal;
-            }
+    // TODO: В массиве dates могут быть сотни элементов. Вроде каждый тик выполняется быстро, но в сумме цикл выполняется около 15 ms.
+    // Можно попытаться оптимизировать, хотя сходу идей мало.
+    if (dates.length === calculatedData.length) {
+        values = calculatedData.map(item => item.value);
+        if (shouldStoreAbsTotal) {
+            valuesAbsTotal = calculatedDataAbsTotal.map(item => item.value);
         }
-        values.push(valueByDate);
-        shouldStoreAbsTotal && valuesAbsTotal.push(valueByDateAbsTotal);
+    } else {
+        dates.forEach(date => {
+            const calculatedDataByDate = calculatedData.find(item => item.date === date);
+            const index = calculatedData.indexOf(calculatedDataByDate);
+            let value: number;
+            if (index !== -1) {
+                value = calculatedDataByDate.value;
+            } else {
+                value = NaN;
+            }
+            values.push(value);
+
+            if (shouldStoreAbsTotal) {
+                let valueAbsTotal: number;
+                if (index !== -1) {
+                    valueAbsTotal = calculatedDataAbsTotal[index].value;
+                } else {
+                    valueAbsTotal = NaN;
+                }
+                valuesAbsTotal.push(valueAbsTotal);
+            }
+        });
     }
 
     if (calcOptions.method === CALC_METHODS.ABSOLUTE_TOTAL && !isLabelCommon(title)) {
