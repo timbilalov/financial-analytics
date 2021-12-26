@@ -3,29 +3,39 @@ import { DATE_FORMATS } from '@constants';
 import { deepClone } from '@helpers';
 import type { TAssetData, TDate } from '@types';
 
-export function normalizeAssetData(data: TAssetData, sellDate?: TDate): TAssetData {
+export function normalizeAssetData(data: TAssetData, dateTo?: TDate, dateFrom?: TDate): TAssetData {
     if (data.length === 0) {
         return [];
     }
 
-    const yesterday = moment().add(-1, 'days').format(DATE_FORMATS.default);
+    const format = DATE_FORMATS.default;
+    const unitOfTime = 'days';
+    const yesterday = moment().add(-1, unitOfTime).format(format);
 
     // NOTE: Пока что считаем, что отсчёт всегда с даты, которая пришла с парсинга.
     // Иначе бы пришлось экстраполировать в прошлое, что не очень-то корректно.
-    const buyDate = data[0].date;
-
-    // NOTE: Если не указано, берём вчерашний день (потому что продажа ещё не совершена)
-    // if (typeof sellDate !== 'string' || sellDate === '') {
-    if (!sellDate) {
-        sellDate = yesterday;
+    if (!dateFrom) {
+        dateFrom = data[0].date;
     }
 
-    const daysDiff = moment(sellDate, DATE_FORMATS.default).diff(moment(buyDate, DATE_FORMATS.default), 'days') + 1;
+    // NOTE: Если не указано, берём вчерашний день (потому что продажа ещё не совершена)
+    if (!dateTo) {
+        dateTo = yesterday;
+    }
+
+    const firstDate = moment(dateFrom, format);
+    const daysDiff = moment(dateTo, format).diff(firstDate, unitOfTime) + 1;
     const dataNormalized: TAssetData = [];
 
+    // TODO: tests
     for (let i = 0; i < daysDiff; i++) {
-        const date = moment(buyDate, DATE_FORMATS.default).add(i, 'days').format(DATE_FORMATS.default);
+        const date = moment(firstDate).add(i, unitOfTime).format(format);
         const dataItem = data.filter(item => item.date === date)[0];
+
+        // Weekend, days without any data.
+        if (dataItem === undefined && i === 0) {
+            continue;
+        }
 
         let dataItemNormalizedByDate;
 
