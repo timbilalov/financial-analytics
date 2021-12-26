@@ -1,5 +1,19 @@
 # Changelog
 
+## [v0.3.3](https://github.com/timbilalov/financial-analytics/tree/v0.3.3) (2021-12-26)
+
+[Full Changelog](https://github.com/timbilalov/financial-analytics/compare/v0.3.2...v0.3.3)
+
+**Implemented enhancements:**
+
+- Normalisation for relative-annual method [\#27](https://github.com/timbilalov/financial-analytics/issues/27)
+
+**Fixed bugs:**
+
+- Wrong calcs for relative-annual method [\#26](https://github.com/timbilalov/financial-analytics/issues/26)
+- Wrong stored data intersection of ranges [\#39](https://github.com/timbilalov/financial-analytics/issues/39)
+- Async data fetching [\#22](https://github.com/timbilalov/financial-analytics/issues/22)
+
 ## [v0.3.2](https://github.com/timbilalov/financial-analytics/tree/v0.3.2) (2021-11-27)
 
 [Full Changelog](https://github.com/timbilalov/financial-analytics/compare/v0.3.1...v0.3.2)
