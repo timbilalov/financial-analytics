@@ -1,7 +1,9 @@
 <script>
+    console.log('here')
     import Chart from '@containers/chart/Chart.svelte';
     import Controls from '@containers/controls/Controls.svelte';
     import Overlay from '@containers/overlay/Overlay.svelte';
+    import User from '@containers/user/User.svelte';
 
     import {
         portfoliosStore,
@@ -64,4 +66,5 @@
 
 <Controls />
 <Chart />
+<!-- <User /> -->
 <Overlay loading="{isLoading}" />

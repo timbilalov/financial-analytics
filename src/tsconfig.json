@@ -1,8 +1,8 @@
 {
   "extends": "@tsconfig/svelte/tsconfig.json",
   "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx"
+    "./**/*.ts",
+    "./**/*.tsx"
   ],
   "exclude": [
     "node_modules/*",
@@ -10,11 +10,13 @@
     "public/*"
   ],
   "compilerOptions": {
-    "lib": ["dom", "es2020"],
+    "lib": ["es2020"],
     "types": ["jest"],
-    "rootDir": "./src",
-    "outDir": "./public/dist",
+    "rootDir": "./",
     "baseUrl": ".",
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "paths": {
+      "@common": ["./"]
+    }
   }
 }

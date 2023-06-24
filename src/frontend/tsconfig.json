@@ -1,0 +1,22 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "lib": ["dom", "es2020"],
+    "baseUrl": ".",
+    "paths": {
+      "@types": ["./types"],
+      "@constants": ["./constants.ts"],
+      "@test-constants": ["./tests/test-constants.ts"],
+      "@utils": ["./utils"],
+      "@helpers": ["./helpers.ts"],
+      "@presentation": ["./presentation"],
+      "@data": ["./data"],
+      "@fetch": ["./data/fetch"],
+      "@parse": ["./data/parse"],
+      "@app": ["./app"],
+      "@components": ["./app/components"],
+      "@containers": ["./app/containers"],
+      "@store": ["./store"]
+    }
+  }
+}
