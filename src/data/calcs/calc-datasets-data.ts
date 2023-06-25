@@ -221,9 +221,16 @@ export async function calcDatasetsData(datasets: TDatasets, calcOptions: TCalcOp
         }
 
         const iterationIndexFund = ownMoneySteps.reduce((prev, step) => {
-            const coef = iterationIndexFundValue / step.indexFund;
+            let coef = iterationIndexFundValue / step.indexFund;
 
             let current: number;
+
+            switch (currency) {
+                case CALC_CURRENCIES.RUB:
+                    coef *= iterationUsdValue / step.usdValue;
+                    break;
+            }
+
             switch (method) {
                 case CALC_METHODS.ABSOLUTE:
                     current = step.own * (coef - 1);
@@ -232,12 +239,6 @@ export async function calcDatasetsData(datasets: TDatasets, calcOptions: TCalcOp
                 case CALC_METHODS.ABSOLUTE_TOTAL:
                 default:
                     current = step.own * coef;
-                    break;
-            }
-
-            switch (currency) {
-                case CALC_CURRENCIES.USD:
-                    current *= step.usdValue / iterationUsdValue;
                     break;
             }
 

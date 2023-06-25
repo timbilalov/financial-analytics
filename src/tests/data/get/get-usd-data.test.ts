@@ -1,36 +1,11 @@
 import { getUsdData } from '@data';
-import { assets, moexDataRows } from '@test-constants';
-import type { TFetchDataItemMoex } from '@types';
-
-declare const global: {
-    fetch: unknown,
-};
+import { assets } from '@test-constants';
+import { resetUsdData } from '@store';
 
 describe('get-usd-data', function () {
-    const responseDataRows = moexDataRows.map(item => ['CETS', ...item.slice(1)] as TFetchDataItemMoex);
-
-    global.fetch = jest.fn(() =>
-        Promise.resolve({
-            ok: 1,
-            json: () => Promise.resolve({
-                'history': {
-                    columns: ['BOARDID', 'TRADEDATE', 'SHORTNAME', 'SECID', 'OPEN', 'LOW', 'HIGH', 'CLOSE', 'NUMTRADES', 'VOLRUR', 'WAPRICE'],
-                    data: [
-                        responseDataRows[0],
-                        responseDataRows[1],
-                        responseDataRows[2],
-                        responseDataRows[3],
-                    ],
-                },
-                'history.cursor': {
-                    columns: ['INDEX', 'TOTAL', 'PAGESIZE'],
-                    data: [
-                        [1, 2, 3],
-                    ],
-                },
-            }),
-        }),
-    );
+    afterEach(() => {
+        resetUsdData();
+    });
 
     it('should return an array of values', async function () {
         const result = await getUsdData(assets);

@@ -216,6 +216,12 @@ export const investcabResponseObject = {
     v: [15, 25, 35],
 };
 
+export const bcsResponseObject = {
+    o: [50, 51, 52, 53, 54, 55, 56],
+    c: [60, 61, 62, 63, 64, 65, 66],
+    t: [1577894400000, 1577980800000, 1578067200000, 1578153600000, 1578240000000, 1578326400000, 1578412800000],
+};
+
 export const moexDataRows: TFetchDataMoex = [
     ['TQTF', dates[0], '', '', 10, 20, 30, 40, 50, 60, 70, 80, 90],
     ['TQTF', dates[1], '', '', 11, 21, 31, 41, 51, 61, 71, 81, 91],

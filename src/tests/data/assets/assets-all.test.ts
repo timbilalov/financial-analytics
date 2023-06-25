@@ -1,23 +1,8 @@
 import { getAssetsData } from '@data';
-import { investcabResponseObject } from '@test-constants';
 import type { TAssetRaw } from '@types';
-
-declare const global: {
-    fetch: unknown,
-};
 
 describe('assets-all', function () {
     test('should return an array of single data items', async function () {
-        // TODO: Вынести куда-то этот глобальный fetch — он везде одинаковый.
-        global.fetch = jest.fn(() => {
-            return Promise.resolve({
-                ok: 1,
-                json: () => {
-                    return Promise.resolve(investcabResponseObject);
-                },
-            });
-        });
-
         const assetsRaw: TAssetRaw[] = [
             {
                 ticker: 'f1',

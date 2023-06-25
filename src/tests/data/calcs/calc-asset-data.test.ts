@@ -3,39 +3,11 @@ import {
     assetBase,
     calcOptionsDefault,
     dates,
-    moexDataRowsUsd,
 } from '@test-constants';
 import { CALC_CURRENCIES, CALC_METHODS } from '@constants';
 import { extendObject } from '@helpers';
 
-declare const global: {
-    fetch: unknown,
-};
-
 describe('calc-asset-data', function () {
-    global.fetch = jest.fn(() =>
-        Promise.resolve({
-            ok: 1,
-            json: () => Promise.resolve({
-                'history': {
-                    columns: ['BOARDID', 'TRADEDATE', 'SHORTNAME', 'SECID', 'OPEN', 'LOW', 'HIGH', 'CLOSE', 'NUMTRADES', 'VOLRUR', 'WAPRICE'],
-                    data: [
-                        moexDataRowsUsd[0],
-                        moexDataRowsUsd[1],
-                        moexDataRowsUsd[2],
-                        moexDataRowsUsd[3],
-                    ],
-                },
-                'history.cursor': {
-                    columns: ['INDEX', 'TOTAL', 'PAGESIZE'],
-                    data: [
-                        [1, 2, 3],
-                    ],
-                },
-            }),
-        }),
-    );
-
     describe('should return a flat array of values', function () {
         describe('absolute method', function () {
             const calcOptionsAbsolute = extendObject(calcOptionsDefault, {

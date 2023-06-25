@@ -1,11 +1,8 @@
 import { prepareSingleDataset } from '@presentation';
-import { assetBase, calcOptionsDefault, dates, moexDataRowsUsd } from '@test-constants';
+import { assetBase, calcOptionsDefault, dates } from '@test-constants';
 import { BANK_DEPOSIT_LABEL, OWN_MONEY_LABEL, TOTAL_LABEL } from '@constants';
 import { extendObject } from '@helpers';
-
-declare const global: {
-    fetch: unknown,
-};
+import type { TDataset } from '@types';
 
 describe('datasets-single', function () {
     const baseData = [
@@ -18,29 +15,6 @@ describe('datasets-single', function () {
             value: 20,
         },
     ];
-
-    global.fetch = jest.fn(() =>
-        Promise.resolve({
-            ok: 1,
-            json: () => Promise.resolve({
-                'history': {
-                    columns: ['BOARDID', 'TRADEDATE', 'SHORTNAME', 'SECID', 'OPEN', 'LOW', 'HIGH', 'CLOSE', 'NUMTRADES', 'VOLRUR', 'WAPRICE'],
-                    data: [
-                        moexDataRowsUsd[0],
-                        moexDataRowsUsd[1],
-                        moexDataRowsUsd[2],
-                        moexDataRowsUsd[3],
-                    ],
-                },
-                'history.cursor': {
-                    columns: ['INDEX', 'TOTAL', 'PAGESIZE'],
-                    data: [
-                        [1, 2, 3],
-                    ],
-                },
-            }),
-        }),
-    );
 
     test('should return an object with data', async function () {
         const result = await prepareSingleDataset(assetBase, calcOptionsDefault, dates);
@@ -110,9 +84,9 @@ describe('datasets-single', function () {
             data,
         });
 
-        const result1 = await prepareSingleDataset(assetTotal, calcOptionsDefault, dates);
-        const result2 = await prepareSingleDataset(assetOwnMoney, calcOptionsDefault, dates);
-        const result3 = await prepareSingleDataset(assetBankDepo, calcOptionsDefault, dates);
+        const result1 = await prepareSingleDataset(assetTotal, calcOptionsDefault, dates) as TDataset;
+        const result2 = await prepareSingleDataset(assetOwnMoney, calcOptionsDefault, dates) as TDataset;
+        const result3 = await prepareSingleDataset(assetBankDepo, calcOptionsDefault, dates) as TDataset;
 
         expect(result1.data).toEqual(values);
         expect(result2.data).toEqual(values);
@@ -133,7 +107,7 @@ describe('datasets-single', function () {
             ],
         });
 
-        const result = await prepareSingleDataset(asset, calcOptionsDefault, dates);
+        const result = await prepareSingleDataset(asset, calcOptionsDefault, dates) as TDataset;
 
         expect(result.data.length).toBe(dates.length);
         expect(result.data[0]).toBe(NaN);
@@ -163,7 +137,7 @@ describe('datasets-single', function () {
             ],
         });
 
-        const result = await prepareSingleDataset(asset, calcOptionsDefault, dates);
+        const result = await prepareSingleDataset(asset, calcOptionsDefault, dates) as TDataset;
 
         expect(result.data.length).toBe(dates.length);
         expect(result.data[0]).not.toBe(NaN);

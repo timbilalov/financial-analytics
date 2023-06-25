@@ -121,7 +121,7 @@ export function debounce(func: Function, wait = 200): () => void {
         };
 
         clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
+        timeout = window.setTimeout(later, wait);
     };
 }
 

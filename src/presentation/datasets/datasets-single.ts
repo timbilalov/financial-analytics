@@ -11,7 +11,11 @@ import { addDatasetColor, datasetsColorsStore } from '@store';
 import { extendObject, isLabelCommon } from '@helpers';
 import type { TAsset, TAssetCommon, TCalcOptions, TDataset, TDate } from '@types';
 
-export async function prepareSingleDataset(asset: TAsset | TAssetCommon, calcOptions: TCalcOptions, datesFullArray: TDate[]): Promise<TDataset> {
+export async function prepareSingleDataset(asset: TAsset | TAssetCommon, calcOptions: TCalcOptions, datesFullArray: TDate[]): Promise<TDataset | null> {
+    if (asset.data.length === 0) {
+        return null;
+    }
+
     const dataNormalized = normalizeAssetData(asset.data, asset.data[asset.data.length - 1].date);
     asset.data = dataNormalized;
     const ticker = (asset as TAsset).ticker;

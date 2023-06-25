@@ -20,7 +20,9 @@ export async function prepareDatasets(assets: TAssets, calcOptions: TCalcOptions
 
     for (const asset of assets) {
         const singleDataset = await prepareSingleDataset(asset, calcOptions, datesFullArray);
-        datasets.push(singleDataset);
+        if (singleDataset) {
+            datasets.push(singleDataset);
+        }
     }
 
     const innerDatasets = datasets.slice(0);
@@ -37,7 +39,9 @@ export async function prepareDatasets(assets: TAssets, calcOptions: TCalcOptions
             buyDate: datasetsData[0].date,
         };
         const datasetTotal = await prepareSingleDataset(assetTotal, calcOptions, datesFullArray);
-        datasets.push(datasetTotal)
+        if (datasetTotal) {
+            datasets.push(datasetTotal)
+        }
     }
 
     // Bank depo
@@ -50,7 +54,9 @@ export async function prepareDatasets(assets: TAssets, calcOptions: TCalcOptions
         buyDate: datasetsData[0].date,
     };
     const datasetBankDeposit = await prepareSingleDataset(assetBankDepo, calcOptions, datesFullArray);
-    datasets.push(datasetBankDeposit);
+    if (datasetBankDeposit) {
+        datasets.push(datasetBankDeposit);
+    }
 
     // Index fund
     const assetIndexFund: TAssetCommon = {
@@ -62,7 +68,9 @@ export async function prepareDatasets(assets: TAssets, calcOptions: TCalcOptions
         buyDate: datasetsData[0].date,
     };
     const datasetIndexFund = await prepareSingleDataset(assetIndexFund, calcOptions, datesFullArray);
-    datasets.push(datasetIndexFund);
+    if (datasetIndexFund) {
+        datasets.push(datasetIndexFund);
+    }
 
     if (method === CALC_METHODS.ABSOLUTE_TOTAL) {
         // Own money
@@ -75,7 +83,9 @@ export async function prepareDatasets(assets: TAssets, calcOptions: TCalcOptions
             buyDate: datasetsData[0].date,
         };
         const datasetOwnMoney = await prepareSingleDataset(assetOwnMoney, calcOptions, datesFullArray);
-        datasets.push(datasetOwnMoney);
+        if (datasetOwnMoney) {
+            datasets.push(datasetOwnMoney);
+        }
 
         // Earned
         const assetEarnedMoney: TAssetCommon = {
@@ -87,7 +97,9 @@ export async function prepareDatasets(assets: TAssets, calcOptions: TCalcOptions
             buyDate: datasetsData[0].date,
         };
         const datasetEarnedMoney = await prepareSingleDataset(assetEarnedMoney, calcOptions, datesFullArray);
-        datasets.push(datasetEarnedMoney);
+        if (datasetEarnedMoney) {
+            datasets.push(datasetEarnedMoney);
+        }
     }
 
     return datasets;
