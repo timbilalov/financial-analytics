@@ -1,37 +1,10 @@
 import { prepareDatasets } from '@presentation';
-import { calcOptionsDefault, dates, moexDataRowsUsd } from '@test-constants';
+import { calcOptionsDefault, dates } from '@test-constants';
 import { BANK_DEPOSIT_LABEL, CALC_METHODS, OWN_MONEY_LABEL, TOTAL_LABEL } from '@constants';
 import type { TAsset } from '@types';
 import { extendObject } from '@helpers';
 
-declare const global: {
-    fetch: unknown,
-};
-
 describe('datasets-all', function () {
-    global.fetch = jest.fn(() =>
-        Promise.resolve({
-            ok: 1,
-            json: () => Promise.resolve({
-                'history': {
-                    columns: ['BOARDID', 'TRADEDATE', 'SHORTNAME', 'SECID', 'OPEN', 'LOW', 'HIGH', 'CLOSE', 'NUMTRADES', 'VOLRUR', 'WAPRICE'],
-                    data: [
-                        moexDataRowsUsd[0],
-                        moexDataRowsUsd[1],
-                        moexDataRowsUsd[2],
-                        moexDataRowsUsd[3],
-                    ],
-                },
-                'history.cursor': {
-                    columns: ['INDEX', 'TOTAL', 'PAGESIZE'],
-                    data: [
-                        [1, 2, 3],
-                    ],
-                },
-            }),
-        }),
-    );
-
     const baseData: TAsset[] = [
         {
             ticker: 'tst1',

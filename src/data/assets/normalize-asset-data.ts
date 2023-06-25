@@ -42,10 +42,16 @@ export function normalizeAssetData(data: TAssetData, dateTo?: TDate, dateFrom?: 
         if (dataItem !== undefined) {
             dataItemNormalizedByDate = deepClone(dataItem);
         } else {
-            dataItemNormalizedByDate = {
-                date,
-                value: dataNormalized[i - 1].value,
-            };
+            const prev = dataNormalized[dataNormalized.length - 1];
+
+            if (prev === undefined) {
+                continue;
+            } else {
+                dataItemNormalizedByDate = {
+                    date,
+                    value: prev.value,
+                };
+            }
         }
 
         dataNormalized.push(dataItemNormalizedByDate);

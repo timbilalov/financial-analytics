@@ -1,42 +1,9 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { getStoredData } from '@data';
 import { resetUsdData, setUsdData, usdDataStore } from '@store';
 import type { TAssetData, TAssetOptions, TStoreOptions } from '@types';
 import { USD_TICKER } from '@constants';
-import { moexDataRows } from '@test-constants';
-
-declare const global: {
-    fetch: unknown,
-};
 
 describe('get-stored-data', function () {
-    const fetch = jest.fn(() =>
-        Promise.resolve({
-            ok: 1,
-            json: () => Promise.resolve({
-                'history': {
-                    columns: ['BOARDID', 'TRADEDATE', 'SHORTNAME', 'SECID', 'OPEN', 'LOW', 'HIGH', 'CLOSE', 'NUMTRADES', 'VOLRUR', 'WAPRICE'],
-                    data: [
-                        moexDataRows[0],
-                        moexDataRows[1],
-                        moexDataRows[2],
-                        moexDataRows[3],
-                        moexDataRows[4],
-                        moexDataRows[5],
-                    ],
-                },
-                'history.cursor': {
-                    columns: ['INDEX', 'TOTAL', 'PAGESIZE'],
-                    data: [
-                        [1, 2, 3],
-                    ],
-                },
-            }),
-        }),
-    );
-
-    global.fetch = fetch;
-
     const store = usdDataStore;
     const resetStore = resetUsdData;
     const setState = setUsdData;
@@ -81,9 +48,8 @@ describe('get-stored-data', function () {
         },
     ];
 
-    afterEach(function () {
+    afterEach(() => {
         resetStore();
-        fetch.mockClear();
     });
 
     it('should fetch new data, if store is empty', async function () {
