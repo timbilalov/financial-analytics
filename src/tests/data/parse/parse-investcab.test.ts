@@ -13,7 +13,9 @@ describe('parse-investcab', function () {
 
         expect(result1).toContainEqual({
             date: expect.any(String),
-            value: expect.any(Number),
+            values: {
+                current: expect.any(Number),
+            },
         });
         expect(result1.length).toBe(3);
         expect(result2).toEqual(result1);
@@ -32,7 +34,9 @@ describe('parse-investcab', function () {
 
         expect(result).toContainEqual({
             date: expect.any(String),
-            value: expect.any(Number),
+            values: {
+                current: expect.any(Number),
+            },
         });
         expect(result.length).toBe(2);
     });

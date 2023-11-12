@@ -13,19 +13,27 @@ describe('get-index-fund-data', function () {
         expect(result).toEqual([
             {
                 date: '2020.01.01',
-                value: 55, // (30 + 80) / 2
+                values: {
+                    current: 55,
+                },
             },
             {
                 date: '2020.01.02',
-                value: 56, // (31 + 81) / 2
+                values: {
+                    current: 56,
+                },
             },
             {
                 date: '2020.01.03',
-                value: 57, // (32 + 82) / 2
+                values: {
+                    current: 57,
+                },
             },
             {
                 date: '2020.01.04',
-                value: 58, // (33 + 83) / 2
+                values: {
+                    current: 58,
+                },
             },
         ]);
     });

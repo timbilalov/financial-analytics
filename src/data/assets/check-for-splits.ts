@@ -38,11 +38,11 @@ export function checkForSplits(ticker: TAsset['ticker'], assetData: TAssetData, 
             }
 
             const multiplier = shouldUseSplitMultiplier ? splitMultiplier : 1;
-            item.value *= multiplier;
+            item.values.current *= multiplier;
         });
     });
 
-    assetDataUpdated.map(item => item.value = toFractionDigits(item.value));
+    assetDataUpdated.map(item => item.values.current = toFractionDigits(item.values.current));
 
     return assetDataUpdated;
 }

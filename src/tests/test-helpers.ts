@@ -5,19 +5,18 @@ import { DATE_FORMATS } from '@constants';
 
 type TTestAssetAbsData = number[];
 
-export function prepareTestDataset(testAssetAbsData: TTestAssetAbsData, isUsd = false): TDataset {
+export function prepareTestDataset(absTotalValues: TTestAssetAbsData, isUsd = false, amount = 1): TDataset {
     const firstDate = dates[0];
-    const initialAbsValue = testAssetAbsData.find(item => !isNaN(item)) as number;
     const testValues: number[] = [];
     const testDates: TDate[] = [];
 
-    let buyDate: TDate | undefined = undefined;
+    let buyDate!: TDate;
     let sellDate: TDate | undefined = undefined;
 
-    testAssetAbsData.forEach((item, index) => {
+    absTotalValues.forEach((item, index) => {
         const date = moment(firstDate, DATE_FORMATS.default).add(index, 'days').format(DATE_FORMATS.default);
-        const value = isNaN(item) ? NaN : item - initialAbsValue;
-        const nextValueAbs = testAssetAbsData[index + 1];
+        const value = item;
+        const nextValue = absTotalValues[index + 1];
 
         testDates.push(date);
         testValues.push(value);
@@ -26,7 +25,7 @@ export function prepareTestDataset(testAssetAbsData: TTestAssetAbsData, isUsd = 
             buyDate = date;
         }
 
-        if (buyDate !== undefined && sellDate === undefined && nextValueAbs !== undefined && isNaN(nextValueAbs)) {
+        if (buyDate !== undefined && sellDate === undefined && isNaN(nextValue)) {
             sellDate = date;
         }
     });
@@ -35,11 +34,13 @@ export function prepareTestDataset(testAssetAbsData: TTestAssetAbsData, isUsd = 
         ticker: 'ticker',
         data: testDates.map((date, index) => ({
             date,
-            value: testValues[index],
-        })),
+            values: {
+                current: testValues[index],
+            },
+        })).filter(item => !isNaN(item.values.current)),
         buyDate: buyDate as unknown as TDate,
         sellDate,
-        amount: 1,
+        amount,
         isUsd,
     };
 
@@ -49,7 +50,6 @@ export function prepareTestDataset(testAssetAbsData: TTestAssetAbsData, isUsd = 
         backgroundColor: 'red',
         borderColor: 'green',
         data: testValues,
-        dataAbsTotal: testAssetAbsData,
         dates: testDates,
         type: 'line',
         pointRadius: 0,

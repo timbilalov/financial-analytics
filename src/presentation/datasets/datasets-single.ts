@@ -1,25 +1,20 @@
-import { calcAssetData, normalizeAssetData } from '@data';
 import {
     BANK_DEPOSIT_LABEL,
     CALC_METHODS,
     EARNED_MONEY_LABEL,
+    FREE_MONEY_LABEL,
     INDEX_FUND_LABEL,
     OWN_MONEY_LABEL,
     TOTAL_LABEL,
 } from '@constants';
-import { addDatasetColor, datasetsColorsStore } from '@store';
+import { addDatasetColor, datasetsColorsStore, calcOptionsStore } from '@store';
 import { extendObject, isLabelCommon } from '@helpers';
-import type { TAsset, TAssetCommon, TCalcOptions, TDataset, TDate } from '@types';
+import type { TAsset, TAssetCommon, TAssetData, TCalcOptions, TDataset, TDate } from '@types';
 
-export async function prepareSingleDataset(asset: TAsset | TAssetCommon, calcOptions: TCalcOptions, datesFullArray: TDate[]): Promise<TDataset | null> {
-    if (asset.data.length === 0) {
+export async function prepareSingleDataset(title: string, values: number[], datesFullArray: TDate[], asset?: TAsset): Promise<TDataset | null> {
+    if (values.length === 0) {
         return null;
     }
-
-    const dataNormalized = normalizeAssetData(asset.data, asset.data[asset.data.length - 1].date);
-    asset.data = dataNormalized;
-    const ticker = (asset as TAsset).ticker;
-    const title = (asset as TAssetCommon).title || ticker.toUpperCase();
 
     const datasetsColors = datasetsColorsStore.getState();
     const getRandomNumber = () => Math.round(Math.random() * 255);
@@ -70,68 +65,30 @@ export async function prepareSingleDataset(asset: TAsset | TAssetCommon, calcOpt
         type = 'bar';
     }
 
+    if (title === FREE_MONEY_LABEL) {
+        colorRGB = [100, 120, 100];
+        opacityBackground = 0.4;
+        borderWidth = 0;
+        type = 'bar';
+    }
+
     addDatasetColor({
         title,
         color: colorRGB,
     });
 
-    let calculatedData;
+    let calculatedData: TAssetData;
     let calculatedDataAbsTotal;
-    let shouldStoreAbsTotal = false;
     let showLine = true;
 
-    if (isLabelCommon(title)) {
-        calculatedData = dataNormalized;
-    } else {
-        calculatedData = await calcAssetData(asset as TAsset, calcOptions);
-        shouldStoreAbsTotal = true;
-        const calcOptionsAbsoluteTotal = extendObject(calcOptions, {
-            method: CALC_METHODS.ABSOLUTE_TOTAL,
-        });
-        calculatedDataAbsTotal = await calcAssetData(asset as TAsset, calcOptionsAbsoluteTotal);
-    }
-
     const dates: TDate[] = datesFullArray.slice(0);
-    let values: number[] = [];
-    let valuesAbsTotal: number[] = [];
 
-    // TODO: В массиве dates могут быть сотни элементов. Вроде каждый тик выполняется быстро, но в сумме цикл выполняется около 15 ms.
-    // Можно попытаться оптимизировать, хотя сходу идей мало.
-    if (dates.length === calculatedData.length) {
-        values = calculatedData.map(item => item.value);
-        if (shouldStoreAbsTotal) {
-            valuesAbsTotal = calculatedDataAbsTotal.map(item => item.value);
-        }
-    } else {
-        dates.forEach(date => {
-            const calculatedDataByDate = calculatedData.find(item => item.date === date);
-            const index = calculatedData.indexOf(calculatedDataByDate);
-            let value: number;
-            if (index !== -1) {
-                value = calculatedDataByDate.value;
-            } else {
-                value = NaN;
-            }
-            values.push(value);
-
-            if (shouldStoreAbsTotal) {
-                let valueAbsTotal: number;
-                if (index !== -1) {
-                    valueAbsTotal = calculatedDataAbsTotal[index].value;
-                } else {
-                    valueAbsTotal = NaN;
-                }
-                valuesAbsTotal.push(valueAbsTotal);
-            }
-        });
-    }
-
+    const calcOptions = calcOptionsStore.getState();
     if (calcOptions.method === CALC_METHODS.ABSOLUTE_TOTAL && !isLabelCommon(title)) {
         showLine = false;
     }
 
     const dataset: TDataset = {
-        asset: asset as TAsset,
         label: title,
         backgroundColor: `rgba(${colorRGB.join(', ')}, ${opacityBackground})`,
         borderColor: `rgba(${colorRGB.join(', ')}, ${opacityBorder})`,
@@ -143,11 +100,8 @@ export async function prepareSingleDataset(asset: TAsset | TAssetCommon, calcOpt
         lineTension: 0,
         borderWidth,
         showLine,
+        asset,
     };
-
-    if (shouldStoreAbsTotal) {
-        dataset.dataAbsTotal = valuesAbsTotal;
-    }
 
     if (borderDash !== undefined) {
         dataset.borderDash = borderDash;

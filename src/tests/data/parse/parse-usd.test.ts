@@ -18,31 +18,45 @@ describe('parse-usd', function () {
             const expected = [
                 {
                     date: '2020.01.01',
-                    value: 70,
+                    values: {
+                        current: 70,
+                    },
                 },
                 {
                     date: '2020.01.02',
-                    value: 71,
+                    values: {
+                        current: 71,
+                    },
                 },
                 {
                     date: '2020.01.03',
-                    value: 72,
+                    values: {
+                        current: 72,
+                    },
                 },
                 {
                     date: '2020.01.04',
-                    value: 73,
+                    values: {
+                        current: 73,
+                    },
                 },
                 {
                     date: '2020.01.05',
-                    value: 74,
+                    values: {
+                        current: 74,
+                    },
                 },
                 {
                     date: '2020.01.06',
-                    value: 75,
+                    values: {
+                        current: 75,
+                    },
                 },
                 {
                     date: '2020.01.07',
-                    value: 76,
+                    values: {
+                        current: 76,
+                    },
                 },
             ];
 
@@ -55,31 +69,45 @@ describe('parse-usd', function () {
             const expected = [
                 {
                     date: '2020.01.01',
-                    value: 55, // (30 + 80) / 2
+                    values: {
+                        current: 55,
+                    },
                 },
                 {
                     date: '2020.01.02',
-                    value: 56, // (31 + 81) / 2
+                    values: {
+                        current: 56,
+                    },
                 },
                 {
                     date: '2020.01.03',
-                    value: 57, // (32 + 82) / 2
+                    values: {
+                        current: 57,
+                    },
                 },
                 {
                     date: '2020.01.04',
-                    value: 58, // (33 + 83) / 2
+                    values: {
+                        current: 58,
+                    },
                 },
                 {
                     date: '2020.01.05',
-                    value: 59, // (34 + 84) / 2
+                    values: {
+                        current: 59,
+                    },
                 },
                 {
                     date: '2020.01.06',
-                    value: 60, // (35 + 85) / 2
+                    values: {
+                        current: 60,
+                    },
                 },
                 {
                     date: '2020.01.07',
-                    value: 61, // (36 + 86) / 2
+                    values: {
+                        current: 61,
+                    },
                 },
             ];
 
@@ -97,10 +125,12 @@ describe('parse-usd', function () {
 
         expect(result).toContainEqual({
             date: expect.any(String),
-            value: expect.any(Number),
+            values: {
+                current: expect.any(Number),
+            },
         });
         expect(result.length).toBe(dates.length);
-        expect(result[1].value).toBe(result[2].value);
+        expect(result[1].values.current).toBe(result[2].values.current);
         expect(result[1].date).not.toBe(result[2].date);
     });
 });

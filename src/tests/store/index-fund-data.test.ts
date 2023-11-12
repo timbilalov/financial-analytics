@@ -13,11 +13,15 @@ describe('index-fund-data store', function () {
             const newValues: TAssetData = [
                 {
                     date: '2020.01.01',
-                    value: 150,
+                    values: {
+                        current: 150,
+                    },
                 },
                 {
                     date: '2020.01.02',
-                    value: 151,
+                    values: {
+                        current: 151,
+                    },
                 },
             ];
 

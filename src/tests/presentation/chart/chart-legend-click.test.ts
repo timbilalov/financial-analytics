@@ -77,7 +77,9 @@ describe('chart-legend-click', function () {
                 ticker: '',
                 data: dates.map(date => ({
                     date,
-                    value: 0,
+                    values: {
+                        current: 0,
+                    },
                 })),
                 buyDate: dates[0],
                 isUsd: false,

@@ -33,6 +33,7 @@ describe('assets-all', function () {
             data: expect.any(Array),
             amount: expect.any(Number),
             isUsd: expect.any(Boolean),
+            isBond: expect.any(Boolean),
             buyDate: expect.any(String),
             sellDate: expect.any(String),
         });
@@ -40,7 +41,9 @@ describe('assets-all', function () {
         for (const item of result) {
             expect(item.data).toContainEqual({
                 date: expect.any(String),
-                value: expect.any(Number),
+                values: {
+                    current: expect.any(Number),
+                },
             });
             expect(item.data.length).toBe(6);
         }

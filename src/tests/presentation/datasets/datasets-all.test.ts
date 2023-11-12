@@ -11,11 +11,15 @@ describe('datasets-all', function () {
             data: [
                 {
                     date: dates[0],
-                    value: 10,
+                    values: {
+                        current: 10,
+                    },
                 },
                 {
                     date: dates[1],
-                    value: 20,
+                    values: {
+                        current: 20,
+                    },
                 },
             ],
             amount: 2,
@@ -27,11 +31,15 @@ describe('datasets-all', function () {
             data: [
                 {
                     date: dates[1],
-                    value: 100,
+                    values: {
+                        current: 100,
+                    },
                 },
                 {
                     date: dates[2],
-                    value: 200,
+                    values: {
+                        current: 200,
+                    },
                 },
             ],
             amount: 1,
@@ -54,8 +62,11 @@ describe('datasets-all', function () {
         });
 
         test('result should not contain "total" dataset, if items count <= 1', async function () {
+            const calcOptions = extendObject(calcOptionsDefault, {
+                method: CALC_METHODS.ABSOLUTE,
+            });
             const data = baseData.slice(0, 1);
-            const result = await prepareDatasets(data, calcOptionsDefault);
+            const result = await prepareDatasets(data, calcOptions);
 
             expect(result.filter(item => item.label === TOTAL_LABEL).length).toBe(0);
         });

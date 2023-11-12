@@ -1,13 +1,12 @@
 import moment from 'moment';
 import { DATE_FORMATS } from '@constants';
-import type { TAssetData, TDate, TFetchDataItemMoex, TFetchDataMoex } from '@types';
+import type { TAssetData, TAssetDataItem, TDate, TFetchDataItemMoex, TFetchDataMoex } from '@types';
 
 // TODO: Теперь эта функция не только для USD. Порефакторить так, чтобы было более универсально. Возможно, объединить с "обычным" parseMoex.
 export function parseResponseDataUsd(responseData: TFetchDataMoex, datesFullArray: TDate[], isIndexFund = false): TAssetData {
     const data1: TAssetData = [];
 
-    let prevDate;
-    let prevDataObject;
+    let prevDataObject: TAssetDataItem | undefined;
 
     for (let i = 0; i < responseData.length; i++) {
         const item: TFetchDataItemMoex = responseData[i];
@@ -29,17 +28,18 @@ export function parseResponseDataUsd(responseData: TFetchDataMoex, datesFullArra
         }
 
         // TODO: Возможно, что для Moex первое условие никогда не выполняется. Проверить.
-        if (date === prevDate) {
-            prevDataObject.value = (prevDataObject.value + value) / 2;
+        if (date === prevDataObject?.date) {
+            prevDataObject.values.current = (prevDataObject.values.current + value) / 2;
         } else {
-            const dataObject = {
+            const dataObject: TAssetDataItem = {
                 date,
-                value,
+                values: {
+                    current: value,
+                },
             };
 
             data1.push(dataObject);
 
-            prevDate = date;
             prevDataObject = dataObject;
         }
     }
@@ -48,7 +48,7 @@ export function parseResponseDataUsd(responseData: TFetchDataMoex, datesFullArra
         return [];
     }
 
-    let prevValue: number = data1[0].value;
+    let prevValue: number = data1[0].values.current;
     const data2: TAssetData = [];
 
     for (let i = 0; i < datesFullArray.length; i++) {
@@ -57,7 +57,7 @@ export function parseResponseDataUsd(responseData: TFetchDataMoex, datesFullArra
         let value: number;
 
         if (dataItemByDate !== undefined) {
-            value = dataItemByDate.value;
+            value = dataItemByDate.values.current;
             prevValue = value;
         } else {
             value = prevValue;
@@ -65,7 +65,9 @@ export function parseResponseDataUsd(responseData: TFetchDataMoex, datesFullArra
 
         data2.push({
             date,
-            value,
+            values: {
+                current: value,
+            },
         });
     }
 

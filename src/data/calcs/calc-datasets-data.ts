@@ -1,7 +1,7 @@
-import { BANK_DEPOSIT, CALC_CURRENCIES, CALC_METHODS, DATE_FORMATS } from '@constants';
-import type { TAssetDataItem, TCalcOptions, TDatasets, TDatasetsData, TDate } from '@types';
+import { BANK_DEPOSIT, BANK_DEPOSIT_LABEL, CALC_CURRENCIES, CALC_METHODS, DATE_FORMATS, EARNED_MONEY_LABEL, FREE_MONEY_LABEL, INDEX_FUND_LABEL, OWN_MONEY_LABEL, TOTAL_LABEL } from '@constants';
+import type { TAsset, TAssetCommon, TAssetDataItem, TCalcOptions, TDatasets, TDatasetsData, TDate } from '@types';
 import { getAssetsFromDatasets, getDatesFullArray, getIndexFundData, getUsdData } from '../get';
-import { isNullNumber, toFractionDigits } from '@helpers';
+import { errorHandler, isNullNumber, toFractionDigits } from '@helpers';
 import moment from 'moment';
 
 type TSavedValueItem = {
@@ -16,23 +16,26 @@ type TStepItem = {
     date: TDate,
 }
 
-type TOwnStepItem = TStepItem & {
-    own: number,
-    indexFund: number,
-    usdValue: number,
-    assetIsUsd: boolean,
+type TOwnStepItem = {
+    date: string;
+    value: number;
 };
 
-type TFreeStepItem = TStepItem & {
-    free: number,
-    usdValue: number,
-    assetIsUsd: boolean,
+type TSoldStepItem = {
+    date: string;
+    value: number;
 };
 
-type TEarnedStepItem = TStepItem & {
-    earned: number,
-    usdValue: number,
-    assetIsUsd: boolean,
+type TEarnedStepItem = {
+    date: string;
+    value: number;
+    currency: CALC_CURRENCIES;
+};
+
+type TFreeStepItem = {
+    date: string;
+    value: number;
+    currency: CALC_CURRENCIES;
 };
 
 type TAbsoluteTotalStepItem = TStepItem & {
@@ -40,21 +43,25 @@ type TAbsoluteTotalStepItem = TStepItem & {
 };
 
 type TOwnStepItems = TOwnStepItem[];
+type TSoldStepItems = TSoldStepItem[];
 type TEarnedStepItems = TEarnedStepItem[];
 type TFreeStepItems = TFreeStepItem[];
 type TAbsoluteTotalStepItems = TAbsoluteTotalStepItem[];
 
-// TODO: Здесь довольно много логики сейчас. Подумать, есть ли возможность как-то порефакторить и/или разделить на части.
-export async function calcDatasetsData(datasets: TDatasets, calcOptions: TCalcOptions): Promise<TDatasetsData> {
-    if (datasets.length === 0) {
-        return [];
+const ERROR_MESSAGE = `Something wrong with 'calcDatasetsData' method`;
+
+export async function calcDatasetsData(assets: TAsset[], calcOptions: TCalcOptions): Promise<TDatasetsData> {
+    const assetsMap: TDatasetsData = new Map();
+
+    if (assets.length === 0) {
+        return assetsMap;
     }
 
-    const datasetsSorted = datasets.sort((a, b) => {
-        const buyDateA = a.asset.buyDate;
-        const buyDateB = b.asset.buyDate;
-        const sellDateA = a.asset.sellDate;
-        const sellDateB = b.asset.sellDate;
+    const assetsSorted = assets.sort((a, b) => {
+        const buyDateA = a.buyDate;
+        const buyDateB = b.buyDate;
+        const sellDateA = a.sellDate;
+        const sellDateB = b.sellDate;
 
         if (sellDateA !== undefined && sellDateB !== undefined) {
             return moment(sellDateA, DATE_FORMATS.default).diff(moment(sellDateB, DATE_FORMATS.default), 'days');
@@ -63,273 +70,400 @@ export async function calcDatasetsData(datasets: TDatasets, calcOptions: TCalcOp
         return moment(buyDateA, DATE_FORMATS.default).diff(moment(buyDateB, DATE_FORMATS.default), 'days');
     });
 
-    const assets = getAssetsFromDatasets(datasetsSorted);
-    const usdData = await getUsdData(assets);
-    const datesFullArray = getDatesFullArray(assets);
-    const { currency, method } = calcOptions;
-
-    const indexFundData = await getIndexFundData(assets);
-    const data: TDatasetsData = [];
-    const savedValues: TSavedValueItem[] = [];
+    const usdData = await getUsdData(assetsSorted);
+    const datesFullArray = getDatesFullArray(assetsSorted);
+    const indexFundData = await getIndexFundData(assetsSorted);
 
     const ownMoneySteps: TOwnStepItems = [];
-    const absoluteTotalSteps: TAbsoluteTotalStepItems = [];
+    const soldMoneySteps: TSoldStepItems = [];
     const earnedMoneySteps: TEarnedStepItems = [];
-    let freeMoneySteps: TFreeStepItems = [];
+    const freeMoneySteps: TFreeStepItems = [];
 
-    // Helper
-    const getCurrentFreeMoney = (iterationUsdValue) => freeMoneySteps.reduce((prev, step) => {
-        const { assetIsUsd, free, usdValue } = step;
-        let current = free;
-        if (assetIsUsd && currency === CALC_CURRENCIES.RUB) {
-            current *= iterationUsdValue / usdValue;
-        } else if (!assetIsUsd && currency === CALC_CURRENCIES.USD) {
-            current *= usdValue / iterationUsdValue;
+    const calculateCurrentFreeMoney = (usdValue: number) => {
+        return freeMoneySteps.reduce((prev, step) => {
+            const usdValueStep = usdData.find(item => item.date === step.date)?.values.current;
+
+            if (!usdValueStep) {
+                errorHandler(ERROR_MESSAGE);
+                return prev;
+            }
+
+            const coef = usdValue / usdValueStep;
+
+            let current = step.value;
+
+            if (step.currency === CALC_CURRENCIES.RUB && calcOptions.currency === CALC_CURRENCIES.USD) {
+                current /= coef;
+            } else if (step.currency === CALC_CURRENCIES.USD && calcOptions.currency === CALC_CURRENCIES.RUB) {
+                current *= coef;
+            }
+
+            return prev + current;
+        }, 0);
+    };
+
+    const pushToAssetsMap = (asset: TAsset | string, value: number) => {
+        const values = assetsMap.get(asset) ?? [];
+        values.push(value);
+        assetsMap.set(asset, values);
+    };
+
+    // For bonds.
+    const accumulatedBondEarnedNkdMap: WeakMap<TAsset, number> = new Map();
+    const accumulatedBondFreeMoneyMap: WeakMap<TAsset, number> = new Map();
+
+    for (let i = 0; i < datesFullArray.length; ++i) {
+        const date = datesFullArray[i];
+        const hasNextDate = Boolean(datesFullArray[i + 1]);
+        const indexFundValue = indexFundData.find(item => item.date === date)?.values.current;
+        const usdValue = usdData.find(item => item.date === date)?.values.current;
+
+        if (!usdValue || !indexFundValue) {
+            errorHandler(ERROR_MESSAGE);
+            continue;
         }
-        return prev + current;
-    }, 0);
 
-    for (let i = 0; i < datesFullArray.length; i++) {
-        const iterationDate = datesFullArray[i];
-        const iterationUsdValue = usdData.filter(item => item.date === iterationDate)[0].value;
-        const iterationIndexFundValue = (indexFundData.find(item => item.date === iterationDate) as TAssetDataItem).value;
+        let iterationFreeMoney = 0;
+        let iterationOwnMoney = 0;
+        let iterationEarnedMoney = 0;
+        let iterationBankDeposit = 0;
+        let iterationTotal = 0;
+        let iterationIndexFund = 0;
 
-        let iterationAbsolute = 0;
-        let hasActiveAssets = false;
+        for (let j = 0; j < assetsSorted.length; ++j) {
+            const asset = assetsSorted[j];
+            const assetData = asset.data;
 
-        for (let j = 0; j < datasetsSorted.length; j++) {
-            const dataset = datasetsSorted[j];
-            if (dataset.hidden) {
+            if (assetData.length === 0) {
                 continue;
             }
 
-            const datasetIterationIndex = dataset.dates.indexOf(iterationDate);
-            const datasetValue = dataset.data[datasetIterationIndex];
-            const datasetValueNext = dataset.data[datasetIterationIndex + 1];
-            const datasetValueAbsTotal = (dataset.dataAbsTotal || [])[datasetIterationIndex];
-            const datasetIsUsd = dataset.asset.isUsd;
+            const firstDataItem = assetData[0];
+            const lastDataItem = assetData[assetData.length - 1];
+            const hasStarted = moment(date, DATE_FORMATS.default).diff(moment(firstDataItem.date, DATE_FORMATS.default), 'days') >= 0;
+            const hasFinished = moment(date, DATE_FORMATS.default).diff(moment(lastDataItem.date, DATE_FORMATS.default), 'days') > 0;
 
-            if (!isNullNumber(datasetValue)) {
-                hasActiveAssets = true;
+            if (!hasStarted || hasFinished) {
+                pushToAssetsMap(asset, NaN);
+                continue;
+            }
 
-                if (savedValues[j] === undefined) {
-                    savedValues[j] = {
-                        value: datasetValue,
-                        usdValue: iterationUsdValue,
-                    };
+            // Asset has been sold.
+            if (lastDataItem.date === date && hasNextDate) {
+                let earnedValue: number;
+                let freeValue: number;
+                let soldValue: number;
 
-                    if (datasetValueAbsTotal !== undefined) {
-                        savedValues[j].valueAbsTotal = datasetValueAbsTotal;
-                    }
+                if (asset.isBond) {
+                    const lastBondNkd = lastDataItem.values.bond?.nominalNkd ?? 0;
+                    const lastBondNominalValue = lastDataItem.values.bond?.nominalValue ?? 0;
+
+                    earnedValue = lastBondNkd * asset.amount;
+                    freeValue = (lastBondNkd + lastBondNominalValue) * asset.amount;
+                    soldValue = assetsMap.get(asset)?.at(-1) ?? 0;
+                } else {
+                    const firstValue = firstDataItem.values.current * asset.amount;
+                    const lastValue = lastDataItem.values.current * asset.amount;
+                    const earned = lastValue - firstValue;
+
+                    earnedValue = earned;
+                    freeValue = lastValue;
+                    soldValue = earned;
                 }
 
-                const datasetValueAbsTotalInital = savedValues[j].valueAbsTotal;
-
-                if (savedValues[j].ownMoney === undefined && datasetValueAbsTotalInital !== undefined) {
-                    const neededToBuy = datasetValueAbsTotalInital;
-                    const currentFreeMoney = getCurrentFreeMoney(iterationUsdValue);
-                    const ownMoneyNeededForBuy = Math.max(0, neededToBuy - currentFreeMoney);
-
-                    savedValues[j].ownMoney = ownMoneyNeededForBuy;
-
-                    if (ownMoneyNeededForBuy > 0) {
-                        ownMoneySteps.push({
-                            date: iterationDate,
-                            own: ownMoneyNeededForBuy,
-                            indexFund: iterationIndexFundValue,
-                            usdValue: iterationUsdValue,
-                            assetIsUsd: datasetIsUsd,
-                        });
-                    }
-
-                    const currentFreeMoneyForAbsoluteTotal = freeMoneySteps.reduce((prev, step) => prev + step.free, 0);
-                    const ownMoneyForAbsoluteTotal = Math.max(0, neededToBuy - currentFreeMoneyForAbsoluteTotal);
-                    if (ownMoneyForAbsoluteTotal > 0) {
-                        absoluteTotalSteps.push({
-                            date: iterationDate,
-                            absoluteTotal: ownMoneyForAbsoluteTotal,
-                        });
-                    }
-
-                    // Update free money steps array.
-                    if (currentFreeMoney > 0) {
-                        let remaining = neededToBuy;
-                        const freeMoneyStepsUpdatedAfterBuy: TFreeStepItems = [];
-                        freeMoneySteps.forEach(step => {
-                            if (remaining <= 0) {
-                                freeMoneyStepsUpdatedAfterBuy.push(step);
-                                return;
-                            }
-
-                            const { assetIsUsd, free, usdValue } = step;
-                            let current = free;
-                            if (assetIsUsd && currency === CALC_CURRENCIES.RUB) {
-                                current *= iterationUsdValue / usdValue;
-                            } else if (!assetIsUsd && currency === CALC_CURRENCIES.USD) {
-                                current *= usdValue / iterationUsdValue;
-                            }
-
-                            if (remaining >= current) {
-                                remaining -= current;
-                            } else {
-                                const diff = current - remaining;
-                                freeMoneyStepsUpdatedAfterBuy.push({
-                                    date: step.date,
-                                    free: diff,
-                                    usdValue: iterationUsdValue,
-                                    assetIsUsd,
-                                });
-                                remaining = 0;
-                            }
-                        });
-
-                        freeMoneySteps = freeMoneyStepsUpdatedAfterBuy;
-                    }
+                if (asset.isUsd && calcOptions.currency === CALC_CURRENCIES.RUB) {
+                    freeValue *= usdValue;
+                    earnedValue *= usdValue;
+                    soldValue *= usdValue;
+                } else if (!asset.isUsd && calcOptions.currency === CALC_CURRENCIES.USD) {
+                    freeValue /= usdValue;
+                    earnedValue /= usdValue;
+                    soldValue /= usdValue;
                 }
 
-                if (savedValues[j].earned === undefined && datasetValueAbsTotal !== undefined && datasetValueAbsTotalInital !== undefined && isNullNumber(datasetValueNext)) {
-                    freeMoneySteps.push({
-                        date: iterationDate,
-                        free: datasetValueAbsTotal,
-                        usdValue: iterationUsdValue,
-                        assetIsUsd: datasetIsUsd,
-                    });
-                    const earned = datasetValueAbsTotal - datasetValueAbsTotalInital;
-                    savedValues[j].earned = earned;
+                earnedMoneySteps.push({
+                    date,
+                    value: earnedValue,
+                    currency: asset.isUsd ? CALC_CURRENCIES.USD : CALC_CURRENCIES.RUB,
+                });
+
+                freeMoneySteps.push({
+                    date,
+                    value: freeValue,
+                    currency: asset.isUsd ? CALC_CURRENCIES.USD : CALC_CURRENCIES.RUB,
+                });
+
+                soldMoneySteps.push({
+                    date,
+                    value: soldValue,
+                });
+
+                pushToAssetsMap(asset, NaN);
+                continue;
+            }
+
+            const dataItem = assetData.find(item => item.date === date)!;
+
+            let current = dataItem.values.current;
+            let freeMoneyDecrement = 0;
+
+            const prevDataItem = dataItem ?
+                    assetData[assetData.indexOf(dataItem) - 1] ?? dataItem :
+                    dataItem;
+
+            // For bonds.
+            if (dataItem.values.bond && prevDataItem.values.bond) {
+                const currentBondNkd = dataItem.values.bond.currentNkd;
+
+                const currentNominalValue = dataItem.values.bond.nominalValue;
+                const prevNkd = prevDataItem.values.bond.currentNkd;
+                const prevNominalValue = prevDataItem.values.bond.nominalValue;
+
+                let accumulatedBondNkd = accumulatedBondEarnedNkdMap.get(asset) ?? 0;
+                let accumulatedBondFreeMoney = accumulatedBondFreeMoneyMap.get(asset) ?? 0;
+
+                if (currentBondNkd < prevNkd) {
+                    let earnedBondNkd = prevDataItem.values.bond.nominalNkd;
+
+                    accumulatedBondNkd += earnedBondNkd;
+
+                    if (calcOptions.currency === CALC_CURRENCIES.USD) {
+                        earnedBondNkd /= usdValue;
+                    }
 
                     earnedMoneySteps.push({
-                        date: iterationDate,
-                        earned,
-                        usdValue: iterationUsdValue,
-                        assetIsUsd: datasetIsUsd,
+                        date,
+                        value: earnedBondNkd * asset.amount,
+                        currency: CALC_CURRENCIES.RUB,
+                    });
+
+                    freeMoneySteps.push({
+                        date,
+                        value: earnedBondNkd * asset.amount,
+                        currency: CALC_CURRENCIES.RUB,
                     });
                 }
+
+                if (currentNominalValue < prevNominalValue) {
+                    let earnedBondFreeMoney = prevNominalValue - currentNominalValue;
+
+                    accumulatedBondFreeMoney += earnedBondFreeMoney;
+
+                    if (calcOptions.currency === CALC_CURRENCIES.USD) {
+                        earnedBondFreeMoney /= usdValue;
+                    }
+
+                    freeMoneySteps.push({
+                        date,
+                        value: earnedBondFreeMoney * asset.amount,
+                        currency: CALC_CURRENCIES.RUB,
+                    });
+                }
+
+                accumulatedBondFreeMoney -= freeMoneyDecrement;
+                current += currentBondNkd;
+
+                if (calcOptions.method === CALC_METHODS.ABSOLUTE) {
+                    current += accumulatedBondFreeMoney + accumulatedBondNkd;
+                }
+
+                accumulatedBondEarnedNkdMap.set(asset, accumulatedBondNkd);
+                accumulatedBondFreeMoneyMap.set(asset, accumulatedBondFreeMoney);
             }
 
-            if (savedValues[j] !== undefined) {
-                const absTotal = savedValues[j].valueAbsTotal;
-                if (absTotal !== undefined) {
-                    const earned = savedValues[j].earned;
-                    if (earned !== undefined) {
-                        iterationAbsolute += earned;
+            // Apply amount.
+            current *= asset.amount;
+
+            // Apply currency.
+            if (!asset.isUsd && calcOptions.currency === CALC_CURRENCIES.USD) {
+                current /= usdValue;
+            } else if (asset.isUsd && calcOptions.currency === CALC_CURRENCIES.RUB) {
+                current *= usdValue;
+            }
+
+            // Asset has bought.
+            if (firstDataItem.date === date) {
+                const currentFreeMoney = calculateCurrentFreeMoney(usdValue);
+                const cost = current;
+                const ownMoneyNeeded = Math.max(0, cost - currentFreeMoney);
+
+                freeMoneyDecrement = cost - ownMoneyNeeded;
+
+                if (ownMoneyNeeded > 0) {
+                    ownMoneySteps.push({
+                        date,
+                        value: ownMoneyNeeded,
+                    });
+                }
+
+                if (freeMoneyDecrement > 0) {
+                    if (freeMoneyDecrement >= currentFreeMoney) {
+                        freeMoneySteps.splice(0, freeMoneySteps.length);
                     } else {
-                        const curValue = datasetValueAbsTotal;
-                        iterationAbsolute += curValue - absTotal;
+                        freeMoneySteps.push({
+                            date,
+                            value: -freeMoneyDecrement,
+                            currency: asset.isUsd ? CALC_CURRENCIES.USD : CALC_CURRENCIES.RUB,
+                        });
                     }
                 }
             }
+
+
+            switch (calcOptions.method) {
+                case CALC_METHODS.ABSOLUTE:
+                    let initialValue = firstDataItem.values.current;
+                    const usdValueInitial = usdData.find(item => item.date === firstDataItem.date)?.values.current;
+
+                    if (!usdValueInitial) {
+                        errorHandler(ERROR_MESSAGE);
+                        continue;
+                    }
+
+                    if (asset.isBond) {
+                        initialValue += firstDataItem.values.bond?.currentNkd ?? 0;
+                    }
+
+                    // Apply currency.
+                    if (!asset.isUsd && calcOptions.currency === CALC_CURRENCIES.USD) {
+                        initialValue /= usdValueInitial;
+                    } else if (asset.isUsd && calcOptions.currency === CALC_CURRENCIES.RUB) {
+                        initialValue *= usdValueInitial;
+                    }
+
+                    initialValue *= asset.amount;
+                    current -= initialValue;
+            }
+
+            iterationTotal += current;
+            pushToAssetsMap(asset, toFractionDigits(current));
         }
 
-        const iterationIndexFund = ownMoneySteps.reduce((prev, step) => {
-            let coef = iterationIndexFundValue / step.indexFund;
+        iterationEarnedMoney = earnedMoneySteps.reduce((prev, step) => {
+            const usdValueStep = usdData.find(item => item.date === step.date)?.values.current;
 
+            if (!usdValueStep) {
+                errorHandler(ERROR_MESSAGE);
+                return prev;
+            }
+
+            const coef = usdValue / usdValueStep;
+
+            let current = step.value;
+
+            if (step.currency === CALC_CURRENCIES.RUB && calcOptions.currency === CALC_CURRENCIES.USD) {
+                current /= coef;
+            } else if (step.currency === CALC_CURRENCIES.USD && calcOptions.currency === CALC_CURRENCIES.RUB) {
+                current *= coef;
+            }
+
+            return prev + current;
+        }, 0);
+
+        iterationFreeMoney = calculateCurrentFreeMoney(usdValue);
+
+        iterationIndexFund = ownMoneySteps.reduce((prev, step) => {
+            const indexFundValueStep = indexFundData.find(item => item.date === step.date)?.values.current;
+            const usdValueStep = usdData.find(item => item.date === step.date)?.values.current;
+
+            if (!indexFundValueStep || !usdValueStep) {
+                errorHandler(ERROR_MESSAGE);
+                return prev;
+            }
+
+            let coef = indexFundValue / indexFundValueStep;
             let current: number;
 
-            switch (currency) {
+            switch (calcOptions.currency) {
                 case CALC_CURRENCIES.RUB:
-                    coef *= iterationUsdValue / step.usdValue;
+                    coef *= usdValue / usdValueStep;
                     break;
             }
 
-            switch (method) {
+            switch (calcOptions.method) {
                 case CALC_METHODS.ABSOLUTE:
-                    current = step.own * (coef - 1);
+                    current = step.value * (coef - 1);
                     break;
 
                 case CALC_METHODS.ABSOLUTE_TOTAL:
                 default:
-                    current = step.own * coef;
+                    current = step.value * coef;
                     break;
             }
 
             return prev + current;
         }, 0);
 
-        const iterationBankDeposit = ownMoneySteps.reduce((prev, step) => {
-            const daysDiff = moment(iterationDate, DATE_FORMATS.default).diff(moment(step.date, DATE_FORMATS.default), 'days');
+        if (calcOptions.method === CALC_METHODS.ABSOLUTE_TOTAL) {
+            iterationTotal += iterationFreeMoney;
+        }
+
+        if (calcOptions.method === CALC_METHODS.ABSOLUTE) {
+            const totalSold = soldMoneySteps.reduce((prev, cur) => prev + cur.value, 0);
+            iterationTotal += totalSold;
+        }
+
+        iterationOwnMoney = ownMoneySteps.reduce((prev, step) => {
+            const usdValueStep = usdData.find(item => item.date === step.date)?.values.current;
+
+            if (!usdValueStep) {
+                errorHandler(ERROR_MESSAGE);
+                return prev;
+            }
+
+            let coef = 1;
+            let current: number;
+
+            switch (calcOptions.currency) {
+                case CALC_CURRENCIES.USD:
+                    coef /= usdValue / usdValueStep;
+                    break;
+            }
+
+            current = step.value * coef;
+
+            return prev + current;
+        }, 0);
+
+        iterationBankDeposit = ownMoneySteps.reduce((prev, step) => {
+            const daysDiff = moment(date, DATE_FORMATS.default).diff(moment(step.date, DATE_FORMATS.default), 'days');
             const bankDepositIncrement = daysDiff / 365 * BANK_DEPOSIT;
+            const usdValueStep = usdData.find(item => item.date === step.date)?.values.current;
+
+            if (!usdValueStep) {
+                errorHandler(ERROR_MESSAGE);
+                return prev;
+            }
 
             let current: number;
-            switch (method) {
+            switch (calcOptions.method) {
                 case CALC_METHODS.ABSOLUTE:
-                    current = step.own * bankDepositIncrement;
+                    current = step.value * bankDepositIncrement;
                     break;
 
                 case CALC_METHODS.ABSOLUTE_TOTAL:
                 default:
-                    current = step.own * (1 + bankDepositIncrement);
+                    current = step.value * (1 + bankDepositIncrement);
                     break;
             }
 
-            switch (currency) {
+            switch (calcOptions.currency) {
                 case CALC_CURRENCIES.USD:
-                    current *= step.usdValue / iterationUsdValue;
+                    current /= usdValue / usdValueStep;
                     break;
             }
 
             return prev + current;
         }, 0);
 
-        const iterationOwnMoney = ownMoneySteps.reduce((prev, step) => {
-            let current: number;
-            switch (currency) {
-                case CALC_CURRENCIES.USD:
-                    current = step.own * (step.usdValue / iterationUsdValue);
-                    break;
 
-                case CALC_CURRENCIES.RUB:
-                default:
-                    current = step.own;
-                    break;
-            }
-
-            return prev + current;
-        }, 0);
-
-        const absoluteTotalSaved = absoluteTotalSteps.reduce((prev, step) => prev + step.absoluteTotal, 0);
-        let iterationTotal: number;
-        switch (method) {
-            case CALC_METHODS.ABSOLUTE:
-                iterationTotal = iterationAbsolute;
-                break;
-
-            case CALC_METHODS.ABSOLUTE_TOTAL:
-            default:
-                iterationTotal = absoluteTotalSaved + iterationAbsolute;
-                break;
-        }
-
-        const iterationEarnedMoney = earnedMoneySteps.reduce((prev, step) => {
-            const { assetIsUsd, earned, usdValue } = step;
-
-            let current = earned;
-            if (assetIsUsd && currency === CALC_CURRENCIES.RUB) {
-                current *= iterationUsdValue / usdValue;
-            } else if (!assetIsUsd && currency === CALC_CURRENCIES.USD) {
-                current *= usdValue / iterationUsdValue;
-            }
-
-            return prev + current;
-        }, 0);
-
-        const iterationFreeMoney = getCurrentFreeMoney(iterationUsdValue);
-        if (!hasActiveAssets && method === CALC_METHODS.ABSOLUTE_TOTAL) {
-            iterationTotal = iterationFreeMoney;
-        }
-
-        data.push({
-            date: iterationDate,
-            values: {
-                absolute: toFractionDigits(iterationAbsolute),
-                free: toFractionDigits(iterationFreeMoney),
-                own: toFractionDigits(iterationOwnMoney),
-                earned: toFractionDigits(iterationEarnedMoney),
-                bankDeposit: toFractionDigits(iterationBankDeposit),
-                indexFund: toFractionDigits(iterationIndexFund),
-                total: toFractionDigits(iterationTotal),
-            },
-        });
+        pushToAssetsMap(TOTAL_LABEL, toFractionDigits(iterationTotal));
+        pushToAssetsMap(FREE_MONEY_LABEL, toFractionDigits(iterationFreeMoney));
+        pushToAssetsMap(OWN_MONEY_LABEL, toFractionDigits(iterationOwnMoney));
+        pushToAssetsMap(INDEX_FUND_LABEL, toFractionDigits(iterationIndexFund));
+        pushToAssetsMap(BANK_DEPOSIT_LABEL, toFractionDigits(iterationBankDeposit));
+        pushToAssetsMap(EARNED_MONEY_LABEL, toFractionDigits(iterationEarnedMoney));
     }
 
-    return data;
+    return assetsMap;
 }
