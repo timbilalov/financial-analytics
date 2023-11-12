@@ -160,7 +160,8 @@ export async function calcDatasetsData(assets: TAsset[], calcOptions: TCalcOptio
 
                     earnedValue = lastBondNkd * asset.amount;
                     freeValue = (lastBondNkd + lastBondNominalValue) * asset.amount;
-                    soldValue = assetsMap.get(asset)?.at(-1) ?? 0;
+                    const assetData: number[] | undefined = assetsMap.get(asset);
+                    soldValue = assetData?.[assetData.length - 1] ?? 0;
                 } else {
                     const firstValue = firstDataItem.values.current * asset.amount;
                     const lastValue = lastDataItem.values.current * asset.amount;

@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.3.7](https://github.com/timbilalov/financial-analytics/tree/v0.3.7) (2023-11-12)
+
+[Full Changelog](https://github.com/timbilalov/financial-analytics/compare/v0.3.6...v0.3.7)
+
+
+**Commits:**
+* hotfix: replace .at with an older syntax
+
 ## [v0.3.6](https://github.com/timbilalov/financial-analytics/tree/v0.3.6) (2023-11-12)
 
 [Full Changelog](https://github.com/timbilalov/financial-analytics/compare/v0.3.5...v0.3.6)
