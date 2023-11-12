@@ -31,9 +31,13 @@ export function labelCallback(tooltipItem: TTooltipItem, data: TData, calcOption
         sameLabelDatasets[0]._tooltipSameIndexes.push(tooltipItem.datasetIndex);
     }
 
-    labelText = `${label}: ${toFractionDigits(value, 2)}`;
+    labelText = `${label}: ${parseFloat(value).toFixed(2)}`;
     if (nonZeroLabelValues.length > 1) {
-        labelText = `${label}: ${toFractionDigits(nonZeroLabelValues.reduce((p, c) => p + c), 2)}`;
+        if (sameLabelDatasets[0]._tooltipSameIndexes.indexOf(tooltipItem.datasetIndex) > 0) {
+            labelText = '';
+        } else {
+            labelText = `${label}: ${nonZeroLabelValues.reduce((p, c) => p + c).toFixed(2)}`;
+        }
     }
 
     return labelText;
