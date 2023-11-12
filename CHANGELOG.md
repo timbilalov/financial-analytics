@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.3.5](https://github.com/timbilalov/financial-analytics/tree/v0.3.5) (2023-11-12)
+
+[Full Changelog](https://github.com/timbilalov/financial-analytics/compare/v0.3.4...v0.3.5)
+
+**Fixed bugs:**
+
+- Update Node version in Travis config [\#47](https://github.com/timbilalov/financial-analytics/issues/47)
+
 ## [v0.3.4](https://github.com/timbilalov/financial-analytics/tree/v0.3.4) (2023-11-12)
 
 [Full Changelog](https://github.com/timbilalov/financial-analytics/compare/v0.3.3...v0.3.4)
