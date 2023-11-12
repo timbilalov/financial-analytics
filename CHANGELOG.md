@@ -1,5 +1,17 @@
 # Changelog
 
+## [v0.3.4](https://github.com/timbilalov/financial-analytics/tree/v0.3.4) (2023-11-12)
+
+[Full Changelog](https://github.com/timbilalov/financial-analytics/compare/v0.3.3...v0.3.4)
+
+**Implemented enhancements:**
+
+- Dealing with a decreasing body of bonds [\#44](https://github.com/timbilalov/financial-analytics/issues/44)
+
+**Fixed bugs:**
+
+- Troubles with SP500 benchmarking [\#43](https://github.com/timbilalov/financial-analytics/issues/43)
+
 ## [v0.3.3](https://github.com/timbilalov/financial-analytics/tree/v0.3.3) (2021-12-26)
 
 [Full Changelog](https://github.com/timbilalov/financial-analytics/compare/v0.3.2...v0.3.3)
