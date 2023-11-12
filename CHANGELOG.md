@@ -1,12 +1,20 @@
 # Changelog
 
-## [v0.3.5](https://github.com/timbilalov/financial-analytics/tree/v0.3.5) (2023-11-12)
+## [v0.3.6](https://github.com/timbilalov/financial-analytics/tree/v0.3.6) (2023-11-12)
 
-[Full Changelog](https://github.com/timbilalov/financial-analytics/compare/v0.3.4...v0.3.5)
+[Full Changelog](https://github.com/timbilalov/financial-analytics/compare/v0.3.5...v0.3.6)
 
 **Fixed bugs:**
 
 - Update Node version in Travis config [\#47](https://github.com/timbilalov/financial-analytics/issues/47)
+
+## [v0.3.5](https://github.com/timbilalov/financial-analytics/tree/v0.3.5) (2023-11-12)
+
+[Full Changelog](https://github.com/timbilalov/financial-analytics/compare/v0.3.4...v0.3.5)
+
+
+**Commits:**
+* node version 18 for travis ci config
 
 ## [v0.3.4](https://github.com/timbilalov/financial-analytics/tree/v0.3.4) (2023-11-12)
 
