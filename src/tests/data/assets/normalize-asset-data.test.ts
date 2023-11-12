@@ -4,19 +4,27 @@ describe('normalize-asset-data', function () {
     const parsedData = [
         {
             date: '2020.02.01',
-            value: 99,
+            values: {
+                current: 99,
+            },
         },
         {
             date: '2020.02.02',
-            value: 100,
+            values: {
+                current: 100,
+            },
         },
         {
             date: '2020.02.05',
-            value: 110,
+            values: {
+                current: 110,
+            },
         },
         {
             date: '2020.02.07',
-            value: 90,
+            values: {
+                current: 90,
+            },
         },
     ];
 
@@ -34,38 +42,54 @@ describe('normalize-asset-data', function () {
         const result1Expected = [
             {
                 date: '2020.02.01',
-                value: 99,
+                values: {
+                    current: 99,
+                },
             },
             {
                 date: '2020.02.02',
-                value: 100,
+                values: {
+                    current: 100,
+                },
             },
             {
                 date: '2020.02.03',
-                value: 100,
+                values: {
+                    current: 100,
+                },
             },
             {
                 date: '2020.02.04',
-                value: 100,
+                values: {
+                    current: 100,
+                },
             },
             {
                 date: '2020.02.05',
-                value: 110,
+                values: {
+                    current: 110,
+                },
             },
             {
                 date: '2020.02.06',
-                value: 110,
+                values: {
+                    current: 110,
+                },
             },
             {
                 date: '2020.02.07',
-                value: 90,
+                values: {
+                    current: 90,
+                },
             },
         ];
 
         const result2Expected = result1Expected.slice();
         result2Expected.push({
             date: '2020.02.08',
-            value: 90,
+            values: {
+                current: 90,
+            },
         });
 
         expect(result1.length).toBeGreaterThanOrEqual(7);
@@ -78,7 +102,9 @@ describe('normalize-asset-data', function () {
         expect(result3).toEqual([
             {
                 date: '2020.02.01',
-                value: 99,
+                values: {
+                    current: 99,
+                },
             },
         ]);
     });

@@ -16,11 +16,15 @@ describe('usd-data store', function () {
         const newValues: TAssetData = [
             {
                 date: '2020.01.01',
-                value: 50,
+                values: {
+                    current: 50,
+                },
             },
             {
                 date: '2020.01.02',
-                value: 51,
+                values: {
+                    current: 51,
+                },
             },
         ];
 

@@ -126,7 +126,7 @@ export async function getStoredData(dates: TDate[], storeOptions: TStoreOptions,
             }
         }
 
-        const dataNormalized = normalizeAssetData(data, dateTo, dateFrom);
+        const dataNormalized = normalizeAssetData(data, dateTo, dateFrom, assetOptions);
         let normalizedDataIndexFrom = 0;
         let normalizedDataIndexTo = dataNormalized.length - 1;
         dataNormalized.forEach((item, index) => {
@@ -154,9 +154,9 @@ export async function getStoredData(dates: TDate[], storeOptions: TStoreOptions,
 
         if (ticker) {
             const dataCheckedForSplits = checkForSplits(ticker, data, splits);
-            dataNormalized = normalizeAssetData(dataCheckedForSplits, dates[dates.length - 1]);
+            dataNormalized = normalizeAssetData(dataCheckedForSplits, dates[dates.length - 1], undefined, assetOptions);
         } else {
-            dataNormalized = normalizeAssetData(data, dates[dates.length - 1]);
+            dataNormalized = normalizeAssetData(data, dates[dates.length - 1], undefined, assetOptions);
         }
 
         dataToStore = dataNormalized;

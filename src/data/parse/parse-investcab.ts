@@ -14,7 +14,7 @@ export function parseResponseDataInvestcab(responseData: TFetchResponseInvestCab
         parsed = JSON.parse(responseData);
     }
 
-    if (parsed.t === undefined || parsed.o === undefined || parsed.c === undefined) {
+    if (!parsed || parsed.t === undefined || parsed.o === undefined || parsed.c === undefined) {
         return;
     }
 
@@ -60,7 +60,9 @@ export function parseResponseDataInvestcab(responseData: TFetchResponseInvestCab
 
         const dataObject: TAssetDataItem = {
             date,
-            value,
+            values: {
+                current: value,
+            },
         };
 
         data.push(dataObject);

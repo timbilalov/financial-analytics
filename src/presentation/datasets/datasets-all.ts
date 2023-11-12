@@ -2,6 +2,7 @@ import {
     BANK_DEPOSIT_LABEL,
     CALC_METHODS,
     EARNED_MONEY_LABEL,
+    FREE_MONEY_LABEL,
     INDEX_FUND_LABEL,
     OWN_MONEY_LABEL,
     TOTAL_LABEL,
@@ -12,93 +13,67 @@ import {
     getDatesFullArray,
 } from '@data';
 import type { TAssetCommon, TAssets, TCalcOptions, TDatasets } from '@types';
+import { errorHandler } from '@helpers';
+
+const ERROR_MESSAGE = `Something wrong with 'prepareDatasets' method.`;
 
 export async function prepareDatasets(assets: TAssets, calcOptions: TCalcOptions): Promise<TDatasets> {
     const datasets: TDatasets = [];
     const { method } = calcOptions;
     const datesFullArray = getDatesFullArray(assets);
 
+    const datasetsData = await calcDatasetsData(assets, calcOptions);
+
     for (const asset of assets) {
-        const singleDataset = await prepareSingleDataset(asset, calcOptions, datesFullArray);
+        const assetTitle = asset.title ?? asset.ticker;
+        const values = datasetsData.get(asset);
+        if (!values) {
+            errorHandler(ERROR_MESSAGE);
+            continue;
+        }
+        const singleDataset = await prepareSingleDataset(assetTitle, values, datesFullArray, asset);
         if (singleDataset) {
             datasets.push(singleDataset);
         }
     }
 
-    const innerDatasets = datasets.slice(0);
-    const datasetsData = await calcDatasetsData(innerDatasets, calcOptions);
-
     // Total
-    if (assets.length > 1) {
-        const assetTotal: TAssetCommon = {
-            title: TOTAL_LABEL,
-            data: datasetsData.map(item => ({
-                date: item.date,
-                value: item.values.total,
-            })),
-            buyDate: datasetsData[0].date,
-        };
-        const datasetTotal = await prepareSingleDataset(assetTotal, calcOptions, datesFullArray);
+    if (method === CALC_METHODS.ABSOLUTE_TOTAL || assets.length > 1) {
+        const datasetTotal = await prepareSingleDataset(TOTAL_LABEL, datasetsData.get(TOTAL_LABEL)!, datesFullArray);
         if (datasetTotal) {
             datasets.push(datasetTotal)
         }
     }
 
     // Bank depo
-    const assetBankDepo: TAssetCommon = {
-        title: BANK_DEPOSIT_LABEL,
-        data: datasetsData.map(item => ({
-            date: item.date,
-            value: item.values.bankDeposit,
-        })),
-        buyDate: datasetsData[0].date,
-    };
-    const datasetBankDeposit = await prepareSingleDataset(assetBankDepo, calcOptions, datesFullArray);
+    const datasetBankDeposit = await prepareSingleDataset(BANK_DEPOSIT_LABEL, datasetsData.get(BANK_DEPOSIT_LABEL)!, datesFullArray);
     if (datasetBankDeposit) {
-        datasets.push(datasetBankDeposit);
+        datasets.push(datasetBankDeposit)
     }
 
     // Index fund
-    const assetIndexFund: TAssetCommon = {
-        title: INDEX_FUND_LABEL,
-        data: datasetsData.map(item => ({
-            date: item.date,
-            value: item.values.indexFund,
-        })),
-        buyDate: datasetsData[0].date,
-    };
-    const datasetIndexFund = await prepareSingleDataset(assetIndexFund, calcOptions, datesFullArray);
+    const datasetIndexFund = await prepareSingleDataset(INDEX_FUND_LABEL, datasetsData.get(INDEX_FUND_LABEL)!, datesFullArray);
     if (datasetIndexFund) {
-        datasets.push(datasetIndexFund);
+        datasets.push(datasetIndexFund)
     }
 
     if (method === CALC_METHODS.ABSOLUTE_TOTAL) {
         // Own money
-        const assetOwnMoney: TAssetCommon = {
-            title: OWN_MONEY_LABEL,
-            data: datasetsData.map(item => ({
-                date: item.date,
-                value: item.values.own,
-            })),
-            buyDate: datasetsData[0].date,
-        };
-        const datasetOwnMoney = await prepareSingleDataset(assetOwnMoney, calcOptions, datesFullArray);
+        const datasetOwnMoney = await prepareSingleDataset(OWN_MONEY_LABEL, datasetsData.get(OWN_MONEY_LABEL)!, datesFullArray);
         if (datasetOwnMoney) {
-            datasets.push(datasetOwnMoney);
+            datasets.push(datasetOwnMoney)
         }
 
         // Earned
-        const assetEarnedMoney: TAssetCommon = {
-            title: EARNED_MONEY_LABEL,
-            data: datasetsData.map(item => ({
-                date: item.date,
-                value: item.values.earned,
-            })),
-            buyDate: datasetsData[0].date,
-        };
-        const datasetEarnedMoney = await prepareSingleDataset(assetEarnedMoney, calcOptions, datesFullArray);
+        const datasetEarnedMoney = await prepareSingleDataset(EARNED_MONEY_LABEL, datasetsData.get(EARNED_MONEY_LABEL)!, datesFullArray);
         if (datasetEarnedMoney) {
-            datasets.push(datasetEarnedMoney);
+            datasets.push(datasetEarnedMoney)
+        }
+
+        // Free money
+        const datasetFreeMoney = await prepareSingleDataset(FREE_MONEY_LABEL, datasetsData.get(FREE_MONEY_LABEL)!, datesFullArray);
+        if (datasetFreeMoney) {
+            datasets.push(datasetFreeMoney)
         }
     }
 

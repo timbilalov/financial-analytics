@@ -10,7 +10,7 @@
     "public/*"
   ],
   "compilerOptions": {
-    "lib": ["dom", "es2020"],
+    "lib": ["dom", "es2022"],
     "types": ["jest"],
     "rootDir": "./src",
     "outDir": "./public/dist",

@@ -18,7 +18,9 @@ describe('parse-moex', function () {
 
             expect(result).toContainEqual({
                 date: expect.any(String),
-                value: expect.any(Number),
+                values: {
+                    current: expect.any(Number),
+                },
             });
             expect(result.length).toBe(moexDataRows.length);
         });
@@ -29,7 +31,14 @@ describe('parse-moex', function () {
 
             expect(result).toContainEqual({
                 date: expect.any(String),
-                value: expect.any(Number),
+                values: {
+                    current: expect.any(Number),
+                    bond: {
+                        currentNkd: expect.any(Number),
+                        nominalNkd: expect.any(Number),
+                        nominalValue: expect.any(Number),
+                    },
+                },
             });
             expect(result.length).toBe(moexDataRows.length);
         });
@@ -45,7 +54,9 @@ describe('parse-moex', function () {
 
         expect(result).toContainEqual({
             date: expect.any(String),
-            value: expect.any(Number),
+            values: {
+                current: expect.any(Number),
+            },
         });
         expect(result.length).toBe(3);
     });

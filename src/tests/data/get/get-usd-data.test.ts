@@ -13,19 +13,27 @@ describe('get-usd-data', function () {
         expect(result).toEqual([
             {
                 date: '2020.01.01',
-                value: 70,
+                values: {
+                    current: 70,
+                },
             },
             {
                 date: '2020.01.02',
-                value: 71,
+                values: {
+                    current: 71,
+                },
             },
             {
                 date: '2020.01.03',
-                value: 72,
+                values: {
+                    current: 72,
+                },
             },
             {
                 date: '2020.01.04',
-                value: 73,
+                values: {
+                    current: 73,
+                },
             },
         ]);
     });

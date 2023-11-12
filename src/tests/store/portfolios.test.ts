@@ -20,7 +20,9 @@ describe('portfolios store', function () {
         data: [
             {
                 date: '2020.01.01',
-                value: 100,
+                values: {
+                    current: 100,
+                },
             },
         ],
         amount: 1,
@@ -32,7 +34,9 @@ describe('portfolios store', function () {
         data: [
             {
                 date: '2020.01.01',
-                value: 100,
+                values: {
+                    current: 100,
+                },
             },
         ],
         amount: 11,
@@ -44,7 +48,9 @@ describe('portfolios store', function () {
         data: [
             {
                 date: '2020.01.01',
-                value: 100,
+                values: {
+                    current: 100,
+                },
             },
         ],
         amount: 2,
@@ -56,7 +62,9 @@ describe('portfolios store', function () {
         data: [
             {
                 date: '2020.01.01',
-                value: 100,
+                values: {
+                    current: 100,
+                },
             },
         ],
         amount: 20,
@@ -265,7 +273,9 @@ describe('portfolios store', function () {
                 data: [
                     {
                         date: '2022.01.01',
-                        value: 50,
+                        values: {
+                            current: 50,
+                        },
                     },
                 ],
                 amount: 2,

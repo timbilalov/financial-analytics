@@ -6,19 +6,27 @@ describe('check-for-splits', function () {
     const ticker = 'ticker';
     const tickerData: TAssetData = [
         {
-            value: 20,
+            values: {
+                current: 20,
+            },
             date: '2020.01.01',
         },
         {
-            value: 30,
+            values: {
+                current: 30,
+            },
             date: '2020.01.02',
         },
         {
-            value: 40,
+            values: {
+                current: 40,
+            },
             date: '2020.01.03',
         },
         {
-            value: 50,
+            values: {
+                current: 50,
+            },
             date: '2020.01.04',
         },
     ];
@@ -53,19 +61,27 @@ describe('check-for-splits', function () {
 
         expect(result).toEqual([
             {
-                value: 20,
+                values: {
+                    current: 20,
+                },
                 date: '2020.01.01',
             },
             {
-                value: 45, // 30 / 2 * 3
+                values: {
+                    current: 45, // 30 / 2 * 3
+                },
                 date: '2020.01.02',
             },
             {
-                value: 60, // 40 / 2 * 3
+                values: {
+                    current: 60, // 40 / 2 * 3
+                },
                 date: '2020.01.03',
             },
             {
-                value: 75, // 50 / 2 * 3
+                values: {
+                    current: 75, // 50 / 2 * 3
+                },
                 date: '2020.01.04',
             },
         ]);
@@ -76,19 +92,27 @@ describe('check-for-splits', function () {
 
         expect(result).toEqual([
             {
-                value: 20,
+                values: {
+                    current: 20,
+                },
                 date: '2020.01.01',
             },
             {
-                value: 6.9231, // 30 / 13 * 3
+                values: {
+                    current: 6.9231, // 30 / 13 * 3
+                },
                 date: '2020.01.02',
             },
             {
-                value: 23.0769, // 40 / 13 * 3 / 2 * 5
+                values: {
+                    current: 23.0769, // 40 / 13 * 3 / 2 * 5
+                },
                 date: '2020.01.03',
             },
             {
-                value: 28.8462, // 50 / 13 * 3 / 2 * 5
+                values: {
+                    current: 28.8462, // 50 / 13 * 3 / 2 * 5
+                },
                 date: '2020.01.04',
             },
         ]);
@@ -98,11 +122,15 @@ describe('check-for-splits', function () {
         const tickerData2: TAssetData = [
             {
                 date: '2020.04.01',
-                value: 100,
+                values: {
+                    current: 100,
+                },
             },
             {
                 date: '2020.04.02',
-                value: 120,
+                values: {
+                    current: 120,
+                },
             },
         ];
         const result = checkForSplits(ticker, tickerData2, splits1);
@@ -110,11 +138,15 @@ describe('check-for-splits', function () {
         expect(result).toEqual([
             {
                 date: '2020.04.01',
-                value: 150, // 100 / 2 * 3
+                values: {
+                    current: 150, // 100 / 2 * 3
+                },
             },
             {
                 date: '2020.04.02',
-                value: 180, // 120 / 2 * 3
+                values: {
+                    current: 180, // 120 / 2 * 3
+                },
             },
         ]);
     });

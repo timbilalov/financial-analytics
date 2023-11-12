@@ -67,6 +67,7 @@ describe('assets-single', function () {
                 data: [],
                 amount: 3,
                 isUsd: false,
+                isBond: false,
                 buyDate: '2020.01.01',
                 sellDate: moment().add(-1, 'days').format(DATE_FORMATS.default),
             };
@@ -102,6 +103,7 @@ describe('assets-single', function () {
                 data: [],
                 amount: 3,
                 isUsd: false,
+                isBond: false,
                 buyDate: '2020.01.01',
                 sellDate: moment().add(-1, 'days').format(DATE_FORMATS.default),
             };
@@ -127,12 +129,15 @@ describe('assets-single', function () {
             data: expect.any(Array),
             amount: expect.any(Number),
             isUsd: expect.any(Boolean),
+            isBond: expect.any(Boolean),
             buyDate: expect.any(String),
             sellDate: expect.any(String),
         });
         expect(result.data).toContainEqual({
             date: expect.any(String),
-            value: expect.any(Number),
+            values: {
+                current: expect.any(Number),
+            },
         });
         expect(result.data.length).toBe(3);
     });
