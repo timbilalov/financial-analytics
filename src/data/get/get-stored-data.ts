@@ -3,10 +3,10 @@ import moment from 'moment';
 import type { TAssetData, TAssetOptions, TDate, TFetchDataMoex, TObject, TStoreOptions } from '@types';
 import { assetsDataStore, indexFundDataStore, splitsStore, usdDataStore } from '@store';
 import { fetchData, fetchIndexFund, fetchUsd } from '@fetch';
-import { parseResponseData, parseResponseDataUsd } from '@parse';
+import { parseResponseData, parseResponseDataInvestcab, parseResponseDataUsd } from '@parse';
 import { normalizeAssetData } from '../assets/normalize-asset-data';
 import { checkForSplits } from '../assets/check-for-splits';
-import { DATE_FORMATS } from '@constants';
+import { DATE_FORMATS, FETCH_SOURCES } from '@constants';
 import { normalizeDatesArray } from './normalize-dates-array';
 
 const FALLBACK_RESULT = [];
@@ -35,7 +35,7 @@ export async function getStoredData(dates: TDate[], storeOptions: TStoreOptions,
 
         case indexFundDataStore:
             fetchFunction = fetchIndexFund;
-            parseFunction = (responseData, dates) => parseResponseDataUsd(responseData, dates, true);
+            parseFunction = (responseData) => parseResponseDataInvestcab(responseData);
             break;
 
         case assetsDataStore:
@@ -43,7 +43,7 @@ export async function getStoredData(dates: TDate[], storeOptions: TStoreOptions,
                 break;
             }
 
-            fetchFunction = (dates) => fetchData(ticker as string, dates[0], dates[dates.length - 1], isMoex, isBond);
+            fetchFunction = (dates) => fetchData(ticker as string, dates[0], dates[dates.length - 1], isMoex ? FETCH_SOURCES.MOEX : FETCH_SOURCES.INVESTCAB, isBond);
             parseFunction = (responseData) => parseResponseData(responseData, isMoex, isBond);
             storedDataArray = ((storedData as TObject)[ticker as string] as TAssetData) || [];
             break;
@@ -126,7 +126,7 @@ export async function getStoredData(dates: TDate[], storeOptions: TStoreOptions,
             }
         }
 
-        const dataNormalized = normalizeAssetData(data, dateTo, dateFrom);
+        const dataNormalized = normalizeAssetData(data, dateTo, dateFrom, assetOptions);
         let normalizedDataIndexFrom = 0;
         let normalizedDataIndexTo = dataNormalized.length - 1;
         dataNormalized.forEach((item, index) => {
@@ -154,9 +154,9 @@ export async function getStoredData(dates: TDate[], storeOptions: TStoreOptions,
 
         if (ticker) {
             const dataCheckedForSplits = checkForSplits(ticker, data, splits);
-            dataNormalized = normalizeAssetData(dataCheckedForSplits, dates[dates.length - 1]);
+            dataNormalized = normalizeAssetData(dataCheckedForSplits, dates[dates.length - 1], undefined, assetOptions);
         } else {
-            dataNormalized = normalizeAssetData(data, dates[dates.length - 1]);
+            dataNormalized = normalizeAssetData(data, dates[dates.length - 1], undefined, assetOptions);
         }
 
         dataToStore = dataNormalized;

@@ -14,7 +14,15 @@ export type TAssetRaw = {
 
 export type TAssetDataItem = {
     date: TDate,
-    value: number,
+    // TODO: Когда-нибудь порефакторить таким образом, чтобы в ряде мест использовать другой тип: TAssetDataItemPure.
+    values: {
+        current: number;
+        bond?: {
+            currentNkd: number,
+            nominalNkd: number,
+            nominalValue: number,
+        },
+    };
 };
 
 export type TAssetData = TAssetDataItem[];
@@ -27,6 +35,7 @@ export type TAsset = {
     sellDate?: TAssetRaw['sellDate'],
     amount: number,
     isUsd: boolean,
+    isBond?: boolean,
 };
 
 export type TAssets = TAsset[];

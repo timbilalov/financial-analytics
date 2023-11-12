@@ -1,0 +1,377 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`calc-datasets-data case 1 absolute calc method: BANK_DEPOSIT_LABEL 1`] = `
+Array [
+  0,
+  0.0137,
+  0.0274,
+  0.0452,
+]
+`;
+
+exports[`calc-datasets-data case 1 absolute calc method: INDEX_FUND_LABEL 1`] = `
+Array [
+  0,
+  3.2727,
+  6.5974,
+  10.9243,
+]
+`;
+
+exports[`calc-datasets-data case 1 absolute calc method: TOTAL_LABEL 1`] = `
+Array [
+  0,
+  30,
+  30,
+  90,
+]
+`;
+
+exports[`calc-datasets-data case 1 absolute-total calc method: BANK_DEPOSIT_LABEL 1`] = `
+Array [
+  100,
+  100.0137,
+  130.0274,
+  130.0452,
+]
+`;
+
+exports[`calc-datasets-data case 1 absolute-total calc method: EARNED_MONEY_LABEL 1`] = `
+Array [
+  0,
+  30,
+  30,
+  30,
+]
+`;
+
+exports[`calc-datasets-data case 1 absolute-total calc method: FREE_MONEY_LABEL 1`] = `
+Array [
+  0,
+  130,
+  0,
+  0,
+]
+`;
+
+exports[`calc-datasets-data case 1 absolute-total calc method: INDEX_FUND_LABEL 1`] = `
+Array [
+  100,
+  103.2727,
+  136.5974,
+  140.9243,
+]
+`;
+
+exports[`calc-datasets-data case 1 absolute-total calc method: OWN_MONEY_LABEL 1`] = `
+Array [
+  100,
+  100,
+  130,
+  130,
+]
+`;
+
+exports[`calc-datasets-data case 1 absolute-total calc method: TOTAL_LABEL 1`] = `
+Array [
+  100,
+  130,
+  160,
+  220,
+]
+`;
+
+exports[`calc-datasets-data case 2 absolute calc method: BANK_DEPOSIT_LABEL 1`] = `
+Array [
+  0,
+  0.0767,
+  0.1699,
+  0.263,
+  0.3562,
+  0.4493,
+  0.7137,
+  0.9781,
+]
+`;
+
+exports[`calc-datasets-data case 2 absolute calc method: INDEX_FUND_LABEL 1`] = `
+Array [
+  0,
+  18.3273,
+  40.8086,
+  63.6413,
+  86.8252,
+  110.3603,
+  172.0246,
+  172.0246,
+]
+`;
+
+exports[`calc-datasets-data case 2 absolute calc method: TOTAL_LABEL 1`] = `
+Array [
+  0,
+  130,
+  -70,
+  70,
+  70,
+  70,
+  220,
+  20,
+]
+`;
+
+exports[`calc-datasets-data case 2 absolute calc method: TOTAL_LABEL 2`] = `
+Array [
+  0,
+  130,
+  -70,
+  70,
+  70,
+  70,
+  220,
+  20,
+]
+`;
+
+exports[`calc-datasets-data case 2 absolute-total calc method: BANK_DEPOSIT_LABEL 1`] = `
+Array [
+  560,
+  680.0767,
+  680.1699,
+  680.263,
+  680.3562,
+  1930.4493,
+  1930.7137,
+  1930.9781,
+]
+`;
+
+exports[`calc-datasets-data case 2 absolute-total calc method: EARNED_MONEY_LABEL 1`] = `
+Array [
+  0,
+  40,
+  10,
+  70,
+  70,
+  70,
+  70,
+  70,
+]
+`;
+
+exports[`calc-datasets-data case 2 absolute-total calc method: FREE_MONEY_LABEL 1`] = `
+Array [
+  0,
+  0,
+  330,
+  750,
+  750,
+  0,
+  0,
+  0,
+]
+`;
+
+exports[`calc-datasets-data case 2 absolute-total calc method: INDEX_FUND_LABEL 1`] = `
+Array [
+  560,
+  698.3273,
+  720.8086,
+  743.6413,
+  766.8252,
+  2040.3603,
+  2102.0246,
+  2102.0246,
+]
+`;
+
+exports[`calc-datasets-data case 2 absolute-total calc method: OWN_MONEY_LABEL 1`] = `
+Array [
+  560,
+  680,
+  680,
+  680,
+  680,
+  1930,
+  1930,
+  1930,
+]
+`;
+
+exports[`calc-datasets-data case 2 absolute-total calc method: TOTAL_LABEL 1`] = `
+Array [
+  560,
+  810,
+  610,
+  750,
+  750,
+  2000,
+  2150,
+  1950,
+]
+`;
+
+exports[`calc-datasets-data case 3, mixed rub and usd assets rub calc options: BANK_DEPOSIT_LABEL 1`] = `
+Array [
+  2100,
+  2100.2877,
+  2100.5753,
+  2100.863,
+  4316.1507,
+  4316.7418,
+]
+`;
+
+exports[`calc-datasets-data case 3, mixed rub and usd assets rub calc options: EARNED_MONEY_LABEL 1`] = `
+Array [
+  0,
+  710,
+  720,
+  730,
+  745,
+  755,
+]
+`;
+
+exports[`calc-datasets-data case 3, mixed rub and usd assets rub calc options: FREE_MONEY_LABEL 1`] = `
+Array [
+  0,
+  2840,
+  2880,
+  2870,
+  0,
+  0,
+]
+`;
+
+exports[`calc-datasets-data case 3, mixed rub and usd assets rub calc options: INDEX_FUND_LABEL 1`] = `
+Array [
+  2100,
+  2168.7273,
+  2238.5455,
+  2309.4545,
+  4596.4545,
+  4737.5276,
+]
+`;
+
+exports[`calc-datasets-data case 3, mixed rub and usd assets rub calc options: OWN_MONEY_LABEL 1`] = `
+Array [
+  2100,
+  2100,
+  2100,
+  2100,
+  4315,
+  4315,
+]
+`;
+
+exports[`calc-datasets-data case 3, mixed rub and usd assets rub calc options: TOTAL_LABEL 1`] = `
+Array [
+  2100,
+  2840,
+  2880,
+  2920,
+  5180,
+  5775,
+]
+`;
+
+exports[`calc-datasets-data case 4, bond with decreasing body absolute calc method: BANK_DEPOSIT_LABEL 1`] = `
+Array [
+  0,
+  0.2751,
+  0.5501,
+  0.9732,
+  1.3962,
+  1.8192,
+]
+`;
+
+exports[`calc-datasets-data case 4, bond with decreasing body absolute calc method: INDEX_FUND_LABEL 1`] = `
+Array [
+  0,
+  65.7164,
+  132.4758,
+  234.489,
+  338.0715,
+  443.2235,
+]
+`;
+
+exports[`calc-datasets-data case 4, bond with decreasing body absolute calc method: TOTAL_LABEL 1`] = `
+Array [
+  0,
+  16,
+  4,
+  178,
+  328,
+  478,
+]
+`;
+
+exports[`calc-datasets-data case 4, bond with decreasing body absolute-total calc method: BANK_DEPOSIT_LABEL 1`] = `
+Array [
+  2008,
+  2008.2751,
+  3088.5501,
+  3088.9732,
+  3089.3962,
+  3089.8192,
+]
+`;
+
+exports[`calc-datasets-data case 4, bond with decreasing body absolute-total calc method: EARNED_MONEY_LABEL 1`] = `
+Array [
+  0,
+  20,
+  20,
+  34,
+  48,
+  48,
+]
+`;
+
+exports[`calc-datasets-data case 4, bond with decreasing body absolute-total calc method: FREE_MONEY_LABEL 1`] = `
+Array [
+  0,
+  1020,
+  0,
+  514,
+  1028,
+  1028,
+]
+`;
+
+exports[`calc-datasets-data case 4, bond with decreasing body absolute-total calc method: INDEX_FUND_LABEL 1`] = `
+Array [
+  2008,
+  2073.7164,
+  3220.4758,
+  3322.489,
+  3426.0715,
+  3531.2235,
+]
+`;
+
+exports[`calc-datasets-data case 4, bond with decreasing body absolute-total calc method: OWN_MONEY_LABEL 1`] = `
+Array [
+  2008,
+  2008,
+  3088,
+  3088,
+  3088,
+  3088,
+]
+`;
+
+exports[`calc-datasets-data case 4, bond with decreasing body absolute-total calc method: TOTAL_LABEL 1`] = `
+Array [
+  2008,
+  2024,
+  3092,
+  3266,
+  3428,
+  3578,
+]
+`;

@@ -1,6 +1,6 @@
 import { CALC_METHODS } from '@constants';
 import type { TCalcOptions, TDatasets, TTooltipItem } from '@types';
-import { isEmptyString } from '@helpers';
+import { isEmptyString, toFractionDigits } from '@helpers';
 
 type TData = {
     datasets: TDatasets,
@@ -31,21 +31,9 @@ export function labelCallback(tooltipItem: TTooltipItem, data: TData, calcOption
         sameLabelDatasets[0]._tooltipSameIndexes.push(tooltipItem.datasetIndex);
     }
 
-    labelText = `${label}: ${parseFloat(value).toFixed(2)}`;
+    labelText = `${label}: ${toFractionDigits(value, 2)}`;
     if (nonZeroLabelValues.length > 1) {
-        if (sameLabelDatasets[0]._tooltipSameIndexes.indexOf(tooltipItem.datasetIndex) > 0) {
-            labelText = '';
-        } else {
-            labelText = `${label}: [${nonZeroLabelValues.map(item => item.toFixed(2)).join(',')}]`;
-
-            switch (method) {
-                case CALC_METHODS.ABSOLUTE:
-                case CALC_METHODS.ABSOLUTE_TOTAL:
-                default:
-                    labelText += `, total ${(nonZeroLabelValues.reduce((p, c) => p + c)).toFixed(2)}`;
-                    break;
-            }
-        }
+        labelText = `${label}: ${toFractionDigits(nonZeroLabelValues.reduce((p, c) => p + c), 2)}`;
     }
 
     return labelText;

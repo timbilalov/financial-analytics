@@ -40,3 +40,7 @@ export type TFetchResponseInvestCab = {
 };
 
 export type TFetchDataInvestcab = TFetchResponseInvestCab;
+
+export type TFetchDataBcs = TFetchDataInvestcab & {
+    scale: number;
+};

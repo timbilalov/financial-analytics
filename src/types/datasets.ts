@@ -4,12 +4,14 @@ import type { TDate } from './common';
 type TDatasetType = 'line' | 'bar';
 
 export type TDataset = {
-    asset: TAsset;
+    asset?: TAsset;
     label: string;
     backgroundColor?: string; // TODO: TColor
     borderColor: string; // TODO: TColor
     data: number[];
     dataAbsTotal?: number[];
+    dataEarned?: number[];
+    dataFreeMoney?: number[];
     dates: string[];
     type: TDatasetType;
     pointRadius?: number;
@@ -25,17 +27,4 @@ export type TDataset = {
 
 export type TDatasets = TDataset[];
 
-export type TDatasetsDataItem = {
-    date: TDate,
-    values: {
-        absolute: number,
-        free: number,
-        own: number,
-        earned: number,
-        bankDeposit: number,
-        indexFund: number,
-        total: number,
-    },
-};
-
-export type TDatasetsData = TDatasetsDataItem[];
+export type TDatasetsData = Map<TAsset | string, number[]>;

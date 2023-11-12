@@ -1,47 +1,18 @@
 import { fetchUsd } from '@data';
-import { dates, moexDataRows } from '@test-constants';
-
-declare const global: {
-    fetch: unknown,
-};
+import { dates, moexDataRowsUsd } from '@test-constants';
 
 describe('fetch-usd', function () {
-    const dataRow1 = moexDataRows[0];
-    const dataRow2 = moexDataRows[1];
-    const dataRow3 = moexDataRows[2];
-    const dataRow4 = moexDataRows[3];
-
-    global.fetch = jest.fn(() =>
-        Promise.resolve({
-            ok: 1,
-            json: () => Promise.resolve({
-                'history': {
-                    columns: ['BOARDID', 'TRADEDATE', 'SHORTNAME', 'SECID', 'OPEN', 'LOW', 'HIGH', 'CLOSE', 'NUMTRADES', 'VOLRUR', 'WAPRICE'],
-                    data: [
-                        dataRow1,
-                        dataRow2,
-                        dataRow3,
-                        dataRow4,
-                    ],
-                },
-                'history.cursor': {
-                    columns: ['INDEX', 'TOTAL', 'PAGESIZE'],
-                    data: [
-                        [1, 2, 3],
-                    ],
-                },
-            }),
-        }),
-    );
-
     test('should return an array of values', async function () {
         const result = await fetchUsd(dates);
 
         expect(result).toEqual([
-            dataRow1,
-            dataRow2,
-            dataRow3,
-            dataRow4,
+            moexDataRowsUsd[0],
+            moexDataRowsUsd[1],
+            moexDataRowsUsd[2],
+            moexDataRowsUsd[3],
+            moexDataRowsUsd[4],
+            moexDataRowsUsd[5],
+            moexDataRowsUsd[6],
         ]);
     });
 });

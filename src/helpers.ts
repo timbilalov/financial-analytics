@@ -2,6 +2,7 @@ import moment from 'moment';
 import {
     BANK_DEPOSIT_LABEL,
     EARNED_MONEY_LABEL,
+    FREE_MONEY_LABEL,
     INDEX_FUND_LABEL,
     OWN_MONEY_LABEL,
     TOTAL_LABEL,
@@ -121,7 +122,7 @@ export function debounce(func: Function, wait = 200): () => void {
         };
 
         clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
+        timeout = window.setTimeout(later, wait);
     };
 }
 
@@ -132,6 +133,7 @@ export function isLabelCommon(label: string): boolean {
         OWN_MONEY_LABEL.toLowerCase(),
         INDEX_FUND_LABEL.toLowerCase(),
         EARNED_MONEY_LABEL.toLowerCase(),
+        FREE_MONEY_LABEL.toLowerCase(),
     ];
 
     label = label.toLowerCase();
@@ -154,6 +156,10 @@ export function extendObject<T, S>(object1: T, object2: S): T {
 
 // TODO: Перевести остальные toFixed на эту функцию
 export function toFractionDigits(num: number | string, digitsCount = 4): number {
+    if (typeof num === 'string' && num === `${parseFloat(num)}`) {
+        num = parseFloat(num);
+    }
+
     if (typeof num !== 'number' || isNaN(num)) {
         return NaN;
     }

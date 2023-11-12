@@ -1,27 +1,11 @@
 import { dates, investcabResponseObject } from '@test-constants';
 import { fetchInvestcab } from '@data';
 
-declare const global: {
-    fetch: unknown,
-};
-
 describe('fetch-investcab', function () {
-    beforeEach(() => {
-        global.fetch = jest.fn(() => {
-            return Promise.resolve({
-                ok: 1,
-                json: () => {
-                    return Promise.resolve(investcabResponseObject);
-                },
-            });
-        });
-    });
-
     test('should return undefined for unsuccessful response', async function () {
-        global.fetch = jest.fn(() => {
+        fetchMock.mockResponse(() => {
             return Promise.resolve({
-                ok: 0,
-                status: 'test error',
+                status: -100500,
             });
         });
 

@@ -1,23 +1,8 @@
 import { getAssetsData } from '@data';
-import { investcabResponseObject } from '@test-constants';
 import type { TAssetRaw } from '@types';
-
-declare const global: {
-    fetch: unknown,
-};
 
 describe('assets-all', function () {
     test('should return an array of single data items', async function () {
-        // TODO: Вынести куда-то этот глобальный fetch — он везде одинаковый.
-        global.fetch = jest.fn(() => {
-            return Promise.resolve({
-                ok: 1,
-                json: () => {
-                    return Promise.resolve(investcabResponseObject);
-                },
-            });
-        });
-
         const assetsRaw: TAssetRaw[] = [
             {
                 ticker: 'f1',
@@ -48,6 +33,7 @@ describe('assets-all', function () {
             data: expect.any(Array),
             amount: expect.any(Number),
             isUsd: expect.any(Boolean),
+            isBond: expect.any(Boolean),
             buyDate: expect.any(String),
             sellDate: expect.any(String),
         });
@@ -55,7 +41,9 @@ describe('assets-all', function () {
         for (const item of result) {
             expect(item.data).toContainEqual({
                 date: expect.any(String),
-                value: expect.any(Number),
+                values: {
+                    current: expect.any(Number),
+                },
             });
             expect(item.data.length).toBe(6);
         }

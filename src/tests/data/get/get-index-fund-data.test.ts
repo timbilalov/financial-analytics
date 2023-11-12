@@ -1,33 +1,11 @@
 import { getIndexFundData } from '@data';
-import { assets, moexDataRows } from '@test-constants';
-
-declare const global: {
-    fetch: unknown,
-};
+import { assets } from '@test-constants';
+import { resetIndexFundData } from '@store';
 
 describe('get-index-fund-data', function () {
-    global.fetch = jest.fn(() =>
-        Promise.resolve({
-            ok: 1,
-            json: () => Promise.resolve({
-                'history': {
-                    columns: ['BOARDID', 'TRADEDATE', 'SHORTNAME', 'SECID', 'OPEN', 'LOW', 'HIGH', 'CLOSE', 'NUMTRADES', 'VOLRUR', 'WAPRICE'],
-                    data: [
-                        moexDataRows[0],
-                        moexDataRows[1],
-                        moexDataRows[2],
-                        moexDataRows[3],
-                    ],
-                },
-                'history.cursor': {
-                    columns: ['INDEX', 'TOTAL', 'PAGESIZE'],
-                    data: [
-                        [1, 2, 3],
-                    ],
-                },
-            }),
-        }),
-    );
+    afterEach(() => {
+        resetIndexFundData();
+    });
 
     it('should return an array of values', async function () {
         const result = await getIndexFundData(assets);
@@ -35,19 +13,27 @@ describe('get-index-fund-data', function () {
         expect(result).toEqual([
             {
                 date: '2020.01.01',
-                value: 55, // (30 + 80) / 2
+                values: {
+                    current: 55,
+                },
             },
             {
                 date: '2020.01.02',
-                value: 56, // (31 + 81) / 2
+                values: {
+                    current: 56,
+                },
             },
             {
                 date: '2020.01.03',
-                value: 57, // (32 + 82) / 2
+                values: {
+                    current: 57,
+                },
             },
             {
                 date: '2020.01.04',
-                value: 58, // (33 + 83) / 2
+                values: {
+                    current: 58,
+                },
             },
         ]);
     });

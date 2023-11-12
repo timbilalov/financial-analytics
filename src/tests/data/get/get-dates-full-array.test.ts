@@ -10,7 +10,9 @@ describe('get-dates-full-array', function () {
                 data: [
                     {
                         date: '2020.02.15',
-                        value: 100,
+                        values: {
+                            current: 100,
+                        },
                     },
                 ],
             }),
@@ -18,11 +20,15 @@ describe('get-dates-full-array', function () {
                 data: [
                     {
                         date: '2020.02.18',
-                        value: 100,
+                        values: {
+                            current: 100,
+                        },
                     },
                     {
                         date: '2020.02.10',
-                        value: 100,
+                        values: {
+                            current: 100,
+                        },
                     },
                 ],
             }),
@@ -30,7 +36,9 @@ describe('get-dates-full-array', function () {
                 data: [
                     {
                         date: '2020.02.11',
-                        value: 100,
+                        values: {
+                            current: 100,
+                        },
                     },
                 ],
             }),

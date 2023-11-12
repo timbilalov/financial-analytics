@@ -1,14 +1,9 @@
 import moment from 'moment';
 import { getSingleAssetData } from '@data';
 import { isObject } from '@helpers';
-import { investcabResponseObject } from '@test-constants';
 import type { TAsset, TAssetRaw } from '@types';
 import { resetAssetsData } from '@store';
 import { DATE_FORMATS } from '@constants';
-
-declare const global: {
-    fetch: unknown,
-};
 
 describe('assets-single', function () {
     test('should return undefined for empty ticker', async function () {
@@ -50,16 +45,11 @@ describe('assets-single', function () {
     describe('should return empty data if something wrong with parsing', function () {
         beforeEach(function () {
             resetAssetsData();
-        });
 
-        global.fetch = jest.fn(() => {
-            return Promise.resolve({
-                ok: 1,
-                json: () => {
-                    return Promise.resolve({
-                        foo: 'bar',
-                    });
-                },
+            fetchMock.mockResponse(() => {
+                return Promise.resolve(JSON.stringify({
+                    foo: 'bar',
+                }));
             });
         });
 
@@ -77,6 +67,7 @@ describe('assets-single', function () {
                 data: [],
                 amount: 3,
                 isUsd: false,
+                isBond: false,
                 buyDate: '2020.01.01',
                 sellDate: moment().add(-1, 'days').format(DATE_FORMATS.default),
             };
@@ -85,21 +76,18 @@ describe('assets-single', function () {
         });
 
         test('moex', async function () {
-            global.fetch = jest.fn(() =>
-                Promise.resolve({
-                    ok: 1,
-                    json: () => Promise.resolve({
-                        'history': {
-                            data: [],
-                        },
-                        'history.cursor': {
-                            data: [
-                                [],
-                            ],
-                        },
-                    }),
-                }),
-            );
+            fetchMock.mockResponse(() => {
+                return Promise.resolve(JSON.stringify({
+                    'history': {
+                        data: [],
+                    },
+                    'history.cursor': {
+                        data: [
+                            [],
+                        ],
+                    },
+                }));
+            });
 
             const assetRaw: TAssetRaw = {
                 ticker: 'tst4',
@@ -115,6 +103,7 @@ describe('assets-single', function () {
                 data: [],
                 amount: 3,
                 isUsd: false,
+                isBond: false,
                 buyDate: '2020.01.01',
                 sellDate: moment().add(-1, 'days').format(DATE_FORMATS.default),
             };
@@ -124,15 +113,6 @@ describe('assets-single', function () {
     });
 
     test('should return an object with data', async function () {
-        global.fetch = jest.fn(() => {
-            return Promise.resolve({
-                ok: 1,
-                json: () => {
-                    return Promise.resolve(investcabResponseObject);
-                },
-            });
-        });
-
         const assetRaw: TAssetRaw = {
             ticker: 'tst2',
             buyDate: '2020.01.01',
@@ -149,12 +129,15 @@ describe('assets-single', function () {
             data: expect.any(Array),
             amount: expect.any(Number),
             isUsd: expect.any(Boolean),
+            isBond: expect.any(Boolean),
             buyDate: expect.any(String),
             sellDate: expect.any(String),
         });
         expect(result.data).toContainEqual({
             date: expect.any(String),
-            value: expect.any(Number),
+            values: {
+                current: expect.any(Number),
+            },
         });
         expect(result.data.length).toBe(3);
     });

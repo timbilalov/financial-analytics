@@ -1,42 +1,15 @@
 import { onLegendClick } from '@presentation';
-import { calcOptionsDefault, datasets, dates, moexDataRowsUsd } from '@test-constants';
+import { calcOptionsDefault, datasets, dates } from '@test-constants';
 import { clearLegendItems, setChartInstance } from '@store';
 import { BANK_DEPOSIT_LABEL, EARNED_MONEY_LABEL, INDEX_FUND_LABEL, OWN_MONEY_LABEL, TOTAL_LABEL } from '@constants';
 import type { TDataset, TLegendItem } from '@types';
 import { extendObject } from '@helpers';
-
-declare const global: {
-    fetch: unknown,
-};
 
 describe('chart-legend-click', function () {
     const legendItem: TLegendItem = {
         datasetIndex: 0,
         hidden: false,
     };
-
-    global.fetch = jest.fn(() =>
-        Promise.resolve({
-            ok: 1,
-            json: () => Promise.resolve({
-                'history': {
-                    columns: ['BOARDID', 'TRADEDATE', 'SHORTNAME', 'SECID', 'OPEN', 'LOW', 'HIGH', 'CLOSE', 'NUMTRADES', 'VOLRUR', 'WAPRICE'],
-                    data: [
-                        moexDataRowsUsd[0],
-                        moexDataRowsUsd[1],
-                        moexDataRowsUsd[2],
-                        moexDataRowsUsd[3],
-                    ],
-                },
-                'history.cursor': {
-                    columns: ['INDEX', 'TOTAL', 'PAGESIZE'],
-                    data: [
-                        [1, 2, 3],
-                    ],
-                },
-            }),
-        }),
-    );
 
     const chart = {
         config: {
@@ -104,7 +77,9 @@ describe('chart-legend-click', function () {
                 ticker: '',
                 data: dates.map(date => ({
                     date,
-                    value: 0,
+                    values: {
+                        current: 0,
+                    },
                 })),
                 buyDate: dates[0],
                 isUsd: false,

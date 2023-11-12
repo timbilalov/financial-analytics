@@ -1,9 +1,9 @@
 import moment from 'moment';
 import { DATE_FORMATS } from '@constants';
 import { deepClone } from '@helpers';
-import type { TAssetData, TDate } from '@types';
+import type { TAssetData, TAssetDataItem, TAssetOptions, TDate } from '@types';
 
-export function normalizeAssetData(data: TAssetData, dateTo?: TDate, dateFrom?: TDate): TAssetData {
+export function normalizeAssetData(data: TAssetData, dateTo?: TDate, dateFrom?: TDate, assetOptions?: TAssetOptions): TAssetData {
     if (data.length === 0) {
         return [];
     }
@@ -24,28 +24,44 @@ export function normalizeAssetData(data: TAssetData, dateTo?: TDate, dateFrom?: 
     }
 
     const firstDate = moment(dateFrom, format);
-    const daysDiff = moment(dateTo, format).diff(firstDate, unitOfTime) + 1;
+    const lastDate = moment(dateTo, format);
+    const lastDataAvailableItem = data[data.length - 1];
+    const lastDataAvailableDate = moment(lastDataAvailableItem.date, format);
+    const daysDiff = lastDate.diff(firstDate, unitOfTime) + 1;
     const dataNormalized: TAssetData = [];
 
     // TODO: tests
     for (let i = 0; i < daysDiff; i++) {
-        const date = moment(firstDate).add(i, unitOfTime).format(format);
-        const dataItem = data.filter(item => item.date === date)[0];
+        const date = moment(firstDate).add(i, unitOfTime);
+        const dateFormatted = date.format(format);
+        const dataItem = data.filter(item => item.date === dateFormatted)[0];
 
         // Weekend, days without any data.
         if (dataItem === undefined && i === 0) {
             continue;
         }
 
-        let dataItemNormalizedByDate;
+        let dataItemNormalizedByDate: TAssetDataItem;
+
+        const isFinishedBond = assetOptions?.isBond && date.diff(lastDataAvailableDate, unitOfTime) === 0;
+
+        if (isFinishedBond) {
+            break;
+        }
 
         if (dataItem !== undefined) {
             dataItemNormalizedByDate = deepClone(dataItem);
         } else {
-            dataItemNormalizedByDate = {
-                date,
-                value: dataNormalized[i - 1].value,
-            };
+            const prev = dataNormalized[dataNormalized.length - 1];
+
+            if (prev === undefined) {
+                continue;
+            } else {
+                dataItemNormalizedByDate = {
+                    ...prev,
+                    date: dateFormatted,
+                };
+            }
         }
 
         dataNormalized.push(dataItemNormalizedByDate);

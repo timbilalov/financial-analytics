@@ -1,48 +1,25 @@
 import { prepareDatasets } from '@presentation';
-import { calcOptionsDefault, dates, moexDataRowsUsd } from '@test-constants';
+import { calcOptionsDefault, dates } from '@test-constants';
 import { BANK_DEPOSIT_LABEL, CALC_METHODS, OWN_MONEY_LABEL, TOTAL_LABEL } from '@constants';
 import type { TAsset } from '@types';
 import { extendObject } from '@helpers';
 
-declare const global: {
-    fetch: unknown,
-};
-
 describe('datasets-all', function () {
-    global.fetch = jest.fn(() =>
-        Promise.resolve({
-            ok: 1,
-            json: () => Promise.resolve({
-                'history': {
-                    columns: ['BOARDID', 'TRADEDATE', 'SHORTNAME', 'SECID', 'OPEN', 'LOW', 'HIGH', 'CLOSE', 'NUMTRADES', 'VOLRUR', 'WAPRICE'],
-                    data: [
-                        moexDataRowsUsd[0],
-                        moexDataRowsUsd[1],
-                        moexDataRowsUsd[2],
-                        moexDataRowsUsd[3],
-                    ],
-                },
-                'history.cursor': {
-                    columns: ['INDEX', 'TOTAL', 'PAGESIZE'],
-                    data: [
-                        [1, 2, 3],
-                    ],
-                },
-            }),
-        }),
-    );
-
     const baseData: TAsset[] = [
         {
             ticker: 'tst1',
             data: [
                 {
                     date: dates[0],
-                    value: 10,
+                    values: {
+                        current: 10,
+                    },
                 },
                 {
                     date: dates[1],
-                    value: 20,
+                    values: {
+                        current: 20,
+                    },
                 },
             ],
             amount: 2,
@@ -54,11 +31,15 @@ describe('datasets-all', function () {
             data: [
                 {
                     date: dates[1],
-                    value: 100,
+                    values: {
+                        current: 100,
+                    },
                 },
                 {
                     date: dates[2],
-                    value: 200,
+                    values: {
+                        current: 200,
+                    },
                 },
             ],
             amount: 1,
@@ -81,8 +62,11 @@ describe('datasets-all', function () {
         });
 
         test('result should not contain "total" dataset, if items count <= 1', async function () {
+            const calcOptions = extendObject(calcOptionsDefault, {
+                method: CALC_METHODS.ABSOLUTE,
+            });
             const data = baseData.slice(0, 1);
-            const result = await prepareDatasets(data, calcOptionsDefault);
+            const result = await prepareDatasets(data, calcOptions);
 
             expect(result.filter(item => item.label === TOTAL_LABEL).length).toBe(0);
         });

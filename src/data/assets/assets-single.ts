@@ -46,5 +46,6 @@ export async function getSingleAssetData(assetRaw: TAssetRaw): Promise<TAsset | 
         isUsd,
         buyDate,
         sellDate,
+        isBond,
     };
 }

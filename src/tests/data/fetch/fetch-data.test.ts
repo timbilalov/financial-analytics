@@ -1,16 +1,12 @@
 import { dates, investcabResponseObject, moexDataRows } from '@test-constants';
 import { fetchData } from '@data';
-
-declare const global: {
-    fetch: unknown,
-};
+import { FETCH_SOURCES } from '@constants';
 
 describe('fetch-data', function () {
     test('should return undefined for unsuccessful response', async function () {
-        global.fetch = jest.fn(() => {
+        fetchMock.mockResponse(() => {
             return Promise.resolve({
-                ok: 0,
-                status: 'test error',
+                status: -100500,
             });
         });
 
@@ -30,27 +26,22 @@ describe('fetch-data', function () {
     test('should return array of data rows, for moex', async function () {
         const dataRow = moexDataRows[0];
 
-        global.fetch = jest.fn(() => {
-            return Promise.resolve({
-                ok: 1,
-                json: () => {
-                    return Promise.resolve({
-                        'history': {
-                            data: [
-                                dataRow,
-                            ],
-                        },
-                        'history.cursor': {
-                            data: [
-                                [1, 2, 3],
-                            ],
-                        },
-                    });
+        fetchMock.mockResponse(() => {
+            return Promise.resolve(JSON.stringify({
+                'history': {
+                    data: [
+                        dataRow,
+                    ],
                 },
-            });
+                'history.cursor': {
+                    data: [
+                        [1, 2, 3],
+                    ],
+                },
+            }));
         });
 
-        const result = await fetchData('tst', dates[0], dates[3], true);
+        const result = await fetchData('tst', dates[0], dates[3], FETCH_SOURCES.MOEX);
         const expected = [
             dataRow,
         ];
@@ -59,16 +50,7 @@ describe('fetch-data', function () {
     });
 
     test('should return object with data, for investcab', async function () {
-        global.fetch = jest.fn(() => {
-            return Promise.resolve({
-                ok: 1,
-                json: () => {
-                    return Promise.resolve(investcabResponseObject);
-                },
-            });
-        });
-
-        const result = await fetchData('tst', dates[0], dates[2], false);
+        const result = await fetchData('tst', dates[0], dates[2], FETCH_SOURCES.INVESTCAB);
         const expected = investcabResponseObject;
 
         expect(result).toEqual(expected);

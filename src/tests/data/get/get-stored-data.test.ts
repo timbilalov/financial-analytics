@@ -1,42 +1,9 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { getStoredData } from '@data';
 import { resetUsdData, setUsdData, usdDataStore } from '@store';
 import type { TAssetData, TAssetOptions, TStoreOptions } from '@types';
 import { USD_TICKER } from '@constants';
-import { moexDataRows } from '@test-constants';
-
-declare const global: {
-    fetch: unknown,
-};
 
 describe('get-stored-data', function () {
-    const fetch = jest.fn(() =>
-        Promise.resolve({
-            ok: 1,
-            json: () => Promise.resolve({
-                'history': {
-                    columns: ['BOARDID', 'TRADEDATE', 'SHORTNAME', 'SECID', 'OPEN', 'LOW', 'HIGH', 'CLOSE', 'NUMTRADES', 'VOLRUR', 'WAPRICE'],
-                    data: [
-                        moexDataRows[0],
-                        moexDataRows[1],
-                        moexDataRows[2],
-                        moexDataRows[3],
-                        moexDataRows[4],
-                        moexDataRows[5],
-                    ],
-                },
-                'history.cursor': {
-                    columns: ['INDEX', 'TOTAL', 'PAGESIZE'],
-                    data: [
-                        [1, 2, 3],
-                    ],
-                },
-            }),
-        }),
-    );
-
-    global.fetch = fetch;
-
     const store = usdDataStore;
     const resetStore = resetUsdData;
     const setState = setUsdData;
@@ -61,29 +28,38 @@ describe('get-stored-data', function () {
     const expected: TAssetData = [
         {
             date: '2020.01.01',
-            value: 70,
+            values: {
+                current: 70,
+            },
         },
         {
             date: '2020.01.02',
-            value: 71,
+            values: {
+                current: 71,
+            },
         },
         {
             date: '2020.01.03',
-            value: 72,
+            values: {
+                current: 72,
+            },
         },
         {
             date: '2020.01.04',
-            value: 73,
+            values: {
+                current: 73,
+            },
         },
         {
             date: '2020.01.05',
-            value: 74,
+            values: {
+                current: 74,
+            },
         },
     ];
 
-    afterEach(function () {
+    afterEach(() => {
         resetStore();
-        fetch.mockClear();
     });
 
     it('should fetch new data, if store is empty', async function () {
@@ -112,11 +88,15 @@ describe('get-stored-data', function () {
             const dataPart: TAssetData = [
                 {
                     date: '2020.01.01',
-                    value: 70,
+                    values: {
+                        current: 70,
+                    },
                 },
                 {
                     date: '2020.01.02',
-                    value: 71,
+                    values: {
+                        current: 71,
+                    },
                 },
             ];
 
@@ -134,11 +114,15 @@ describe('get-stored-data', function () {
             const dataPart: TAssetData = [
                 {
                     date: '2020.01.04',
-                    value: 73,
+                    values: {
+                        current: 73,
+                    },
                 },
                 {
                     date: '2020.01.05',
-                    value: 74,
+                    values: {
+                        current: 74,
+                    },
                 },
             ];
 
@@ -156,11 +140,15 @@ describe('get-stored-data', function () {
             const dataPart: TAssetData = [
                 {
                     date: '2020.01.02',
-                    value: 71,
+                    values: {
+                        current: 71,
+                    },
                 },
                 {
                     date: '2020.01.03',
-                    value: 72,
+                    values: {
+                        current: 72,
+                    },
                 },
             ];
 
@@ -182,11 +170,15 @@ describe('get-stored-data', function () {
             const dataPart: TAssetData = [
                 {
                     date: '2020.01.01',
-                    value: 70,
+                    values: {
+                        current: 70,
+                    },
                 },
                 {
                     date: '2020.01.02',
-                    value: 71,
+                    values: {
+                        current: 71,
+                    },
                 },
             ];
 
@@ -202,19 +194,27 @@ describe('get-stored-data', function () {
             const expected: TAssetData = [
                 {
                     date: '2020.01.02',
-                    value: 71,
+                    values: {
+                        current: 71,
+                    },
                 },
                 {
                     date: '2020.01.03',
-                    value: 72,
+                    values: {
+                        current: 72,
+                    },
                 },
                 {
                     date: '2020.01.04',
-                    value: 73,
+                    values: {
+                        current: 73,
+                    },
                 },
                 {
                     date: '2020.01.05',
-                    value: 74,
+                    values: {
+                        current: 74,
+                    },
                 },
             ];
 
@@ -231,11 +231,15 @@ describe('get-stored-data', function () {
             const dataPart: TAssetData = [
                 {
                     date: '2020.01.04',
-                    value: 73,
+                    values: {
+                        current: 73,
+                    },
                 },
                 {
                     date: '2020.01.05',
-                    value: 74,
+                    values: {
+                        current: 74,
+                    },
                 },
             ];
 
@@ -251,19 +255,27 @@ describe('get-stored-data', function () {
             const expected: TAssetData = [
                 {
                     date: '2020.01.01',
-                    value: 70,
+                    values: {
+                        current: 70,
+                    },
                 },
                 {
                     date: '2020.01.02',
-                    value: 71,
+                    values: {
+                        current: 71,
+                    },
                 },
                 {
                     date: '2020.01.03',
-                    value: 72,
+                    values: {
+                        current: 72,
+                    },
                 },
                 {
                     date: '2020.01.04',
-                    value: 73,
+                    values: {
+                        current: 73,
+                    },
                 },
             ];
 
@@ -284,11 +296,15 @@ describe('get-stored-data', function () {
             const dataPart: TAssetData = [
                 {
                     date: '2020.01.04',
-                    value: 73,
+                    values: {
+                        current: 73,
+                    },
                 },
                 {
                     date: '2020.01.05',
-                    value: 74,
+                    values: {
+                        current: 74,
+                    },
                 },
             ];
 
@@ -302,11 +318,15 @@ describe('get-stored-data', function () {
             const expected: TAssetData = [
                 {
                     date: '2020.01.01',
-                    value: 70,
+                    values: {
+                        current: 70,
+                    },
                 },
                 {
                     date: '2020.01.02',
-                    value: 71,
+                    values: {
+                        current: 71,
+                    },
                 },
             ];
 
@@ -323,11 +343,15 @@ describe('get-stored-data', function () {
             const dataPart: TAssetData = [
                 {
                     date: '2020.01.01',
-                    value: 70,
+                    values: {
+                        current: 70,
+                    },
                 },
                 {
                     date: '2020.01.02',
-                    value: 71,
+                    values: {
+                        current: 71,
+                    },
                 },
             ];
 
@@ -341,11 +365,15 @@ describe('get-stored-data', function () {
             const expected: TAssetData = [
                 {
                     date: '2020.01.04',
-                    value: 73,
+                    values: {
+                        current: 73,
+                    },
                 },
                 {
                     date: '2020.01.05',
-                    value: 74,
+                    values: {
+                        current: 74,
+                    },
                 },
             ];
 

@@ -21,7 +21,9 @@ describe('asset-data store', function () {
         const assetsData: TAssetData = [
             {
                 date: '2020.01.01',
-                value: 100,
+                values: {
+                    current: 100,
+                },
             },
         ];
         const newValues: TAssetsDataState = {
