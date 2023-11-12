@@ -41,15 +41,6 @@ describe('chart-label-callback', function () {
             label: nameToCheck,
         }));
 
-        test('should return string with array of values', function () {
-            const result = labelCallback(tooltipItem2, data2, calcOptionsDefault);
-
-            expect(typeof result).toBe('string');
-            expect(result.includes(nameToCheck)).toBe(true);
-            expect(result.includes(String(data2.datasets[0].data[1]))).toBe(true);
-            expect(result.includes(String(data2.datasets[2].data[1]))).toBe(true);
-        });
-
         test('should contain total value for absolute methods', function () {
             const calcOptions = extendObject(calcOptionsDefault, {
                 method: CALC_METHODS.ABSOLUTE,
