@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.3.9](https://github.com/timbilalov/financial-analytics/tree/v0.3.9) (2023-11-19)
+
+[Full Changelog](https://github.com/timbilalov/financial-analytics/compare/v0.3.8...v0.3.9)
+
+
+**Commits:**
+* upload to github pages, attempt 1
+
 ## [v0.3.8](https://github.com/timbilalov/financial-analytics/tree/v0.3.8) (2023-11-12)
 
 [Full Changelog](https://github.com/timbilalov/financial-analytics/compare/v0.3.7...v0.3.8)
