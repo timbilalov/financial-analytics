@@ -1,0 +1,7 @@
+.chart-container.svelte-1qir74w{position:relative;width:100vw;height:100vh;overflow:hidden}
+.controls.svelte-zzrhyu{position:fixed;left:10px;top:40px;background-color:#fff;padding:10px;overflow:auto;max-height:calc(100% - 40px);box-sizing:border-box;z-index:2;box-shadow:0 0 15px rgba(0, 0, 0, 0.2);opacity:0.5}.controls.svelte-zzrhyu:hover{opacity:1}
+.table.svelte-8omxd7.svelte-8omxd7{width:100%;border-collapse:collapse}.table.svelte-8omxd7 td.svelte-8omxd7,.table.svelte-8omxd7 th.svelte-8omxd7{border:1px solid #cccccc;min-width:20px;text-align:left}.remove.svelte-8omxd7.svelte-8omxd7{font-weight:bold;cursor:pointer}
+.table.svelte-8omxd7.svelte-8omxd7{width:100%;border-collapse:collapse}.table.svelte-8omxd7 td.svelte-8omxd7,.table.svelte-8omxd7 th.svelte-8omxd7{border:1px solid #cccccc;min-width:20px;text-align:left}.remove.svelte-8omxd7.svelte-8omxd7{font-weight:bold;cursor:pointer}
+@keyframes svelte-pzuggu-throbber{0%{transform:scale(1)}100%{transform:scale(0.2);opacity:0.5}}.overlay.svelte-pzuggu{position:absolute;z-index:100;left:0;top:0;width:100%;height:100%;background:rgba(255, 255, 255, 0.75);color:#000;opacity:0;pointer-events:none;transition:opacity 0.3s}.overlay._visible.svelte-pzuggu{opacity:1;pointer-events:auto}.throbber.svelte-pzuggu{position:absolute;left:50%;top:50%;width:40px;height:40px;margin-left:-20px;margin-top:-20px;border-radius:50%;background-color:currentColor;box-sizing:border-box;animation:svelte-pzuggu-throbber 1s infinite alternate}
+
+/*# sourceMappingURL=bundle.css.map */
