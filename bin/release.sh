@@ -69,9 +69,9 @@ fi
 
 # For exact entered version, check it to be above current
 if
-	[[ $enteredVersionMajor < $currentVersionMajor ]] ||
-	[[ $enteredVersionMajor == $currentVersionMajor && $enteredVersionMinor < $currentVersionMinor ]] ||
-	[[ $enteredVersionMajor == $currentVersionMajor && $enteredVersionMinor == $currentVersionMinor  && $enteredVersionPatch < $currentVersionPatch+1 ]]; then
+	(( $enteredVersionMajor < $currentVersionMajor )) ||
+	(( $enteredVersionMajor == $currentVersionMajor && $enteredVersionMinor < $currentVersionMinor )) ||
+	(( $enteredVersionMajor == $currentVersionMajor && $enteredVersionMinor == $currentVersionMinor  && $enteredVersionPatch < $currentVersionPatch )); then
 	echo "Entered version ($enteredVersion) isn't above current ($currentVersion)"
 	exit 1
 fi
