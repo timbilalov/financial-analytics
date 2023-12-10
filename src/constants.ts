@@ -51,6 +51,7 @@ export const ASSET_DEFAULT_FIELDS = [
     'usd',
     'bond',
     'hide',
+    'showOnly',
 ];
 
 export const SPLIT_DEFAULT_FIELDS = [

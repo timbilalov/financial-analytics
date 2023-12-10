@@ -40,6 +40,7 @@ export const LOCALES_RU = {
         usd: 'В долларах',
         bond: 'Облигация',
         hide: 'Не учитывать',
+        showOnly: 'Показать только это',
     },
     splits: {
         ticker: 'Тикер',

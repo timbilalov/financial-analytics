@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.3.11](https://github.com/timbilalov/financial-analytics/tree/v0.3.11) (2023-12-10)
+
+[Full Changelog](https://github.com/timbilalov/financial-analytics/compare/v0.3.10...v0.3.11)
+
+**Implemented enhancements:**
+
+- Option to show only one asset [\#50](https://github.com/timbilalov/financial-analytics/issues/50)
+
 ## [v0.3.10](https://github.com/timbilalov/financial-analytics/tree/v0.3.10) (2023-11-19)
 
 [Full Changelog](https://github.com/timbilalov/financial-analytics/compare/v0.3.9...v0.3.10)
