@@ -8,7 +8,20 @@ export async function getAssetsData(assetsRaw: TAssetRaw[]): Promise<TAsset[]> {
     const uniqueTickers: string[] = [];
     const assetsRawCheckLater: TAssetRaw[] = [];
 
+    let showOnlyAsset: TAssetRaw | null = null;
+
     for (const assetRaw of assetsRaw) {
+        const shouldShowOnly = Boolean(assetRaw.showOnly);
+
+        if (shouldShowOnly) {
+            showOnlyAsset = assetRaw;
+            break;
+        }
+    }
+
+    const assetsRawToGetData = showOnlyAsset ? [showOnlyAsset] : assetsRaw;
+
+    for (const assetRaw of assetsRawToGetData) {
         if (uniqueTickers.includes(assetRaw.ticker)) {
             assetsRawCheckLater.push(assetRaw);
         } else {
