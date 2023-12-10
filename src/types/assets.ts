@@ -9,6 +9,7 @@ export type TAssetRaw = {
     usd?: TBooleanByInput,
     bond?: TBooleanByInput,
     hide?: TBooleanByInput,
+    showOnly?: TBooleanByInput,
     amount: number | string, // TODO: Рефакторить таким образом, чтобы здесь осталось только number.
 };
 
